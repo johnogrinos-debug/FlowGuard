@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowGuard — Find your profit leaks in minutes</title>
+<meta name="description" content="Connect your Xero or MYOB account. FlowGuard's AI analyses your real financial data and tells you exactly where your money is going — and how to get it back.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06090F;--s1:#0C1220;--s2:#111A2E;--b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.12);--ac:#3B82F6;--teal:#14B8A6;--red:#EF4444;--green:#10B981;--amber:#F59E0B;--tx:#F0F4FF;--tx2:#94A3B8;--tx3:#4B5E78}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',sans-serif;font-size:15px;line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(6,9,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:0 6%;height:62px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
+.nav-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--ac),var(--teal));display:flex;align-items:center;justify-content:center}
+.nav-mark svg{width:14px;height:14px}
+.nav-ctas{display:flex;gap:9px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-ghost{background:transparent;border:1px solid var(--b2);color:var(--tx2)}
+.btn-ghost:hover{border-color:var(--ac);color:var(--tx)}
+.btn-primary{background:var(--ac);color:#fff;box-shadow:0 2px 12px rgba(59,130,246,.3)}
+.btn-primary:hover{background:#2563EB;transform:translateY(-1px)}
+.btn-lg{padding:14px 32px;font-size:15px;border-radius:9px}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 6% 80px;position:relative;overflow:hidden}
+.glow1{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.09) 0%,transparent 65%);top:-150px;left:50%;transform:translateX(-50%);pointer-events:none}
+.glow2{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.06) 0%,transparent 65%);bottom:-80px;right:8%;pointer-events:none}
+.hero-inner{position:relative;max-width:760px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.18);border-radius:100px;padding:5px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);margin-bottom:22px}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1{font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:18px}
+h1 em{font-style:normal;background:linear-gradient(135deg,var(--ac),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:17px;color:var(--tx2);max-width:500px;margin:0 auto 32px;line-height:1.8}
+.hero-ctas{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.hero-trust{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--tx3)}
+.hero-trust span::before{content:'✓ '}
+
+/* PAIN SECTION */
+.pain{padding:80px 6%;background:var(--s1);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.pain-inner{max-width:1000px;margin:0 auto}
+.pain h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.8px;margin-bottom:10px;text-align:center}
+.pain-sub{text-align:center;color:var(--tx2);font-size:15px;margin-bottom:48px;max-width:500px;margin-left:auto;margin-right:auto}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pain-card{background:var(--bg);border:1px solid var(--b);border-radius:11px;padding:22px}
+.pain-card h3{font-size:14px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+.pain-card p{font-size:13px;color:var(--tx2);line-height:1.7}
+
+/* HOW */
+.how{padding:80px 6%}
+.how-inner{max-width:1000px;margin:0 auto}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:10px}
+.how h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.8px;margin-bottom:10px}
+.how-sub{color:var(--tx2);font-size:15px;margin-bottom:44px;max-width:480px;line-height:1.75}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.step{background:var(--s1);border:1px solid var(--b);border-radius:11px;padding:22px;position:relative}
+.step-n{width:32px;height:32px;border-radius:50%;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ac);margin-bottom:14px}
+.step h3{font-size:14px;font-weight:700;margin-bottom:7px}
+.step p{font-size:13px;color:var(--tx2);line-height:1.7}
+
+/* INDUSTRIES */
+.industries{padding:0 6% 80px}
+.industries-inner{max-width:1000px;margin:0 auto}
+.industries h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.8px;margin-bottom:10px}
+.ind-sub{color:var(--tx2);font-size:15px;margin-bottom:36px;max-width:480px;line-height:1.75}
+.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px}
+.ind-card{background:var(--s1);border:1px solid var(--b);border-radius:11px;padding:20px;display:flex;gap:14px;align-items:flex-start}
+.ind-icon{font-size:1.5rem;flex-shrink:0}
+.ind-card h4{font-size:13px;font-weight:700;margin-bottom:5px}
+.ind-card p{font-size:12px;color:var(--tx2);line-height:1.65}
+
+/* WHAT YOU GET */
+.features{padding:0 6% 80px;background:var(--s1);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.features-inner{max-width:1000px;margin:0 auto;padding:80px 0}
+.features h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.8px;margin-bottom:10px}
+.feat-sub{color:var(--tx2);font-size:15px;margin-bottom:44px;max-width:480px;line-height:1.75}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.feat{background:var(--bg);border:1px solid var(--b);border-radius:11px;padding:22px;display:flex;gap:14px}
+.feat-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.feat h4{font-size:14px;font-weight:700;margin-bottom:5px}
+.feat p{font-size:13px;color:var(--tx2);line-height:1.65}
+
+/* PRICING */
+.pricing{padding:80px 6%}
+.pricing-inner{max-width:760px;margin:0 auto;text-align:center}
+.pricing h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.8px;margin-bottom:10px}
+.pricing-sub{color:var(--tx2);font-size:15px;margin-bottom:44px;line-height:1.75}
+.price-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;text-align:left;max-width:680px;margin:0 auto}
+.pc{background:var(--s1);border:1px solid var(--b);border-radius:13px;padding:28px;position:relative;transition:transform .2s}
+.pc:hover{transform:translateY(-3px)}
+.pc.hot{border-color:var(--ac);box-shadow:0 0 28px rgba(59,130,246,.12)}
+.pc-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:100px;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.pc-tier{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--tx3);text-transform:uppercase;margin-bottom:6px}
+.pc-name{font-size:18px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px}
+.pc-desc{font-size:12px;color:var(--tx2);margin-bottom:14px;line-height:1.55}
+.pc-price{font-size:34px;font-weight:800;letter-spacing:-2px;color:var(--ac);margin-bottom:2px}
+.pc-period{font-size:12px;color:var(--tx3);margin-bottom:18px}
+.pc-feats{list-style:none;margin-bottom:20px}
+.pc-feats li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pc-feats li:last-child{border:none}
+.pc-feats li::before{content:'✓';color:var(--green);font-weight:700;font-size:11px;flex-shrink:0;margin-top:2px}
+.pricing-note{font-size:12px;color:var(--tx3);margin-top:18px}
+
+/* FINAL CTA */
+.final-cta{padding:90px 6%;text-align:center;background:var(--s1);border-top:1px solid var(--b)}
+.final-cta-inner{max-width:580px;margin:0 auto}
+.final-cta h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;letter-spacing:-1px;margin-bottom:12px;line-height:1.2}
+.final-cta p{color:var(--tx2);font-size:15px;margin-bottom:32px;line-height:1.75}
+
+/* FOOTER */
+footer{padding:30px 6%;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--tx3)}
+footer a{color:var(--tx3);transition:color .15s}
+footer a:hover{color:var(--tx2)}
+
+/* AUTH MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--s2);border:1px solid var(--b2);border-radius:16px;padding:36px;max-width:420px;width:100%;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+.modal-x{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--tx2);cursor:pointer;font-size:22px;line-height:1;padding:4px}
+.modal-x:hover{color:var(--tx)}
+.tabs{display:flex;gap:0;margin-bottom:22px;background:var(--bg);border-radius:8px;padding:3px}
+.tab{flex:1;padding:8px;border:none;background:none;color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;transition:all .15s;font-family:'Inter',sans-serif}
+.tab.on{background:var(--ac);color:#fff}
+.modal h3{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:5px}
+.modal-sub{font-size:13px;color:var(--tx2);margin-bottom:20px;line-height:1.6}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.6px;color:var(--tx3);text-transform:uppercase;margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+.field input{width:100%;background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:11px 13px;color:var(--tx);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--ac)}
+.field input::placeholder{color:var(--tx3)}
+.modal-btn{width:100%;background:var(--ac);color:#fff;border:none;border-radius:8px;padding:13px;font-family:'Inter',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .15s;margin-top:5px}
+.modal-btn:hover{background:#2563EB;transform:translateY(-1px)}
+.modal-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.modal-note{text-align:center;font-size:11px;color:var(--tx3);margin-top:11px}
+.modal-err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:9px 13px;font-size:13px;color:var(--red);margin-bottom:11px;display:none}
+.modal-switch{text-align:center;font-size:13px;color:var(--tx2);margin-top:13px}
+.modal-switch a{color:var(--ac);cursor:pointer;font-weight:600}
+
+@media(max-width:768px){
+  .pain-grid,.steps,.ind-grid,.feat-grid,.price-cards{grid-template-columns:1fr}
+  nav .nav-links{display:none}
+  h1{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+    </div>
+    FlowGuard
+  </div>
+  <div class="nav-ctas">
+    <button class="btn btn-ghost" onclick="openModal('login')">Log in</button>
+    <button class="btn btn-primary" onclick="openModal('signup')">Try free for 14 days</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><div class="eyebrow-dot"></div>Connects to Xero &amp; MYOB</div>
+    <h1>Your business is losing money.<br>We'll show you <em>exactly where.</em></h1>
+    <p class="hero-sub">FlowGuard connects to your accounting software and uses AI to find profit leaks, cash flow risks, and cost blowouts — in plain English, with specific fixes.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary btn-lg" onclick="openModal('signup')">Start free trial — no card needed →</button>
+    </div>
+    <div class="hero-trust">
+      <span>14 days free</span>
+      <span>Connects to Xero &amp; MYOB</span>
+      <span>Setup in 5 minutes</span>
+      <span>Cancel anytime</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN -->
+<div class="pain">
+  <div class="pain-inner">
+    <h2>Sound familiar?</h2>
+    <p class="pain-sub">Most small business owners feel this. FlowGuard fixes it.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <h3>"Revenue is up but profit isn't"</h3>
+        <p>Your top line looks good but margins are quietly shrinking. Costs are creeping up and you can't pinpoint exactly where.</p>
+      </div>
+      <div class="pain-card">
+        <h3>"I don't know where my cash goes"</h3>
+        <p>Money comes in, money goes out, but the bank balance never seems to grow. Something is leaking — you just can't see it.</p>
+      </div>
+      <div class="pain-card">
+        <h3>"My accountant only tells me after the fact"</h3>
+        <p>By the time your quarterly report arrives, the problem happened months ago. The money is already gone.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how">
+  <div class="how-inner">
+    <div class="section-tag">How it works</div>
+    <h2>Connect. Analyse. Fix.</h2>
+    <p class="how-sub">Three steps and you'll know more about your business finances than most business owners ever do.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>Connect your Xero or MYOB</h3>
+        <p>Click "Connect Xero" and log in with your existing account. Read-only access — FlowGuard can never change or delete anything.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>AI reads your real numbers</h3>
+        <p>FlowGuard pulls your P&L, invoices, and bills, then runs them through Claude AI — the same AI used by Fortune 500 companies.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>Get specific fixes, not jargon</h3>
+        <p>You get a plain-English breakdown: "Your labour costs are up 18% but revenue is flat — here's what to do about it."</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INDUSTRIES -->
+<div class="industries">
+  <div class="industries-inner">
+    <div class="section-tag">Who it's for</div>
+    <h2>Built for businesses that run on Xero or MYOB</h2>
+    <p class="ind-sub">Any small or medium business that wants to stop guessing and start knowing where their money actually goes.</p>
+    <div class="ind-grid">
+      <div class="ind-card">
+        <div class="ind-icon">🏗</div>
+        <div>
+          <h4>Construction &amp; Trades</h4>
+          <p>Job costing, labour overruns, material price creep. FlowGuard flags which jobs are bleeding before they're finished.</p>
+        </div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🛍</div>
+        <div>
+          <h4>Retail &amp; E-commerce</h4>
+          <p>Supplier price increases, shrinkage, margin by product. Know which lines are actually making you money.</p>
+        </div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🍽</div>
+        <div>
+          <h4>Hospitality</h4>
+          <p>Food cost percentages, labour efficiency, supplier overcharging. Tight margins need tight visibility.</p>
+        </div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">💼</div>
+        <div>
+          <h4>Professional Services</h4>
+          <p>Unbilled time, overdue invoices, rising overheads. Get paid faster and spend less on the wrong things.</p>
+        </div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🏭</div>
+        <div>
+          <h4>Manufacturing</h4>
+          <p>Input cost drift, inefficiency ratios, supplier consolidation opportunities. Protect your margins at scale.</p>
+        </div>
+      </div>
+      <div class="ind-card">
+        <div class="ind-icon">🔧</div>
+        <div>
+          <h4>Any SMB on Xero or MYOB</h4>
+          <p>If your business runs on Xero or MYOB and you want to understand your finances better, FlowGuard is for you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="features-inner">
+    <div class="section-tag">What you get</div>
+    <h2>Everything in one place</h2>
+    <p class="feat-sub">No spreadsheets. No waiting for your accountant. Just clear answers about your money.</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(59,130,246,.1)">🔍</div>
+        <div>
+          <h4>AI Profit Leak Analysis</h4>
+          <p>Ask "where am I losing money?" and get a specific answer using your real P&L — with dollar amounts and actions ranked by impact.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(239,68,68,.1)">⚠️</div>
+        <div>
+          <h4>Overdue Invoice Alerts</h4>
+          <p>Instantly see every overdue invoice, who owes what, and how long they've owed it. No more chasing blindly.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(16,185,129,.1)">📊</div>
+        <div>
+          <h4>Live Financial Dashboard</h4>
+          <p>Your receivables, payables, gross margin, and cash position — updated in real time from your accounting software.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(245,158,11,.1)">💬</div>
+        <div>
+          <h4>Ask Anything</h4>
+          <p>"Why is my margin down this quarter?" "Which supplier is costing me the most?" Type any question, get a real answer.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(20,184,166,.1)">📋</div>
+        <div>
+          <h4>Bills &amp; Cash Flow View</h4>
+          <p>See every upcoming bill, what's overdue, and what's due in the next 14 days — so you're never caught off guard.</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(139,92,246,.1)">🔒</div>
+        <div>
+          <h4>100% Read-Only &amp; Secure</h4>
+          <p>Official OAuth connection. FlowGuard can read your data but can never change it. Your password is never stored.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing">
+  <div class="pricing-inner">
+    <div class="section-tag" style="text-align:center">Pricing</div>
+    <h2>Simple pricing</h2>
+    <p class="pricing-sub">Start free. Most businesses find their first profit leak in the first session — and it pays for the subscription many times over.</p>
+    <div class="price-cards">
+      <div class="pc">
+        <div class="pc-tier">Starter</div>
+        <div class="pc-name">Growth</div>
+        <div class="pc-desc">For small businesses getting started.</div>
+        <div class="pc-price">$49</div>
+        <div class="pc-period">per month · cancel anytime</div>
+        <ul class="pc-feats">
+          <li>Connect Xero or MYOB</li>
+          <li>Live financial dashboard</li>
+          <li>AI profit leak analysis</li>
+          <li>Invoice &amp; bill tracking</li>
+          <li>10 AI analyses per month</li>
+          <li>Email support</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="openModal('signup')">Start free trial</button>
+      </div>
+      <div class="pc hot">
+        <div class="pc-badge">MOST POPULAR</div>
+        <div class="pc-tier">Business</div>
+        <div class="pc-name">Pro</div>
+        <div class="pc-desc">For businesses that want deeper insight.</div>
+        <div class="pc-price">$99</div>
+        <div class="pc-period">per month · cancel anytime</div>
+        <ul class="pc-feats">
+          <li>Everything in Growth</li>
+          <li>Unlimited AI analyses</li>
+          <li>Analysis history saved</li>
+          <li>Ask unlimited questions</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openModal('signup')">Start free trial</button>
+      </div>
+    </div>
+    <p class="pricing-note">14-day free trial on both plans. No credit card required to start.</p>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <div class="final-cta-inner">
+    <h2>Stop flying blind on your finances</h2>
+    <p>Connect your Xero or MYOB account today. Most business owners find something surprising in their first analysis — money leaving through gaps they didn't know existed.</p>
+    <button class="btn btn-primary btn-lg" onclick="openModal('signup')">Try FlowGuard free for 14 days →</button>
+    <div style="margin-top:14px;font-size:12px;color:var(--tx3)">No credit card · Cancel anytime · Setup in 5 minutes</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--tx2)">
+    <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--ac),var(--teal));display:flex;align-items:center;justify-content:center">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+    </div>
+    FlowGuard
+  </div>
+  <div style="display:flex;gap:20px">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+  <div>© 2025 FlowGuard</div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()">×</button>
+    <div class="tabs">
+      <button class="tab on" id="t-signup" onclick="switchTab('signup')">Create account</button>
+      <button class="tab" id="t-login" onclick="switchTab('login')">Log in</button>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="f-signup">
+      <h3>Start your free trial</h3>
+      <p class="modal-sub">14 days free. No credit card needed. Cancel anytime.</p>
+      <div class="modal-err" id="su-err"></div>
+      <div class="field"><label>Your name</label><input type="text" id="su-name" placeholder="Alex Johnson" autocomplete="name"></div>
+      <div class="field"><label>Business name</label><input type="text" id="su-company" placeholder="Johnson Plumbing Pty Ltd" autocomplete="organization"></div>
+      <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="alex@yourbusiness.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="su-pass" placeholder="Min. 8 characters" autocomplete="new-password"></div>
+      <button class="modal-btn" id="su-btn" onclick="doSignup()">Create account &amp; start trial →</button>
+      <p class="modal-note">🔒 Secure · Your data is never shared · Cancel anytime</p>
+      <p class="modal-switch">Already have an account? <a onclick="switchTab('login')">Log in</a></p>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="f-login" style="display:none">
+      <h3>Welcome back</h3>
+      <p class="modal-sub">Log in to your FlowGuard account.</p>
+      <div class="modal-err" id="li-err"></div>
+      <div class="field"><label>Email</label><input type="email" id="li-email" placeholder="alex@yourbusiness.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="li-pass" placeholder="Your password" autocomplete="current-password"></div>
+      <button class="modal-btn" id="li-btn" onclick="doLogin()">Log in →</button>
+      <p class="modal-switch">Don't have an account? <a onclick="switchTab('signup')">Start free trial</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Redirect if already logged in
+fetch('/api/auth/me',{credentials:'include'}).then(r=>{if(r.ok)window.location.href='/app'}).catch(()=>{});
+
+function openModal(tab) {
+  document.getElementById('modal').classList.add('open');
+  switchTab(tab||'signup');
+  document.body.style.overflow='hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal()});
+
+function switchTab(t) {
+  document.getElementById('f-signup').style.display = t==='signup'?'':'none';
+  document.getElementById('f-login').style.display  = t==='login' ?'':'none';
+  document.getElementById('t-signup').classList.toggle('on',t==='signup');
+  document.getElementById('t-login').classList.toggle('on', t==='login');
+}
+
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='';}
+function hideErr(id){document.getElementById(id).style.display='none';}
+
+async function doSignup() {
+  hideErr('su-err');
+  const name=document.getElementById('su-name').value.trim();
+  const company=document.getElementById('su-company').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const password=document.getElementById('su-pass').value;
+  if(!email||!password) return showErr('su-err','Email and password are required');
+  const btn=document.getElementById('su-btn');
+  btn.disabled=true; btn.textContent='Creating account…';
+  try {
+    const r=await fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,name,company})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error);
+    window.location.href='/app';
+  } catch(e) {
+    showErr('su-err',e.message);
+    btn.disabled=false; btn.textContent='Create account & start trial →';
+  }
+}
+
+async function doLogin() {
+  hideErr('li-err');
+  const email=document.getElementById('li-email').value.trim();
+  const password=document.getElementById('li-pass').value;
+  if(!email||!password) return showErr('li-err','Email and password are required');
+  const btn=document.getElementById('li-btn');
+  btn.disabled=true; btn.textContent='Logging in…';
+  try {
+    const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error);
+    window.location.href='/app';
+  } catch(e) {
+    showErr('li-err',e.message);
+    btn.disabled=false; btn.textContent='Log in →';
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||!document.getElementById('modal').classList.contains('open')) return;
+  document.getElementById('f-login').style.display!=='none' ? doLogin() : doSignup();
+});
+
+if(location.hash==='#signup') openModal('signup');
+if(location.hash==='#login')  openModal('login');
+</script>
+</body>
+</html>

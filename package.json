@@ -1,0 +1,20 @@
+{
+  "name": "flowguard",
+  "version": "1.0.0",
+  "description": "FlowGuard — AI Profit Intelligence for Small Business",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^9.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^14.0.0"
+  }
+}
