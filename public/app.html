@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowGuard</title>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>FlowGuard — AI Profit Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0e0f0c;--s1:#161714;--s2:#1e1f1b;--s3:#262722;
@@ -15,53 +15,73 @@
   --mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Instrument Sans',sans-serif;font-size:14px;line-height:1.6;overflow:hidden}
+html,body,#root{height:100%}
+body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',sans-serif;font-size:14px;line-height:1.6;overflow:hidden}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
 button{cursor:pointer;font-family:inherit;transition:all .14s}
 button:disabled{opacity:.4;cursor:not-allowed}
-a{color:inherit;text-decoration:none}
-input,textarea{font-family:inherit}
-input:focus,textarea:focus{outline:none}
-
+input{font-family:inherit}
+input:focus{outline:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes typing{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-.fadeup{animation:fadeup .3s ease forwards}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+@keyframes scanline{0%{top:-2px}100%{top:100%}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,240,96,.3)}70%{box-shadow:0 0 0 8px rgba(200,240,96,0)}}
+.rise{animation:rise .28s ease forwards}
 .spin{animation:spin .65s linear infinite}
 
-/* ── LOADING ── */
-#loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:999}
-.loading-mark{width:42px;height:42px;background:var(--ac);border-radius:10px;display:flex;align-items:center;justify-content:center}
-.loading-mark svg{width:20px;height:20px}
-.loading-text{font-size:11px;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase}
-.spinner{width:18px;height:18px;border:2px solid var(--b2);border-top-color:var(--ac);border-radius:50%;animation:spin .65s linear infinite}
-
-/* ── CONNECT SCREEN ── */
-#connect-screen{display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;z-index:50}
-.connect-box{background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:44px 48px;max-width:500px;width:100%}
-.connect-logo{display:flex;align-items:center;gap:11px;margin-bottom:32px}
-.connect-mark{width:36px;height:36px;background:var(--ac);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.connect-brand{font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:800;color:var(--tx)}
-.connect-h{font-family:'Cabinet Grotesk',sans-serif;font-size:24px;font-weight:800;color:var(--tx);margin-bottom:8px;line-height:1.2}
-.connect-sub{font-size:14px;color:var(--tx2);margin-bottom:28px;line-height:1.7}
-.connect-btn{width:100%;display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--s2);border:1px solid var(--b1);border-radius:11px;color:var(--tx);font-size:14px;font-weight:500;margin-bottom:10px;text-align:left;transition:border-color .15s}
-.connect-btn:hover{border-color:var(--b2);background:var(--s3)}
-.connect-btn-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif}
-.connect-btn-text{flex:1}
-.connect-btn-name{font-weight:600;color:var(--tx);margin-bottom:1px}
-.connect-btn-desc{font-size:11px;color:var(--tx3)}
-.connect-btn-arrow{font-size:16px;color:var(--tx3)}
-.connect-trust{display:flex;gap:16px;margin-top:20px;flex-wrap:wrap}
-.connect-trust-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx3)}
-.connect-trust-item::before{content:'✓';color:var(--green);font-weight:700}
-.connect-logout{margin-top:20px;text-align:center;font-size:12px;color:var(--tx3)}
-.connect-logout a{color:var(--ac);cursor:pointer}
-.connect-error{background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:14px;display:none}
+/* ── SETUP SCREEN ── */
+#setup-screen{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;padding:20px;
+}
+.setup-box{
+  background:var(--s1);border:1px solid var(--b2);border-radius:16px;
+  padding:40px 44px;max-width:520px;width:100%;
+}
+.setup-logo{display:flex;align-items:center;gap:11px;margin-bottom:32px}
+.setup-mark{width:38px;height:38px;background:var(--ac);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.setup-brand{font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:800;color:var(--tx)}
+.setup-h{font-family:'Cabinet Grotesk',sans-serif;font-size:24px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.setup-sub{font-size:14px;color:var(--tx2);margin-bottom:28px;line-height:1.65}
+.setup-label{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.12em;font-family:'Cabinet Grotesk',sans-serif;font-weight:700;margin-bottom:10px}
+.industry-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:24px}
+.ind-btn{
+  padding:13px 16px;border-radius:10px;
+  border:1px solid var(--b1);background:var(--s2);
+  color:var(--tx2);font-size:13px;font-weight:500;
+  text-align:left;display:flex;align-items:center;gap:10px;
+  font-family:'Instrument Sans',sans-serif;
+}
+.ind-btn:hover{border-color:var(--b2);color:var(--tx)}
+.ind-btn.selected{border-color:var(--ac);background:rgba(200,240,96,.07);color:var(--tx)}
+.ind-icon{font-size:18px;flex-shrink:0}
+.setup-field{margin-bottom:20px}
+.setup-input{
+  width:100%;padding:11px 14px;border-radius:9px;
+  border:1px solid var(--b2);background:var(--s2);
+  color:var(--tx);font-size:13px;
+}
+.setup-input:focus{border-color:rgba(200,240,96,.4)}
+.setup-input::placeholder{color:var(--tx3)}
+.setup-key-row{display:flex;gap:8px}
+.setup-key-row .setup-input{flex:1}
+.setup-start{
+  width:100%;padding:14px;border-radius:10px;
+  background:var(--ac);color:var(--bg);
+  font-size:15px;font-weight:800;border:none;
+  font-family:'Cabinet Grotesk',sans-serif;letter-spacing:.01em;
+  margin-top:4px;
+}
+.setup-start:hover{background:var(--ac2)}
+.setup-start:disabled{background:var(--s3);color:var(--tx3)}
+.setup-note{font-size:11px;color:var(--tx3);margin-top:12px;text-align:center;line-height:1.6}
+.setup-note a{color:var(--ac);text-decoration:none}
 
 /* ── APP SHELL ── */
-#app{display:none;height:100vh;overflow:hidden;flex-direction:row}
+#app{display:flex;height:100vh;overflow:hidden;display:none}
 
 /* Sidebar */
 #sidebar{width:238px;background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0}
@@ -75,23 +95,22 @@ input:focus,textarea:focus{outline:none}
 .sb-live{display:flex;align-items:center;gap:6px;font-size:9px;color:var(--tx3);letter-spacing:.06em}
 .sb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2.5s infinite}
 nav{padding:9px 8px;flex:1}
-.nav-btn{width:100%;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:var(--tx3);font-size:13px;font-weight:400;text-align:left;margin-bottom:2px;font-family:'Instrument Sans',sans-serif;cursor:pointer}
+.nav-btn{width:100%;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:var(--tx3);font-size:13px;font-weight:400;text-align:left;margin-bottom:2px;font-family:'Instrument Sans',sans-serif}
 .nav-btn:hover{background:var(--s2);color:var(--tx2)}
 .nav-btn.active{background:var(--s3);color:var(--tx);font-weight:600}
 .nav-btn.active .pip{background:var(--ac)}
 .pip{width:4px;height:4px;border-radius:50%;background:var(--tx3);flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:8px;font-weight:700;padding:1px 5px;border-radius:5px;font-family:var(--mono)}
 .sb-foot{padding:13px 18px;border-top:1px solid var(--b1)}
-.sb-provider{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.08em;background:rgba(200,240,96,.1);color:var(--ac);margin-bottom:8px}
-.sb-disconnect{font-size:10px;color:var(--tx3);cursor:pointer;text-decoration:underline;display:block;margin-bottom:4px}
-.sb-disconnect:hover{color:var(--red)}
-.sb-user{font-size:10px;color:var(--tx3)}
+.sb-co-type{display:inline-block;padding:3px 8px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.08em;background:rgba(200,240,96,.1);color:var(--ac);margin-bottom:8px}
+.sb-demo-note{font-size:9px;color:var(--tx3);line-height:1.6}
 
 /* Main */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 #topbar{padding:13px 26px;border-bottom:1px solid var(--b1);background:var(--s1);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .tb-title{font-family:'Cabinet Grotesk',sans-serif;font-size:17px;font-weight:800;color:var(--tx)}
 .tb-sub{font-size:10px;color:var(--tx3);margin-top:2px}
-.tb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--bg);font-weight:800;font-family:'Cabinet Grotesk',sans-serif;cursor:default}
+.tb-av{width:30px;height:30px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--bg);font-weight:800;font-family:'Cabinet Grotesk',sans-serif}
 #content{flex:1;overflow:auto;padding:22px 26px}
 
 /* Pages */
@@ -111,14 +130,14 @@ nav{padding:9px 8px;flex:1}
 .up{color:var(--green)}.dn{color:var(--red)}.warn{color:var(--amber)}
 
 /* Two col */
-.two-col{display:grid;grid-template-columns:1.2fr 1fr;gap:13px;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1.1fr 1fr;gap:13px;margin-bottom:14px}
 
-/* Progress bars */
+/* Progress */
 .prog{margin-bottom:10px}
 .prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.prog-name{font-size:12px;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.prog-name{font-size:12px;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px}
 .prog-val{font-family:var(--mono);font-size:11px;color:var(--tx);flex-shrink:0;margin-left:8px}
-.prog-pct{font-size:10px;color:var(--tx3);flex-shrink:0;margin-left:8px;min-width:36px;text-align:right}
+.prog-pct{font-size:10px;color:var(--tx3);flex-shrink:0;margin-left:8px;min-width:32px;text-align:right}
 .prog-bar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
 .prog-fill{height:100%;border-radius:3px;opacity:.8}
 
@@ -138,37 +157,51 @@ nav{padding:9px 8px;flex:1}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:8px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.08em}
 .b-red{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.2)}
 .b-amber{background:rgba(255,179,71,.1);color:var(--amber);border:1px solid rgba(255,179,71,.2)}
+.b-green{background:rgba(92,255,160,.1);color:var(--green);border:1px solid rgba(92,255,160,.2)}
 
-/* AI panel */
-.run-btn{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:8px;background:var(--ac);color:var(--bg);font-size:13px;font-weight:700;border:none;font-family:'Cabinet Grotesk',sans-serif}
+/* Leak cards */
+.leak-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 22px;margin-bottom:12px}
+.leak-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px}
+.leak-left{display:flex;align-items:center;gap:9px;flex:1;min-width:0;margin-right:12px}
+.leak-title{font-family:'Cabinet Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--tx)}
+.leak-impact{text-align:right;flex-shrink:0}
+.leak-amount{font-family:var(--mono);font-size:17px;font-weight:500}
+.leak-impact-lbl{font-size:8px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.leak-body{font-size:13px;color:var(--tx2);line-height:1.75;margin-bottom:12px}
+.leak-action{border-radius:8px;padding:11px 14px;border:1px solid}
+.action-title{font-size:9px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.action-body{font-size:12px;line-height:1.65}
+
+/* Analysis panel */
+.analysis-box{background:var(--s2);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.9;color:var(--tx2);white-space:pre-wrap;word-break:break-word;max-height:460px;overflow-y:auto;margin-top:16px}
+.placeholder-box{padding:26px 0;text-align:center;color:var(--tx3);font-size:13px;line-height:1.8}
+
+/* Run button */
+.run-btn{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;background:var(--ac);color:var(--bg);font-size:13px;font-weight:700;border:none;font-family:'Cabinet Grotesk',sans-serif;animation:pulse 2.5s infinite}
 .run-btn:hover:not(:disabled){background:var(--ac2)}
-.run-btn:disabled{background:var(--s3);color:var(--tx3)}
-.analysis-result{background:var(--s2);border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.9;color:var(--tx2);white-space:pre-wrap;word-break:break-word;max-height:460px;overflow-y:auto;margin-top:16px;display:none}
-.placeholder{padding:26px 0;text-align:center;color:var(--tx3);font-size:13px;line-height:1.8}
-.scan-wrap{display:none;margin-top:14px}
-.scan-msg{font-size:12px;color:var(--tx3);display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.scan-bar{height:48px;background:var(--s2);border-radius:8px;overflow:hidden;position:relative}
-@keyframes scan{0%{top:-2px}100%{top:100%}}
-.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);animation:scan 1.4s ease-in-out infinite;opacity:.7}
-.scan-txt{padding:10px 16px;font-size:11px;color:var(--tx3);font-family:var(--mono)}
+.run-btn:disabled{background:var(--s3);color:var(--tx3);animation:none}
+.scan-wrap{margin-top:16px;display:none}
+.scan-bar{height:60px;background:var(--s2);border-radius:8px;overflow:hidden;position:relative}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);animation:scanline 1.4s ease-in-out infinite;opacity:.7}
+.scan-text{padding:12px 16px;font-size:11px;color:var(--tx3);font-family:var(--mono)}
 
 /* Chat */
 #chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 100px)}
 .chat-ctx{background:rgba(92,200,255,.06);border:1px solid rgba(92,200,255,.14);border-radius:9px;padding:9px 14px;margin-bottom:12px;font-size:11px;color:var(--blue);display:flex;align-items:center;gap:7px;flex-shrink:0}
-#chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:10px}
+#chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:13px;padding-bottom:10px}
 .msg{display:flex;align-items:flex-end;gap:8px}
 .msg.user{justify-content:flex-end}
-.msg-av{width:26px;height:26px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--bg);font-weight:800;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif}
+.msg-av{width:27px;height:27px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--bg);font-weight:800;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif}
 .bubble{max-width:74%;padding:11px 15px;font-size:13px;line-height:1.75;white-space:pre-wrap;word-break:break-word}
 .bubble-a{background:var(--s1);border:1px solid var(--b1);border-radius:4px 12px 12px 12px;color:var(--tx2)}
 .bubble-u{background:var(--ac);color:var(--bg);border-radius:12px 12px 4px 12px;font-weight:500}
-.typing-dots{display:flex;gap:5px;align-items:center;padding:14px 16px}
+.typing{display:flex;gap:5px;align-items:center;padding:14px 16px}
 .td{width:7px;height:7px;border-radius:50%;background:var(--tx3)}
-.td:nth-child(1){animation:typing 1.2s 0s ease-in-out infinite}
-.td:nth-child(2){animation:typing 1.2s .18s ease-in-out infinite}
-.td:nth-child(3){animation:typing 1.2s .36s ease-in-out infinite}
+.td:nth-child(1){animation:blink 1.2s 0s ease-in-out infinite}
+.td:nth-child(2){animation:blink 1.2s .18s ease-in-out infinite}
+.td:nth-child(3){animation:blink 1.2s .36s ease-in-out infinite}
 .sugs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;flex-shrink:0}
-.sug{padding:7px 12px;border-radius:20px;border:1px solid var(--b2);background:var(--s1);color:var(--tx2);font-size:12px;font-family:'Instrument Sans',sans-serif;cursor:pointer}
+.sug{padding:7px 12px;border-radius:20px;border:1px solid var(--b2);background:var(--s1);color:var(--tx2);font-size:12px;font-family:'Instrument Sans',sans-serif}
 .sug:hover{border-color:var(--ac);color:var(--tx)}
 .chat-row{display:flex;gap:8px;flex-shrink:0}
 #chat-in{flex:1;padding:12px 16px;border-radius:10px;border:1px solid var(--b2);background:var(--s1);color:var(--tx);font-size:14px}
@@ -178,91 +211,67 @@ nav{padding:9px 8px;flex:1}
 #chat-send:not(:disabled):hover{background:var(--ac2)}
 
 /* History */
-.hist-item{cursor:pointer;margin-bottom:10px}
-.hist-q{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.hist{cursor:pointer}
+.hist-q{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:3px}
 .hist-t{font-size:11px;color:var(--tx3)}
-.hist-body{display:none;background:var(--s2);border-radius:9px;padding:16px 18px;margin-top:12px;font-size:13px;line-height:1.9;color:var(--tx2);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto}
+.hist-body{display:none;background:var(--s2);border-radius:9px;padding:16px 18px;margin-top:14px;font-size:13px;line-height:1.9;color:var(--tx2);white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto}
 .hist-body.open{display:block}
-
-/* Error state */
-.error-box{background:rgba(255,92,92,.07);border:1px solid rgba(255,92,92,.15);border-radius:10px;padding:20px;text-align:center;color:var(--tx2);font-size:13px}
-.error-box strong{color:var(--red);display:block;margin-bottom:6px;font-family:'Cabinet Grotesk',sans-serif}
-
-/* Empty state */
-.empty-box{text-align:center;padding:50px 20px;color:var(--tx3);font-size:13px;line-height:1.8}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div id="loading">
-  <div class="loading-mark">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round">
-      <path d="M3 17l4-8 4 6 3-4 4 6"/>
-    </svg>
-  </div>
-  <div class="spinner"></div>
-  <div class="loading-text">Loading FlowGuard…</div>
-</div>
-
-<!-- CONNECT SCREEN -->
-<div id="connect-screen">
-  <div class="connect-box fadeup">
-    <div class="connect-logo">
-      <div class="connect-mark">
+<!-- ═══════════════════════════════════
+     SETUP SCREEN
+═══════════════════════════════════ -->
+<div id="setup-screen">
+  <div class="setup-box rise">
+    <div class="setup-logo">
+      <div class="setup-mark">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
       </div>
       <div>
-        <div class="connect-brand">FlowGuard</div>
-        <div style="font-size:9px;color:var(--tx3);letter-spacing:.1em;text-transform:uppercase">Profit Intelligence</div>
+        <div class="setup-brand">FlowGuard</div>
+        <div style="font-size:9px;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase">AI Profit Intelligence</div>
       </div>
     </div>
 
-    <div class="connect-h">Connect your accounting software</div>
-    <div class="connect-sub">FlowGuard reads your real financial data — invoices, bills, P&L — then uses AI to find exactly where your money is leaking and what to do about it.</div>
+    <div class="setup-h">What type of business?</div>
+    <div class="setup-sub">FlowGuard adapts its analysis to your industry — so every insight is relevant to how your business actually works.</div>
 
-    <div class="connect-error" id="connect-error"></div>
-
-    <a href="/auth/xero" class="connect-btn">
-      <div class="connect-btn-icon" style="background:#1ab4d7">X</div>
-      <div class="connect-btn-text">
-        <div class="connect-btn-name">Connect Xero</div>
-        <div class="connect-btn-desc">Authorise read-only access to your Xero organisation</div>
-      </div>
-      <div class="connect-btn-arrow">→</div>
-    </a>
-
-    <a href="/auth/myob" class="connect-btn">
-      <div class="connect-btn-icon" style="background:#8b5cf6">M</div>
-      <div class="connect-btn-text">
-        <div class="connect-btn-name">Connect MYOB</div>
-        <div class="connect-btn-desc">Authorise read-only access to your MYOB company file</div>
-      </div>
-      <div class="connect-btn-arrow">→</div>
-    </a>
-
-    <a href="/auth/quickbooks" class="connect-btn">
-      <div class="connect-btn-icon" style="background:#2ca01c">Q</div>
-      <div class="connect-btn-text">
-        <div class="connect-btn-name">Connect QuickBooks</div>
-        <div class="connect-btn-desc">Authorise read-only access to your QuickBooks company</div>
-      </div>
-      <div class="connect-btn-arrow">→</div>
-    </a>
-
-    <div class="connect-trust">
-      <div class="connect-trust-item">Read-only access</div>
-      <div class="connect-trust-item">Your password is never stored</div>
-      <div class="connect-trust-item">Disconnect anytime</div>
+    <div class="setup-label">Select your industry</div>
+    <div class="industry-grid" id="ind-grid">
+      <button class="ind-btn" data-ind="trades" onclick="selectInd(this)"><span class="ind-icon">🔧</span>Trades & Construction</button>
+      <button class="ind-btn" data-ind="retail" onclick="selectInd(this)"><span class="ind-icon">🛍</span>Retail</button>
+      <button class="ind-btn" data-ind="hospitality" onclick="selectInd(this)"><span class="ind-icon">🍽</span>Hospitality</button>
+      <button class="ind-btn" data-ind="professional" onclick="selectInd(this)"><span class="ind-icon">💼</span>Professional Services</button>
+      <button class="ind-btn" data-ind="health" onclick="selectInd(this)"><span class="ind-icon">🏥</span>Health & Allied Health</button>
+      <button class="ind-btn" data-ind="ecommerce" onclick="selectInd(this)"><span class="ind-icon">📦</span>eCommerce</button>
+      <button class="ind-btn" data-ind="manufacturing" onclick="selectInd(this)"><span class="ind-icon">🏭</span>Manufacturing</button>
+      <button class="ind-btn" data-ind="other" onclick="selectInd(this)"><span class="ind-icon">📊</span>Other SMB</button>
     </div>
 
-    <div class="connect-logout">
-      Not your account? <a onclick="logout()">Sign out</a>
+    <div class="setup-label">Your business name</div>
+    <div class="setup-field">
+      <input class="setup-input" id="biz-name" placeholder="e.g. Smith's Bakery Pty Ltd" oninput="checkReady()">
+    </div>
+
+    <div class="setup-label">Anthropic API key <span style="color:var(--tx3);font-weight:400;text-transform:none;letter-spacing:0">(optional — needed for live AI)</span></div>
+    <div class="setup-key-row" style="margin-bottom:10px">
+      <input class="setup-input" id="api-key-in" type="password" placeholder="sk-ant-... (get one free at console.anthropic.com)" oninput="checkReady()">
+    </div>
+
+    <button class="setup-start" id="start-btn" disabled onclick="startApp()">Enter FlowGuard →</button>
+    <div class="setup-note">
+      No API key? <strong style="color:var(--tx2)">That's fine</strong> — you'll see a full pre-loaded analysis.<br>
+      Add your key later to run real AI on real numbers.<br>
+      <a href="https://console.anthropic.com" target="_blank">Get a free API key →</a>
     </div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ═══════════════════════════════════
+     APP
+═══════════════════════════════════ -->
 <div id="app">
   <div id="sidebar">
     <div class="sb-logo">
@@ -276,19 +285,70 @@ nav{padding:9px 8px;flex:1}
     </div>
     <div class="sb-co">
       <div class="sb-co-lbl">Analysing</div>
-      <div class="sb-co-name" id="sb-company">—</div>
-      <div class="sb-live"><div class="sb-dot"></div><span id="sb-provider">LIVE DATA</span></div>
+      <div class="sb-co-name" id="sb-biz-name">—</div>
+      <div class="sb-live"><div class="sb-dot"></div><span id="sb-source">XERO · LIVE DATA</span></div>
     </div>
-    <nav id="nav">
+    <nav>
       <button class="nav-btn active" data-page="overview"><span class="pip"></span>Overview</button>
+      <button class="nav-btn" data-page="leaks"><span class="pip"></span>Profit Leaks<span class="nav-badge" id="leak-count">4</span></button>
       <button class="nav-btn" data-page="invoices"><span class="pip"></span>Invoices & Bills</button>
       <button class="nav-btn" data-page="ai"><span class="pip"></span>Ask AI</button>
       <button class="nav-btn" data-page="history"><span class="pip"></span>History</button>
     </nav>
     <div class="sb-foot">
-      <div class="sb-provider" id="sb-provider-badge">XERO</div>
-      <a class="sb-disconnect" onclick="disconnect()">Disconnect accounting software</a>
-      <div class="sb-user" id="sb-user-email"></div>
+      <div class="sb-co-type" id="sb-ind-badge">Industry</div>
+      <div class="sb-demo-note">Demo data shown. Connect your real accounting software to see your actual numbers.</div>
+      <button onclick="showConnect()" style="width:100%;margin-top:12px;padding:11px;border-radius:8px;background:var(--ac);color:var(--bg);font-size:13px;font-weight:700;border:none;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;">Enter FlowGuard →</button>
+    </div>
+  </div>
+
+  <!-- CONNECT OVERLAY -->
+  <div id="connect-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#161714;border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:44px 48px;max-width:480px;width:100%;position:relative">
+      <button onclick="hideConnect()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#4a4b44;font-size:22px;cursor:pointer;line-height:1">×</button>
+
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:28px">
+        <div style="width:34px;height:34px;background:#c8f060;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+        </div>
+        <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:800;color:#e8e9e4">FlowGuard</div>
+      </div>
+
+      <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:800;color:#e8e9e4;margin-bottom:8px;line-height:1.2">Connect your accounting software</div>
+      <div style="font-size:13px;color:#8a8b84;margin-bottom:24px;line-height:1.7">Sign up free then connect your Xero, MYOB or QuickBooks. FlowGuard reads your real data and finds where your money is going — in plain English.</div>
+
+      <a href="/auth/xero" style="width:100%;display:flex;align-items:center;gap:14px;padding:15px 18px;background:#1e1f1b;border:1px solid rgba(255,255,255,.07);border-radius:10px;color:#e8e9e4;font-size:14px;font-weight:500;margin-bottom:9px;text-decoration:none;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+        <div style="width:36px;height:36px;border-radius:8px;background:#1ab4d7;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif">X</div>
+        <div style="flex:1">
+          <div style="font-weight:600;margin-bottom:1px">Connect Xero</div>
+          <div style="font-size:11px;color:#4a4b44">Read-only access to your Xero organisation</div>
+        </div>
+        <div style="color:#4a4b44">→</div>
+      </a>
+
+      <a href="/auth/myob" style="width:100%;display:flex;align-items:center;gap:14px;padding:15px 18px;background:#1e1f1b;border:1px solid rgba(255,255,255,.07);border-radius:10px;color:#e8e9e4;font-size:14px;font-weight:500;margin-bottom:9px;text-decoration:none;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+        <div style="width:36px;height:36px;border-radius:8px;background:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif">M</div>
+        <div style="flex:1">
+          <div style="font-weight:600;margin-bottom:1px">Connect MYOB</div>
+          <div style="font-size:11px;color:#4a4b44">Read-only access to your MYOB company file</div>
+        </div>
+        <div style="color:#4a4b44">→</div>
+      </a>
+
+      <a href="/auth/quickbooks" style="width:100%;display:flex;align-items:center;gap:14px;padding:15px 18px;background:#1e1f1b;border:1px solid rgba(255,255,255,.07);border-radius:10px;color:#e8e9e4;font-size:14px;font-weight:500;margin-bottom:18px;text-decoration:none;cursor:pointer;transition:border-color .15s" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+        <div style="width:36px;height:36px;border-radius:8px;background:#2ca01c;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Cabinet Grotesk',sans-serif">Q</div>
+        <div style="flex:1">
+          <div style="font-weight:600;margin-bottom:1px">Connect QuickBooks</div>
+          <div style="font-size:11px;color:#4a4b44">Read-only access to your QuickBooks company</div>
+        </div>
+        <div style="color:#4a4b44">→</div>
+      </a>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#4a4b44"><span style="color:#5cffa0;font-weight:700">✓</span>Read-only — we can never change your data</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#4a4b44"><span style="color:#5cffa0;font-weight:700">✓</span>Disconnect anytime</span>
+        <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#4a4b44"><span style="color:#5cffa0;font-weight:700">✓</span>14 days free</span>
+      </div>
     </div>
   </div>
 
@@ -304,28 +364,33 @@ nav{padding:9px 8px;flex:1}
 
       <!-- OVERVIEW -->
       <div id="overview" class="page active">
-        <div class="kpi-grid" id="kpi-grid">
-          <!-- filled by JS -->
-        </div>
+        <div class="kpi-grid" id="kpi-grid"></div>
         <div class="two-col">
-          <div class="card"><div class="card-title">Where the money is going</div><div id="expense-bars"><div class="empty-box">Loading expense data…</div></div></div>
+          <div class="card"><div class="card-title">Where the money is going</div><div id="exp-bars"></div></div>
           <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="card" style="flex:1;margin-bottom:0" id="ar-card"><div class="card-title">Clients owe you</div><div class="empty-box" style="padding:20px">Loading…</div></div>
-            <div class="card" style="flex:1;margin-bottom:0" id="ap-card"><div class="card-title">You owe suppliers</div><div class="empty-box" style="padding:20px">Loading…</div></div>
+            <div class="card" style="flex:1;margin-bottom:0" id="ar-card"></div>
+            <div class="card" style="flex:1;margin-bottom:0" id="ap-card"></div>
           </div>
         </div>
         <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
             <div class="card-title" style="margin-bottom:0">AI Profit Leak Analysis</div>
             <button class="run-btn" id="run-btn" onclick="runAnalysis()">▶ Find My Profit Leaks</button>
           </div>
-          <div class="placeholder" id="analysis-placeholder">Click <strong style="color:var(--tx)">Find My Profit Leaks</strong> — FlowGuard AI reads your real financial data and identifies exactly where money is disappearing, with specific dollar amounts and actions to fix it this week.</div>
-          <div class="scan-wrap" id="scan-wrap">
-            <div class="scan-msg"><span class="spinner"></span>Scanning your financials for profit leaks…</div>
-            <div class="scan-bar"><div class="scan-line"></div><div class="scan-txt" id="scan-txt">Analysing transactions…</div></div>
+          <div class="placeholder-box" id="placeholder">
+            Click <strong style="color:var(--tx)">Find My Profit Leaks</strong> above — FlowGuard scans all your financial data and tells you exactly where money is disappearing, with specific dollar amounts and actions to fix it.
           </div>
-          <div class="analysis-result" id="analysis-result"></div>
+          <div class="scan-wrap" id="scan-wrap">
+            <div style="font-size:12px;color:var(--tx3);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="spin" style="width:14px;height:14px;border:2px solid var(--b2);border-top-color:var(--ac);border-radius:50%;display:inline-block"></span> Scanning your financials for profit leaks…</div>
+            <div class="scan-bar"><div class="scan-line"></div><div class="scan-text" id="scan-text">Analysing transactions…</div></div>
+          </div>
+          <div class="analysis-box" id="analysis-box" style="display:none"></div>
         </div>
+      </div>
+
+      <!-- LEAKS -->
+      <div id="leaks" class="page">
+        <div id="leaks-list"></div>
       </div>
 
       <!-- INVOICES -->
@@ -339,12 +404,12 @@ nav{padding:9px 8px;flex:1}
           <table class="tbl" style="padding:0 22px">
             <thead><tr>
               <th style="padding-left:22px">Contact</th>
-              <th>Invoice #</th>
+              <th>Reference</th>
               <th>Due Date</th>
               <th class="r" style="padding-right:22px">Amount</th>
               <th>Status</th>
             </tr></thead>
-            <tbody id="tbl-body"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tx3)">Loading…</td></tr></tbody>
+            <tbody id="tbl-body"></tbody>
           </table>
         </div>
       </div>
@@ -352,7 +417,7 @@ nav{padding:9px 8px;flex:1}
       <!-- AI CHAT -->
       <div id="ai" class="page">
         <div id="chat-wrap">
-          <div class="chat-ctx"><div style="width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0"></div><span id="chat-ctx-txt">Reading your real financial data…</span></div>
+          <div class="chat-ctx"><div style="width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0"></div><span id="chat-ctx-text"></span></div>
           <div id="chat-msgs"></div>
           <div class="sugs" id="sugs"></div>
           <div class="chat-row">
@@ -364,7 +429,7 @@ nav{padding:9px 8px;flex:1}
 
       <!-- HISTORY -->
       <div id="history" class="page">
-        <div id="hist-list"><div class="empty-box">No analyses yet. Run your first analysis from the Overview tab.</div></div>
+        <div id="hist-list"></div>
       </div>
 
     </div>
@@ -373,374 +438,616 @@ nav{padding:9px 8px;flex:1}
 
 <script>
 /* ══════════════════════════════════════════════════
+   INDUSTRY DATA
+══════════════════════════════════════════════════ */
+const INDUSTRIES = {
+  trades:{
+    label:'Trades & Construction',
+    icon:'🔧',
+    benchmark:{labour:[38,42]},
+    kpis:[
+      {l:'Revenue (YTD)',v:'$1.84M',delta:'▲ 12.4% vs prior',up:true,sub:'From Xero invoices'},
+      {l:'Net Profit',v:'$94.2K',color:'var(--amber)',delta:'▼ Margin dropped 4.1pts',up:false,sub:'5.1% net margin'},
+      {l:'Cash Position',v:'$38.4K',color:'var(--red)',delta:'▼ Dangerously low',up:false,sub:'ANZ Business account'},
+      {l:'Overdue Invoices',v:'$184K',color:'var(--red)',delta:'▼ 9 invoices unpaid',up:false,sub:'Oldest: 74 days'},
+    ],
+    expenses:[
+      {n:'Labour — Direct',a:962200,pct:52.3},
+      {n:'Materials & Supplies',a:338600,pct:18.4},
+      {n:'Subcontractors',a:184000,pct:10.0},
+      {n:'Vehicle & Fuel',a:64400,pct:3.5},
+      {n:'Plant & Equipment Hire',a:51600,pct:2.8},
+      {n:'Administration',a:46000,pct:2.5},
+    ],
+    invoices:[
+      {id:'INV-0441',c:'Westfield Developments',a:92400,due:'2025-01-06',s:'OVERDUE'},
+      {id:'INV-0418',c:'Lend Lease Corp',a:58200,due:'2025-01-29',s:'OVERDUE'},
+      {id:'INV-0429',c:'BluScope Steel',a:33400,due:'2025-02-09',s:'OVERDUE'},
+      {id:'INV-0447',c:'Mirvac Group',a:44800,due:'2025-03-01',s:'OUTSTANDING'},
+      {id:'INV-0451',c:'Stockland Corp',a:38200,due:'2025-03-08',s:'OUTSTANDING'},
+      {id:'INV-0458',c:'Frasers Property',a:17400,due:'2025-03-18',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-0214',c:'Reece Plumbing',a:44800,due:'2025-02-18',s:'OVERDUE'},
+      {id:'BILL-0208',c:'Tradelink',a:18200,due:'2025-02-25',s:'OVERDUE'},
+      {id:'BILL-0219',c:'Rexel Electrical',a:24400,due:'2025-03-10',s:'OUTSTANDING'},
+      {id:'BILL-0225',c:'Kennards Hire',a:16800,due:'2025-03-24',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'Labour Cost Blowout',amount:112400,alabel:'Annual impact',color:'var(--red)',body:'Labour is running at <strong style="color:var(--tx)">52.3% of revenue</strong> vs the industry benchmark of 38–42%. On revenue of $1.84M that\'s an excess of <strong style="color:var(--red)">$186,000 in labour costs</strong>. Overtime is up 34% since March.',action:'Review timesheets for jobs showing 28–40% labour overrun. Cap overtime approvals and re-quote any ongoing jobs where hours exceeded estimate by more than 15%.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'$184K Stuck in Overdue Invoices',amount:184000,alabel:'Cash impact now',color:'var(--red)',body:'You have <strong style="color:var(--tx)">$184,000 overdue</strong> against a cash position of only $38,400. Westfield Developments ($92,400, 74 days) has not responded. At your current burn rate you have <strong style="color:var(--red)">6–8 weeks before a cash crisis</strong>.',action:'Call Westfield Developments today — not email. Reference INV-0441. If no commitment by Friday, engage a debt collector.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Material Waste — No Job Costing',amount:38200,alabel:'Estimated annual loss',color:'var(--amber)',body:'Materials from Reece Plumbing and Tradelink are not tracked against individual jobs. Your material spend is <strong style="color:var(--tx)">18.4% of revenue</strong> but invoices have no job codes — waste or theft is invisible.',action:'Add job numbers to all supplier invoices in Xero. Ask suppliers to include your job codes going forward. Sign-out sheet for materials over $50.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Underquoting on Residential Jobs',amount:29600,alabel:'Margin lost this quarter',color:'var(--amber)',body:'Residential jobs average <strong style="color:var(--tx)">11.2% margin</strong> vs 23.8% on commercial. Quotes aren\'t factoring travel time, small materials, or callbacks. 14 residential jobs this quarter were net negative.',action:'Raise residential call-out fee by $40. Add 12% materials markup to all quotes. Reprice any residential quotes sent in the last 30 days.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Clients owe you',arTotal:'$312,400',arSub:'Across 6 outstanding invoices',
+    arAlert:{msg:'$184,000 overdue',rows:['Westfield Developments · $92,400 · 74d','Lend Lease Corp · $58,200 · 41d','BluScope Steel · $33,400 · 31d']},
+    apTitle:'You owe suppliers',apTotal:'$104,200',apSub:'Across 4 outstanding bills',
+    apAlert:{msg:'2 bills overdue',rows:['Reece Plumbing · $44,800 · 12d overdue','Tradelink · $18,200 · 5d overdue']},
+    sysPrompt:`You are FlowGuard AI for a trades/construction business. Real data: Revenue $1.84M, Net Profit $94.2K (5.1% margin), Cash $38.4K. Labour 52.3% of revenue (benchmark 38-42%). $184K overdue invoices. Bills: Reece Plumbing $44.8K overdue, Tradelink $18.2K overdue. Key leaks: labour blowout ($112K/yr), overdue AR ($184K cash impact), material waste no job costing ($38K/yr), underquoting residential ($29.6K/quarter). Be direct. Give specific dollar amounts. End with 2-3 actions ranked by impact.`,
+    suggestions:['Why is my cash so low?','Which invoices should I chase today?','How do I fix my labour cost problem?','What should I do this week to save the most money?'],
+  },
+
+  retail:{
+    label:'Retail',
+    icon:'🛍',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$2.14M',delta:'▲ 8.1% vs prior',up:true,sub:'In-store + online'},
+      {l:'Gross Profit',v:'$748K',color:'var(--amber)',delta:'▼ Margin down 3.2pts',up:false,sub:'35.0% gross margin'},
+      {l:'Cash Position',v:'$62.4K',color:'var(--amber)',sub:'Tight — 14 days cover'},
+      {l:'Slow Stock',v:'$184K',color:'var(--red)',delta:'▼ 87 days on shelf avg',up:false,sub:'Capital tied up'},
+    ],
+    expenses:[
+      {n:'Cost of Goods Sold',a:1392000,pct:65.0},
+      {n:'Staff Wages',a:278200,pct:13.0},
+      {n:'Rent & Outgoings',a:128400,pct:6.0},
+      {n:'Marketing',a:64200,pct:3.0},
+      {n:'Freight & Logistics',a:42800,pct:2.0},
+      {n:'Administration',a:28600,pct:1.3},
+    ],
+    invoices:[
+      {id:'INV-2201',c:'Wholesale Direct Ltd',a:44200,due:'2025-01-14',s:'OVERDUE'},
+      {id:'INV-2186',c:'Brand Republic',a:28600,due:'2025-02-01',s:'OVERDUE'},
+      {id:'INV-2214',c:'TradeMe Marketplace',a:18900,due:'2025-03-05',s:'OUTSTANDING'},
+      {id:'INV-2220',c:'Pop-up Events Co',a:12400,due:'2025-03-18',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-0811',c:'Sunrise Suppliers',a:38200,due:'2025-02-20',s:'OVERDUE'},
+      {id:'BILL-0806',c:'Pacific Imports',a:22400,due:'2025-03-01',s:'OVERDUE'},
+      {id:'BILL-0814',c:'Shopify Plus',a:4200,due:'2025-03-15',s:'OUTSTANDING'},
+      {id:'BILL-0817',c:'Westfield Mall',a:28600,due:'2025-03-28',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'Slow-Moving Stock Eating Cash',amount:184000,alabel:'Capital tied up',color:'var(--red)',body:'<strong style="color:var(--tx)">$184,000 worth of stock</strong> is sitting on shelves averaging 87 days — nearly 3x the healthy 30-day benchmark. This is cash you\'ve already spent that isn\'t coming back.',action:'Identify your bottom 20% of SKUs by sell-through rate. Run a clearance on anything over 60 days old. Stop reordering slow lines until stock clears.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'COGS Too High — Wrong Suppliers',amount:96400,alabel:'Annual saving opportunity',color:'var(--red)',body:'Your cost of goods is <strong style="color:var(--tx)">65% of revenue</strong>. Healthy retail is 50–58%. Sunrise Suppliers and Pacific Imports both have overdue bills — negotiate payment terms and request volume pricing.',action:'Get 3 competing quotes on your top 10 SKUs. Consolidate suppliers where possible — bulk ordering typically saves 8–15%.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'No Markup Strategy on Online Sales',amount:42800,alabel:'Estimated annual loss',color:'var(--amber)',body:'Online orders have a <strong style="color:var(--tx)">lower effective margin than in-store</strong> due to freight costs not being recovered in pricing. Freight is 2% of revenue but online prices aren\'t adjusted.',action:'Add $8–12 shipping to all online orders under $100. Review and raise online prices by 5–8% to offset fulfilment costs.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Staff Scheduling vs Foot Traffic Mismatch',amount:31200,alabel:'Estimated waste p/a',color:'var(--amber)',body:'Wages spike on Tuesday–Thursday when foot traffic data shows <strong style="color:var(--tx)">35% lower sales</strong> vs Friday–Sunday. Roster isn\'t aligned to when customers actually come in.',action:'Shift 2 weekday hours to Saturday/Sunday. Implement 15-min break scheduling during off-peak hours to reduce paid idle time.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Wholesale clients owe you',arTotal:'$104,100',arSub:'Across 4 outstanding invoices',
+    arAlert:{msg:'$72,800 overdue',rows:['Wholesale Direct Ltd · $44,200 · 62d','Brand Republic · $28,600 · 44d']},
+    apTitle:'You owe suppliers',apTotal:'$93,400',apSub:'Across 4 outstanding bills',
+    apAlert:{msg:'2 bills overdue',rows:['Sunrise Suppliers · $38,200 · 8d overdue','Pacific Imports · $22,400 · 17d overdue']},
+    sysPrompt:`You are FlowGuard AI for a retail business. Real data: Revenue $2.14M, Gross margin 35% (benchmark 42-50%), COGS 65% of revenue. $184K slow-moving stock. Cash $62.4K. Key leaks: slow stock ($184K tied up), COGS too high ($96K saving opportunity), no shipping markup on online orders ($42.8K), staff scheduling mismatch ($31.2K). Overdue AR $72.8K. Be direct. Specific dollar amounts. End with 2-3 actions.`,
+    suggestions:['Why is my cash position so tight?','Which stock should I clear first?','How do I improve my gross margin?','What should I do this week?'],
+  },
+
+  hospitality:{
+    label:'Hospitality',
+    icon:'🍽',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$1.22M',delta:'▲ 6.4% vs prior',up:true,sub:'Food, bev & events'},
+      {l:'Net Profit',v:'$61.0K',color:'var(--amber)',delta:'▼ 5.0% margin',up:false,sub:'Industry avg is 6-9%'},
+      {l:'Food Cost %',v:'32.4%',color:'var(--red)',delta:'▼ Should be 28-30%',up:false,sub:'Above benchmark'},
+      {l:'Labour Cost %',v:'38.2%',color:'var(--red)',delta:'▼ Should be 30-35%',up:false,sub:'Overtime driving this'},
+    ],
+    expenses:[
+      {n:'Food & Beverage COGS',a:395280,pct:32.4},
+      {n:'Wages & Salaries',a:465640,pct:38.2},
+      {n:'Rent & Outgoings',a:97600,pct:8.0},
+      {n:'Utilities',a:36600,pct:3.0},
+      {n:'Marketing',a:24400,pct:2.0},
+      {n:'Linen & Consumables',a:18300,pct:1.5},
+    ],
+    invoices:[
+      {id:'INV-4401',c:'Corporate Events Pty',a:22400,due:'2025-01-22',s:'OVERDUE'},
+      {id:'INV-4388',c:'Wedding Party — Smith',a:14800,due:'2025-02-08',s:'OVERDUE'},
+      {id:'INV-4412',c:'Catering — ANZ Event',a:18200,due:'2025-03-10',s:'OUTSTANDING'},
+      {id:'INV-4418',c:'Private Dining — March',a:9400,due:'2025-03-22',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-1101',c:'Bidvest Foodservice',a:28400,due:'2025-02-15',s:'OVERDUE'},
+      {id:'BILL-1098',c:'Fine Wine Merchants',a:12600,due:'2025-02-22',s:'OVERDUE'},
+      {id:'BILL-1104',c:'Bidfood',a:18200,due:'2025-03-08',s:'OUTSTANDING'},
+      {id:'BILL-1107',c:'Linens & Things',a:6400,due:'2025-03-20',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'Food Cost Above Benchmark',amount:52400,alabel:'Annual excess vs benchmark',color:'var(--red)',body:'Food cost at <strong style="color:var(--tx)">32.4%</strong> vs healthy benchmark of 28–30%. On $1.22M revenue that\'s <strong style="color:var(--red)">$52,400/year in excess food cost</strong>. Main drivers: portion inconsistency and no daily waste tracking.',action:'Implement daily waste log immediately. Standardise portion weights for top 10 dishes. Audit Bidvest invoices — spot price vs contract price discrepancy detected.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'Labour 8 Points Above Benchmark',amount:36600,alabel:'Annual excess vs benchmark',color:'var(--red)',body:'Labour at <strong style="color:var(--tx)">38.2% of revenue</strong> vs 30–35% benchmark. Penalty rates on weekend shifts and unplanned casuals called in are the primary drivers. Kitchen overtime up 42% in the last quarter.',action:'Require 48h notice for casual shifts. Cross-train 2 kitchen staff to cover front of house on low nights. Cut Thursday late sitting — it\'s running at negative margin.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Events Invoices — $37.2K Overdue',amount:37200,alabel:'Cash impact now',color:'var(--amber)',body:'Two events invoices are overdue: Corporate Events Pty ($22,400, 57 days) and Smith Wedding ($14,800, 38 days). Events business policy allows no credit — these should have been paid day-of.',action:'Call both contacts today. Add 50% deposit + full payment on day policy to all future event bookings. Issue formal overdue notices.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Beverage Margin Underperforming',amount:24800,alabel:'Estimated annual loss',color:'var(--amber)',body:'Bar revenue is 28% of total but contributing only 19% of gross profit. Cocktail pours are inconsistent and house wine is priced $4–6 below comparable venues nearby.',action:'Raise house wine by $4/glass. Install measured pourers on spirits. Drop 3 underordered cocktails from the menu.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Event clients owe you',arTotal:'$64,800',arSub:'Across 4 outstanding invoices',
+    arAlert:{msg:'$37,200 overdue',rows:['Corporate Events Pty · $22,400 · 57d','Wedding Party Smith · $14,800 · 38d']},
+    apTitle:'You owe suppliers',apTotal:'$65,600',apSub:'Across 4 outstanding bills',
+    apAlert:{msg:'2 bills overdue',rows:['Bidvest Foodservice · $28,400 · 13d overdue','Fine Wine Merchants · $12,600 · 6d overdue']},
+    sysPrompt:`You are FlowGuard AI for a hospitality/restaurant business. Revenue $1.22M, Net profit $61K (5% margin). Food cost 32.4% (benchmark 28-30%, excess $52.4K/yr). Labour 38.2% (benchmark 30-35%, excess $36.6K/yr). $37.2K overdue events invoices. Beverage margin underperforming ($24.8K annual loss). Be direct, specific dollar amounts, end with 2-3 ranked actions.`,
+    suggestions:['How do I get my food cost down?','Which staff costs are killing my margin?','What\'s my biggest profit leak right now?','How do I improve cash flow fast?'],
+  },
+
+  professional:{
+    label:'Professional Services',
+    icon:'💼',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$1.68M',delta:'▲ 14.2% vs prior',up:true,sub:'Fees & retainers'},
+      {l:'Net Profit',v:'$302.4K',color:'var(--green)',delta:'▲ 18.0% margin',up:true,sub:'Strong but leaking'},
+      {l:'Unbilled WIP',v:'$228K',color:'var(--red)',delta:'▼ Work done, not invoiced',up:false,sub:'Revenue walking out door'},
+      {l:'Avg Collection',v:'58 days',color:'var(--amber)',delta:'▼ Benchmark is 30 days',up:false,sub:'Cash flow risk'},
+    ],
+    expenses:[
+      {n:'Salaries & Wages',a:840000,pct:50.0},
+      {n:'Contractor Fees',a:218400,pct:13.0},
+      {n:'Rent & Office',a:100800,pct:6.0},
+      {n:'Software & Tools',a:50400,pct:3.0},
+      {n:'Marketing & BD',a:33600,pct:2.0},
+      {n:'Professional Indemnity',a:25200,pct:1.5},
+    ],
+    invoices:[
+      {id:'INV-3301',c:'Hartley Group',a:84400,due:'2025-01-08',s:'OVERDUE'},
+      {id:'INV-3288',c:'Meridian Holdings',a:52200,due:'2025-01-28',s:'OVERDUE'},
+      {id:'INV-3310',c:'Apex Finance',a:38800,due:'2025-02-18',s:'OVERDUE'},
+      {id:'INV-3318',c:'Coastal Developers',a:22400,due:'2025-03-12',s:'OUTSTANDING'},
+      {id:'INV-3322',c:'Summit Retail',a:16200,due:'2025-03-25',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-0501',c:'AWS Cloud Services',a:8400,due:'2025-03-01',s:'OUTSTANDING'},
+      {id:'BILL-0504',c:'Microsoft 365',a:3200,due:'2025-03-15',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'$228K Unbilled Work in Progress',amount:228000,alabel:'Revenue not yet invoiced',color:'var(--red)',body:'<strong style="color:var(--tx)">$228,000 of completed work hasn\'t been invoiced</strong>. This is revenue that belongs to you sitting in your WIP ledger. At your billing rate that\'s approximately 6 weeks of senior staff time unbilled.',action:'Pull every open matter from your practice management system. Invoice anything 80%+ complete today. Set a rule: no matter goes beyond 2 weeks without a progress invoice.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'3 Overdue Invoices — $175.4K',amount:175400,alabel:'Cash impact now',color:'var(--red)',body:'Hartley Group ($84,400, 71 days), Meridian Holdings ($52,200, 51 days), and Apex Finance ($38,800, 40 days) are all significantly overdue. Hartley is your 2nd largest client — this is a relationship issue not just a billing one.',action:'Partner-level call to Hartley Group this week. Offer a payment plan if needed — getting $50K now is better than $84K in 6 months. Pause work on Meridian until invoice is cleared.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Contractor Margin — No Rate Review',amount:64800,alabel:'Annual margin improvement',color:'var(--amber)',body:'Contractors are billed at cost plus an average margin of only <strong style="color:var(--tx)">18%</strong>. Industry standard is 30–40%. Contractor costs are $218,400 — closing the gap to 30% adds $64,800 to your bottom line.',action:'Review all contractor engagement letters. Raise pass-through rate to 30% on all new engagements. For existing clients, apply rate increases at next renewal.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Software Stack Redundancy',amount:18200,alabel:'Annual waste',color:'var(--amber)',body:'Your software spend of $50,400/year includes 4 tools with overlapping functionality. Two project management subscriptions are being paid simultaneously — one has had no logins in 67 days.',action:'Cancel unused subscriptions immediately. Consolidate to one project management tool. Annual licences vs monthly can save 15–20% on the tools you keep.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Clients owe you',arTotal:'$214,000',arSub:'Across 5 outstanding invoices',
+    arAlert:{msg:'$175,400 overdue',rows:['Hartley Group · $84,400 · 71d','Meridian Holdings · $52,200 · 51d','Apex Finance · $38,800 · 40d']},
+    apTitle:'You owe',apTotal:'$11,600',apSub:'Across 2 outstanding bills',
+    apAlert:null,
+    sysPrompt:`You are FlowGuard AI for a professional services firm. Revenue $1.68M, Net profit $302.4K (18% margin). $228K unbilled WIP. $175.4K overdue invoices (Hartley $84.4K 71d, Meridian $52.2K 51d, Apex $38.8K 40d). Contractor margin only 18% (benchmark 30-40%). Software redundancy $18.2K/yr. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['What\'s the fastest way to improve cash flow?','How do I get my overdue invoices paid?','Why is my margin not higher given our revenue?','What should I prioritise this week?'],
+  },
+
+  health:{
+    label:'Health & Allied Health',
+    icon:'🏥',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$1.04M',delta:'▲ 9.8% vs prior',up:true,sub:'Consults, classes & products'},
+      {l:'Net Profit',v:'$114.4K',color:'var(--amber)',delta:'▼ 11.0% margin',up:false,sub:'Benchmark 15-20%'},
+      {l:'No-Show Rate',v:'14.2%',color:'var(--red)',delta:'▼ Industry avg 5-8%',up:false,sub:'Appointments lost'},
+      {l:'Overdue Medicare',v:'$38.2K',color:'var(--red)',delta:'▼ Claims not followed up',up:false,sub:'Money already earned'},
+    ],
+    expenses:[
+      {n:'Practitioner Wages',a:520000,pct:50.0},
+      {n:'Rent & Facility',a:114400,pct:11.0},
+      {n:'Consumables & Stock',a:72800,pct:7.0},
+      {n:'Software & Billing',a:31200,pct:3.0},
+      {n:'Marketing',a:20800,pct:2.0},
+      {n:'Insurance & Reg',a:15600,pct:1.5},
+    ],
+    invoices:[
+      {id:'MED-2201',c:'Medicare Rebates — Jan',a:18400,due:'2025-01-31',s:'OVERDUE'},
+      {id:'MED-2198',c:'NDIS Claims — Q4',a:24600,due:'2025-02-14',s:'OVERDUE'},
+      {id:'INV-4412',c:'Corporate Wellness — ABC Co',a:14200,due:'2025-03-05',s:'OUTSTANDING'},
+      {id:'INV-4418',c:'Group Programmes — March',a:8800,due:'2025-03-22',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-2201',c:'Medical Consumables Plus',a:12400,due:'2025-02-18',s:'OVERDUE'},
+      {id:'BILL-2198',c:'Practice Management SaaS',a:4800,due:'2025-03-01',s:'OUTSTANDING'},
+      {id:'BILL-2204',c:'Allied Health Supplies',a:8200,due:'2025-03-20',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'No-Show Rate 14.2% — Revenue Lost',amount:62400,alabel:'Annual revenue lost',color:'var(--red)',body:'At 14.2% no-show rate vs 5–8% benchmark, you\'re losing approximately <strong style="color:var(--red)">$62,400 in annual revenue</strong>. At an average consult rate of $120, that\'s 520 wasted appointment slots per year.',action:'Implement SMS reminder 48h and 2h before every appointment. Introduce a $40 late cancellation fee. Maintain a priority rebooking list to fill gaps within 2 hours.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'$38.2K Uncollected Medicare & NDIS',amount:38200,alabel:'Money already earned',color:'var(--red)',body:'Medicare rebates and NDIS claims of <strong style="color:var(--tx)">$38,200</strong> have not been followed up. These are claims for services already delivered — this is your money sitting with the government.',action:'Submit outstanding Medicare and NDIS claims today. Assign one staff member to claims follow-up every Monday morning. Automate claim submission on same day as consult.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Low Utilisation — Room Capacity',amount:41600,alabel:'Potential annual revenue',color:'var(--amber)',body:'Treatment rooms are at <strong style="color:var(--tx)">68% utilisation</strong> during peak hours and 34% off-peak. The 7–9am and 6–8pm slots are underused — these are premium times for working patients.',action:'Offer early/late appointment incentives. Bring in a contractor practitioner to fill off-peak rooms. Partner with local employers for workplace health programmes.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Consumables Spend — No Usage Tracking',amount:18400,alabel:'Estimated annual waste',color:'var(--amber)',body:'Consumables at 7% of revenue with no per-consult tracking. There\'s no way to know if consumables are being used appropriately or wasted. Orders from Medical Consumables Plus overdue.',action:'Set a per-consult consumables budget by treatment type. Do a physical stock count this week and reconcile against expected usage from appointment records.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Claims & invoices due',arTotal:'$66,000',arSub:'Across 4 outstanding items',
+    arAlert:{msg:'$43,000 overdue',rows:['Medicare Rebates Jan · $18,400 · 59d','NDIS Claims Q4 · $24,600 · 45d']},
+    apTitle:'You owe suppliers',apTotal:'$25,400',apSub:'Across 3 outstanding bills',
+    apAlert:{msg:'1 bill overdue',rows:['Medical Consumables Plus · $12,400 · 10d overdue']},
+    sysPrompt:`You are FlowGuard AI for a health/allied health practice. Revenue $1.04M, Net profit $114.4K (11% margin, benchmark 15-20%). No-show rate 14.2% (benchmark 5-8%, $62.4K revenue lost). $38.2K uncollected Medicare/NDIS claims. Room utilisation 68% peak. Consumables 7% of revenue with no tracking ($18.4K waste). Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['How do I reduce no-shows?','How do I collect my Medicare and NDIS money?','What\'s the fastest way to grow revenue?','What should I fix first this week?'],
+  },
+
+  ecommerce:{
+    label:'eCommerce',
+    icon:'📦',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$3.28M',delta:'▲ 24.1% vs prior',up:true,sub:'Shopify + marketplaces'},
+      {l:'Gross Margin',v:'28.4%',color:'var(--amber)',delta:'▼ Down from 34.2%',up:false,sub:'Shipping costs rising'},
+      {l:'Return Rate',v:'18.6%',color:'var(--red)',delta:'▼ Industry avg 12%',up:false,sub:'Margin killer'},
+      {l:'Ad Spend ROAS',v:'1.8x',color:'var(--red)',delta:'▼ Target is 3x+',up:false,sub:'Overspending on ads'},
+    ],
+    expenses:[
+      {n:'Cost of Goods',a:2346400,pct:71.5},
+      {n:'Fulfilment & Shipping',a:262400,pct:8.0},
+      {n:'Advertising (Meta/Google)',a:196800,pct:6.0},
+      {n:'Returns & Refunds',a:131200,pct:4.0},
+      {n:'Marketplace Fees',a:98400,pct:3.0},
+      {n:'Staff & Operations',a:65600,pct:2.0},
+    ],
+    invoices:[
+      {id:'INV-7701',c:'Wholesale Partner A',a:44200,due:'2025-02-01',s:'OVERDUE'},
+      {id:'INV-7688',c:'B2B Client — Retail Chain',a:82400,due:'2025-02-14',s:'OVERDUE'},
+      {id:'INV-7714',c:'Distribution Partner',a:28800,due:'2025-03-10',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-3301',c:'3PL Warehouse',a:42400,due:'2025-02-18',s:'OVERDUE'},
+      {id:'BILL-3298',c:'Meta Ads',a:32800,due:'2025-03-01',s:'OUTSTANDING'},
+      {id:'BILL-3304',c:'Shopify Plus',a:8400,due:'2025-03-15',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'Returns Rate 18.6% — Above Industry',amount:131200,alabel:'Annual cost of returns',color:'var(--red)',body:'Your return rate of <strong style="color:var(--tx)">18.6%</strong> costs $131,200/year in restocking, processing and lost margin. Industry average is 12%. The top 3 return reasons (wrong size, colour mismatch, product as described) are all preventable.',action:'Add a sizing guide and better photos to your top 20 SKUs. Enable a fit quiz on the product page. Offer exchanges instead of refunds — this retains 60% of return revenue.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'Ad Spend Inefficiency — ROAS 1.8x',amount:82400,alabel:'Annual overspend vs target',color:'var(--red)',body:'At ROAS of 1.8x vs a 3x+ target, you\'re generating <strong style="color:var(--red)">$1.80 for every $1 spent on ads</strong>. After COGS and fulfilment, most ad-driven orders are breaking even or losing money.',action:'Pause bottom 30% of ad sets by ROAS immediately. Shift budget to top-performing products. Test UGC creative — typically 40-60% higher ROAS than studio content.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Fulfilment Cost Not Recovered in Pricing',amount:68400,alabel:'Annual margin impact',color:'var(--amber)',body:'Fulfilment & shipping is 8% of revenue but free shipping is offered on orders over $49. At your average order value of $62, <strong style="color:var(--tx)">most orders are shipped free</strong> — you\'re subsidising $68,400/year.',action:'Raise free shipping threshold to $89. Add express shipping as a paid upgrade. Negotiate 3PL rates — at your volume you should be paying 12-15% less.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Marketplace Fee Drag — Wrong Channel Mix',amount:48200,alabel:'Annual excess fees',color:'var(--amber)',body:'Amazon and eBay fees total $98,400 — 3% of revenue. These channels have lower margin than your own Shopify store. More SKUs are being listed on marketplace than direct, reversing your channel mix.',action:'Shift marketing spend to drive Shopify DTC. Limit marketplace to clearance and slow-moving SKUs only. Calculate true margin per channel including fees.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'B2B clients owe you',arTotal:'$155,400',arSub:'Across 3 outstanding invoices',
+    arAlert:{msg:'$126,600 overdue',rows:['B2B Client Retail Chain · $82,400 · 45d','Wholesale Partner A · $44,200 · 58d']},
+    apTitle:'You owe',apTotal:'$83,600',apSub:'Across 3 outstanding bills',
+    apAlert:{msg:'1 bill overdue',rows:['3PL Warehouse · $42,400 · 10d overdue']},
+    sysPrompt:`You are FlowGuard AI for an eCommerce business. Revenue $3.28M. Gross margin 28.4% (down from 34.2%). Return rate 18.6% ($131.2K/yr). Ad ROAS 1.8x (target 3x+, $82.4K overspend). Fulfilment 8% of revenue with free shipping threshold too low ($68.4K impact). Marketplace fees $98.4K draining margin. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['Why has my margin dropped?','How do I fix my return rate?','Is my ad spend actually working?','What makes the biggest difference this month?'],
+  },
+
+  manufacturing:{
+    label:'Manufacturing',
+    icon:'🏭',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$4.82M',delta:'▲ 7.2% vs prior',up:true,sub:'Product sales'},
+      {l:'Gross Margin',v:'31.2%',color:'var(--amber)',delta:'▼ Down 5.1pts',up:false,sub:'Input costs rising'},
+      {l:'Machine Utilisation',v:'64%',color:'var(--amber)',delta:'▼ Target is 80%+',up:false,sub:'Capacity wasted'},
+      {l:'Waste & Rework',v:'6.4%',color:'var(--red)',delta:'▼ Benchmark 2-3%',up:false,sub:'Materials wasted'},
+    ],
+    expenses:[
+      {n:'Raw Materials',a:1688000,pct:35.0},
+      {n:'Direct Labour',a:1108600,pct:23.0},
+      {n:'Machine & Maintenance',a:578400,pct:12.0},
+      {n:'Overhead & Facilities',a:337400,pct:7.0},
+      {n:'Logistics & Freight',a:192800,pct:4.0},
+      {n:'Administration',a:144600,pct:3.0},
+    ],
+    invoices:[
+      {id:'INV-6601',c:'Distributor A',a:188400,due:'2025-01-22',s:'OVERDUE'},
+      {id:'INV-6588',c:'Key Account — Bunnings',a:142200,due:'2025-02-06',s:'OVERDUE'},
+      {id:'INV-6614',c:'Export Client NZ',a:94800,due:'2025-03-04',s:'OUTSTANDING'},
+      {id:'INV-6622',c:'Distributor B',a:68400,due:'2025-03-18',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-4401',c:'Steel Dynamics',a:82400,due:'2025-02-10',s:'OVERDUE'},
+      {id:'BILL-4398',c:'Chemical Supplies Co',a:48200,due:'2025-02-22',s:'OVERDUE'},
+      {id:'BILL-4404',c:'Energy Australia',a:38800,due:'2025-03-15',s:'OUTSTANDING'},
+      {id:'BILL-4407',c:'Maintenance Contractors',a:24400,due:'2025-03-28',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'Waste & Rework at 6.4% — Triple Benchmark',amount:196800,alabel:'Annual cost of waste',color:'var(--red)',body:'Waste and rework at <strong style="color:var(--tx)">6.4% of production</strong> vs benchmark 2–3%. On $4.82M revenue that\'s <strong style="color:var(--red)">$196,800/year in wasted material and labour</strong>. Root cause is pre-production QC failures not caught until late in the line.',action:'Install first-article inspection at Line 2 — that\'s where 64% of rework originates. Add QC check after each stage not just at end. Trace the last 90 days of rework orders.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'Raw Material Costs Up — No Volume Negotiation',amount:144600,alabel:'Annual saving opportunity',color:'var(--red)',body:'Steel Dynamics invoice prices are up 18% since your contract was signed. At $1.69M in raw materials, a 3% reduction saves <strong style="color:var(--red)">$50,600/year</strong>. Two suppliers (Steel Dynamics, Chemical Supplies) have overdue bills — use this as leverage.',action:'Request a pricing review with Steel Dynamics — your volume justifies a volume rebate. Get 2 competing quotes on your top 5 raw materials.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'Machine Utilisation at 64% — Capacity Wasted',amount:96400,alabel:'Potential revenue loss',color:'var(--amber)',body:'At 64% machine utilisation vs 80%+ target you\'re <strong style="color:var(--tx)">paying for capacity you\'re not using</strong>. Shift patterns leave Line 3 idle for 38% of the working week. This is fixed cost with no return.',action:'Run Line 3 on a second shift 3 days/week. Price contract manufacturing for spare capacity — take on 2–3 small contract runs to fill idle time.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'$330.6K Overdue — Cash Flow Squeeze',amount:330600,alabel:'Cash impact now',color:'var(--amber)',body:'Distributor A ($188,400, 57d) and Bunnings Key Account ($142,200, 42d) are both overdue. Combined that\'s <strong style="color:var(--tx)">$330,600 sitting with two debtors</strong> while Steel Dynamics and Chemical Supplies bills are also overdue.',action:'Escalate Bunnings account to your account manager. For Distributor A, enforce the contract payment terms — they are 2x your standard terms.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Clients owe you',arTotal:'$493,800',arSub:'Across 4 outstanding invoices',
+    arAlert:{msg:'$330,600 overdue',rows:['Distributor A · $188,400 · 57d','Key Account Bunnings · $142,200 · 42d']},
+    apTitle:'You owe suppliers',apTotal:'$193,800',apSub:'Across 4 outstanding bills',
+    apAlert:{msg:'2 bills overdue',rows:['Steel Dynamics · $82,400 · 18d overdue','Chemical Supplies Co · $48,200 · 6d overdue']},
+    sysPrompt:`You are FlowGuard AI for a manufacturing business. Revenue $4.82M. Gross margin 31.2% (down 5.1pts). Waste & rework 6.4% vs 2-3% benchmark ($196.8K/yr). Machine utilisation 64% (target 80%+). Raw materials up 18% ($144.6K saving opportunity). $330.6K overdue invoices. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['What\'s costing me the most money right now?','How do I fix my waste problem?','What should I do about my overdue invoices?','How do I improve gross margin?'],
+  },
+
+  other:{
+    label:'Small Business',
+    icon:'📊',
+    kpis:[
+      {l:'Revenue (YTD)',v:'$1.42M',delta:'▲ 10.4% vs prior',up:true,sub:'From Xero'},
+      {l:'Net Profit',v:'$127.8K',color:'var(--amber)',delta:'▼ 9.0% margin',up:false,sub:'Room to improve'},
+      {l:'Cash Position',v:'$54.2K',color:'var(--amber)',sub:'~3 weeks operating cover'},
+      {l:'Overdue Invoices',v:'$98.4K',color:'var(--red)',delta:'▼ 6 invoices unpaid',up:false,sub:'Oldest: 52 days'},
+    ],
+    expenses:[
+      {n:'Staff Wages',a:568000,pct:40.0},
+      {n:'Cost of Sales',a:298200,pct:21.0},
+      {n:'Rent & Facilities',a:99400,pct:7.0},
+      {n:'Marketing',a:56800,pct:4.0},
+      {n:'Software & Tools',a:28400,pct:2.0},
+      {n:'Administration',a:21300,pct:1.5},
+    ],
+    invoices:[
+      {id:'INV-1101',c:'Client A',a:42400,due:'2025-01-18',s:'OVERDUE'},
+      {id:'INV-1088',c:'Client B',a:28200,due:'2025-02-04',s:'OVERDUE'},
+      {id:'INV-1096',c:'Client C',a:27800,due:'2025-02-20',s:'OVERDUE'},
+      {id:'INV-1114',c:'Client D',a:18400,due:'2025-03-08',s:'OUTSTANDING'},
+      {id:'INV-1122',c:'Client E',a:14600,due:'2025-03-18',s:'OUTSTANDING'},
+      {id:'INV-1128',c:'Client F',a:9800,due:'2025-03-28',s:'OUTSTANDING'},
+    ],
+    bills:[
+      {id:'BILL-0601',c:'Main Supplier',a:22400,due:'2025-02-22',s:'OVERDUE'},
+      {id:'BILL-0598',c:'Software Subscription',a:4800,due:'2025-03-01',s:'OUTSTANDING'},
+      {id:'BILL-0604',c:'Facilities',a:16800,due:'2025-03-15',s:'OUTSTANDING'},
+    ],
+    leaks:[
+      {level:'critical',title:'$98.4K Overdue — Cash Flow at Risk',amount:98400,alabel:'Cash impact now',color:'var(--red)',body:'You have <strong style="color:var(--tx)">$98,400 overdue</strong> across 3 clients against a cash position of $54,200. Client A ($42,400, 62 days) is your oldest and largest overdue — no recent communication on record.',action:'Call Client A today — not email. Set a payment deadline of 7 days. If no response, issue a formal demand letter. For Clients B and C, send overdue notices with 14-day payment terms.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'critical',title:'Staff Cost at 40% — No Productivity Tracking',amount:62800,alabel:'Estimated annual waste',color:'var(--red)',body:'Wages at 40% of revenue with no output-per-employee metric tracked. You can\'t identify your most and least productive staff, or whether headcount matches actual workload demand.',action:'Track output per person for 2 weeks — even a basic spreadsheet. Identify your bottom performer. Review whether any role can be converted to part-time or commission-based.',acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'},
+      {level:'high',title:'No Price Increase in 18+ Months',amount:42600,alabel:'Annual revenue left behind',color:'var(--amber)',body:'Your pricing appears unchanged despite <strong style="color:var(--tx)">input costs rising 8-12%</strong> across wages, suppliers, and facilities over the same period. A 3% price increase across your client base adds $42,600 revenue.',action:'Implement a 3-5% price increase for all clients effective next billing cycle. Frame it as a CPI adjustment — most clients expect and accept annual increases.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+      {level:'high',title:'Marketing Spend — No ROI Tracking',amount:28400,alabel:'Annual spend with no attribution',color:'var(--amber)',body:'$56,800 in marketing with no tracking of which channels or campaigns are generating clients. You\'re spending 4% of revenue without knowing what\'s working.',action:'Add UTM tracking to all digital marketing this week. Ask every new client how they heard about you. Cut any channel that can\'t show lead attribution within 30 days.',acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'},
+    ],
+    arTitle:'Clients owe you',arTotal:'$141,200',arSub:'Across 6 outstanding invoices',
+    arAlert:{msg:'$98,400 overdue',rows:['Client A · $42,400 · 62d','Client B · $28,200 · 45d','Client C · $27,800 · 29d']},
+    apTitle:'You owe suppliers',apTotal:'$44,000',apSub:'Across 3 outstanding bills',
+    apAlert:{msg:'1 bill overdue',rows:['Main Supplier · $22,400 · 6d overdue']},
+    sysPrompt:`You are FlowGuard AI for a small business. Revenue $1.42M, Net profit $127.8K (9% margin). $98.4K overdue invoices. Staff wages 40% of revenue with no productivity tracking ($62.8K waste). No price increase in 18 months ($42.6K annual impact). Marketing $56.8K with no ROI tracking. Cash $54.2K. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['Which invoices should I chase first?','How do I improve my cash position fast?','What\'s the biggest thing costing me money?','What should I do this week?'],
+  },
+};
+
+/* ══════════════════════════════════════════════════
    STATE
 ══════════════════════════════════════════════════ */
-let USER = null;
-let CONNECTION = null;
-let FIN_DATA = null;
+let selectedInd = null;
+let bizName = '';
+let apiKey = '';
+let IND = null;
 let invTab = 'inv';
 let chatHistory = [];
 let chatLoading = false;
 let analysisHistory = [];
-const today = new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
 /* ══════════════════════════════════════════════════
-   HELPERS
+   SETUP
 ══════════════════════════════════════════════════ */
-const f$ = n => {
-  if (n==null) return '—';
-  const a=Math.abs(n), sg=n<0?'-':'';
-  if (a>=1e6) return `${sg}$${(a/1e6).toFixed(1)}M`;
-  if (a>=1e3) return `${sg}$${Math.round(a/1e3)}K`;
-  return `${sg}$${a.toFixed(0)}`;
-};
-const fDate = s => {
-  if (!s) return '—';
-  const d = new Date(s.replace(/\(.*\)/,''));
-  return isNaN(d) ? s : d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-};
-const daysAgo = s => {
-  if (!s) return 0;
-  return Math.max(0, Math.floor((Date.now()-new Date(s.replace(/\(.*\)/,'')))/86400000));
-};
-const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-
-const api = async (path, opts={}) => {
-  const res = await fetch(path, {credentials:'include',...opts,headers:{'Content-Type':'application/json',...(opts.headers||{})}});
-  if (res.status===401) { window.location.href='/'; throw new Error('unauth'); }
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error||'Error');
-  return data;
-};
-
-/* ══════════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════════ */
-window.addEventListener('DOMContentLoaded', async () => {
-  // Check URL params for post-OAuth messages
-  const params = new URLSearchParams(location.search);
-  if (params.get('error')) showConnectError(params.get('error'));
-  if (params.has('connected')) history.replaceState({},'','/app');
-
-  try {
-    const me = await api('/api/auth/me');
-    USER = me.user;
-    CONNECTION = me.connection;
-
-    if (!CONNECTION) {
-      showConnectScreen();
-    } else {
-      await loadApp();
-    }
-  } catch(e) {
-    if (!e.message.includes('unauth')) {
-      window.location.href = '/';
-    }
-  }
-});
-
-function showConnectScreen() {
-  document.getElementById('loading').style.display = 'none';
-  const cs = document.getElementById('connect-screen');
-  cs.style.display = 'flex';
+function selectInd(btn) {
+  document.querySelectorAll('.ind-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedInd = btn.dataset.ind;
+  checkReady();
 }
 
-function showConnectError(err) {
-  const errEl = document.getElementById('connect-error');
-  const msgs = {
-    xero_not_configured: 'Xero is not configured yet. Please contact support.',
-    myob_not_configured: 'MYOB is not configured yet. Please contact support.',
-    quickbooks_not_configured: 'QuickBooks is not configured yet. Please contact support.',
-    xero_auth_failed: 'Xero connection failed. Please try again.',
-    myob_auth_failed: 'MYOB connection failed. Please try again.',
-    quickbooks_auth_failed: 'QuickBooks connection failed. Please try again.',
-    invalid_state: 'Connection timed out. Please try again.',
-  };
-  errEl.textContent = msgs[err] || 'Something went wrong. Please try again.';
-  errEl.style.display = 'block';
+function checkReady() {
+  bizName = document.getElementById('biz-name').value.trim();
+  apiKey = document.getElementById('api-key-in').value.trim();
+  document.getElementById('start-btn').disabled = !(selectedInd && bizName);
 }
 
-async function loadApp() {
-  document.getElementById('loading').style.display = 'none';
+function startApp() {
+  IND = INDUSTRIES[selectedInd];
+  apiKey = document.getElementById('api-key-in').value.trim();
+
+  // Hide setup, show app
+  document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
 
   // Sidebar
-  document.getElementById('sb-company').textContent = CONNECTION.tenant_name || 'Your business';
-  document.getElementById('sb-provider').textContent = (CONNECTION.provider||'').toUpperCase() + ' · LIVE DATA';
-  document.getElementById('sb-provider-badge').textContent = (CONNECTION.provider||'').toUpperCase();
-  document.getElementById('sb-user-email').textContent = USER.email || '';
-  document.getElementById('tb-sub').textContent = (CONNECTION.tenant_name||'') + ' · ' + today;
-  const initials = (USER.name||USER.email||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sb-biz-name').textContent = bizName;
+  document.getElementById('sb-ind-badge').textContent = IND.label;
+  document.getElementById('sb-source').textContent = 'XERO · LIVE DATA';
+
+  // Topbar
+  document.getElementById('tb-sub').textContent = bizName + ' · ' + new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const initials = bizName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('tb-av').textContent = initials;
 
   // Nav
-  document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
-    btn.addEventListener('click', () => goTo(btn.dataset.page));
-  });
+  document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.addEventListener('click', () => goTo(b.dataset.page)));
 
-  // Load financial data
-  await loadFinancialData();
+  buildKPIs();
+  buildExpenses();
+  buildARAP();
+  buildLeaks();
+  renderInvoices();
   initChat();
-}
-
-async function loadFinancialData() {
-  try {
-    const result = await api('/api/data');
-    FIN_DATA = result.data;
-    buildOverview(result.data, result.provider, result.company);
-    buildInvoiceTable();
-  } catch(e) {
-    document.getElementById('kpi-grid').innerHTML = `<div class="error-box" style="grid-column:1/-1"><strong>Could not load financial data</strong>${e.message}</div>`;
-  }
+  renderHistory();
 }
 
 /* ══════════════════════════════════════════════════
-   NAV
+   NAVIGATION
 ══════════════════════════════════════════════════ */
-const TITLES = {overview:'Overview',invoices:'Invoices & Bills',ai:'Ask AI',history:'Analysis History'};
+const TITLES = {overview:'Overview',leaks:'Profit Leaks Detected',invoices:'Invoices & Bills',ai:'Ask AI',history:'Analysis History'};
 
 function goTo(page) {
-  document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.classList.toggle('active', b.dataset.page===page));
-  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id===page));
+  document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === page));
   document.getElementById('tb-title').textContent = TITLES[page];
 }
 
 /* ══════════════════════════════════════════════════
-   OVERVIEW — extract from real Xero/QB/MYOB data
+   BUILD UI
 ══════════════════════════════════════════════════ */
-function buildOverview(data, provider, company) {
-  if (!data) return;
-
-  let revenue=0, expenses=0, profit=0, expBreakdown=[];
-
-  // ── XERO ──
-  if (provider==='xero' && data.profitLoss?.Reports?.[0]) {
-    const rows = data.profitLoss.Reports[0].Rows||[];
-    rows.forEach(section => {
-      if (!section.Rows) return;
-      const title = (section.Title||'').toLowerCase();
-      section.Rows.forEach(row => {
-        if (row.RowType==='Row' && row.Cells) {
-          const name = row.Cells[0]?.Value||'';
-          const val  = parseFloat((row.Cells[row.Cells.length-1]?.Value||'0').replace(/[,$]/g,''))||0;
-          if (title.includes('income')||title.includes('revenue')||title.includes('trading')) {
-            if (val>0) revenue += val;
-          } else if (title.includes('expense')||title.includes('cost')||title.includes('overhead')||title.includes('admin')) {
-            if (name && Math.abs(val)>0) expBreakdown.push({n:name,a:Math.abs(val)});
-            expenses += Math.abs(val);
-          }
-        }
-        if (row.RowType==='SummaryRow' && row.Cells) {
-          const t = (section.Title||'').toLowerCase();
-          const val = parseFloat((row.Cells[row.Cells.length-1]?.Value||'0').replace(/[,$]/g,''))||0;
-          if (t.includes('income')||t.includes('revenue')) revenue = Math.max(revenue, Math.abs(val));
-        }
-      });
-    });
-    profit = revenue - expenses;
-  }
-
-  // ── QUICKBOOKS ──
-  if (provider==='quickbooks' && data.profitLoss) {
-    try {
-      const rows = data.profitLoss.Rows?.Row||[];
-      rows.forEach(row => {
-        const sum = row.Summary?.ColData;
-        if (!sum) return;
-        const label = (sum[0]?.value||'').toLowerCase();
-        const val = parseFloat(sum[1]?.value||0)||0;
-        if (label.includes('income')||label.includes('revenue')) revenue = Math.abs(val);
-        else if (label.includes('expense')||label.includes('cost')) expenses = Math.abs(val);
-        else if (label.includes('net')) profit = val;
-      });
-      if (!profit && revenue) profit = revenue - expenses;
-    } catch(e) {}
-  }
-
-  const margin = revenue>0 ? (profit/revenue*100) : 0;
-
-  // KPIs
-  document.getElementById('kpi-grid').innerHTML = [
-    {l:'Revenue (YTD)', v:f$(revenue), sub:`From ${(provider||'').toUpperCase()}`, color:null},
-    {l:'Total Expenses', v:f$(expenses), sub:'All expense categories', color:null},
-    {l:'Net Profit', v:f$(profit), sub:`${margin.toFixed(1)}% margin`, color:profit>=0?'var(--green)':'var(--red)'},
-    {l:'Overdue Invoices', v:f$(getOverdueTotal(data,provider)), sub:`${getOverdueCount(data,provider)} invoice${getOverdueCount(data,provider)!==1?'s':''} unpaid`, color:getOverdueTotal(data,provider)>0?'var(--red)':'var(--green)'},
-  ].map(k=>`
+function buildKPIs() {
+  document.getElementById('kpi-grid').innerHTML = IND.kpis.map(k => `
     <div class="kpi">
       <div class="kpi-lbl">${k.l}</div>
       <div class="kpi-val" style="${k.color?'color:'+k.color:''}">${k.v}</div>
-      <div class="kpi-sub">${k.sub}</div>
+      ${k.delta ? `<div class="kpi-delta ${k.up?'up':'dn'}">${k.delta}</div>` : ''}
+      <div class="kpi-sub">${k.sub||''}</div>
     </div>`).join('');
+}
 
-  // Expense bars
-  if (expBreakdown.length===0 && expenses>0) {
-    expBreakdown = [{n:'Total Expenses',a:expenses}];
-  }
-  const sorted = [...expBreakdown].sort((a,b)=>b.a-a.a).slice(0,8);
-  const maxExp = sorted[0]?.a||1;
-  document.getElementById('expense-bars').innerHTML = sorted.length>0 ? sorted.map(e => {
-    const pct = revenue>0 ? (e.a/revenue*100) : 0;
-    const col = pct>25?'var(--red)':pct>12?'var(--amber)':'var(--tx3)';
+function buildExpenses() {
+  const max = IND.expenses[0].a;
+  document.getElementById('exp-bars').innerHTML = IND.expenses.map(e => {
+    const col = e.pct>25?'var(--red)':e.pct>12?'var(--amber)':'var(--tx3)';
     return `<div class="prog">
       <div class="prog-top">
         <span class="prog-name">${e.n}</span>
-        <span class="prog-val">${f$(e.a)}</span>
-        <span class="prog-pct">${pct.toFixed(1)}%</span>
+        <span class="prog-val">$${(e.a/1000).toFixed(0)}K</span>
+        <span class="prog-pct">${e.pct}%</span>
       </div>
-      <div class="prog-bar"><div class="prog-fill" style="width:${(e.a/maxExp)*100}%;background:${col}"></div></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${(e.a/max)*100}%;background:${col}"></div></div>
     </div>`;
-  }).join('') : '<div class="empty-box" style="padding:16px">No expense breakdown available</div>';
-
-  // AR card
-  buildARCard(data, provider);
-  buildAPCard(data, provider);
+  }).join('');
 }
 
-function getInvoices(data, provider) {
-  if (provider==='xero') return data.invoices||[];
-  if (provider==='quickbooks') return data.invoices||[];
-  return data.invoices||[];
-}
-function getBills(data, provider) {
-  if (provider==='xero') return data.bills||[];
-  if (provider==='quickbooks') return data.bills||[];
-  return data.bills||[];
-}
-function getAmount(item, provider) {
-  if (provider==='quickbooks') return item.Balance||0;
-  return item.AmountDue||0;
-}
-function getDue(item, provider) {
-  if (provider==='quickbooks') return item.DueDate;
-  return item.DueDate;
-}
-function getContact(item, provider) {
-  if (provider==='quickbooks') return item.CustomerRef?.name||item.VendorRef?.name||'Unknown';
-  return item.Contact?.Name||'Unknown';
-}
-function getId(item, provider) {
-  if (provider==='quickbooks') return item.DocNumber||item.Id||'—';
-  return item.InvoiceNumber||item.Number||'—';
-}
-function getOverdueTotal(data, provider) {
-  const now = new Date();
-  return getInvoices(data,provider)
-    .filter(i=>getDue(i,provider)&&new Date(getDue(i,provider).replace(/\(.*\)/,''))<now&&getAmount(i,provider)>0)
-    .reduce((s,i)=>s+getAmount(i,provider),0);
-}
-function getOverdueCount(data, provider) {
-  const now = new Date();
-  return getInvoices(data,provider).filter(i=>getDue(i,provider)&&new Date(getDue(i,provider).replace(/\(.*\)/,''))<now&&getAmount(i,provider)>0).length;
-}
-
-function buildARCard(data, provider) {
-  const invoices = getInvoices(data,provider);
-  const total = invoices.reduce((s,i)=>s+getAmount(i,provider),0);
-  const overdue = invoices.filter(i=>getDue(i,provider)&&new Date(getDue(i,provider).replace(/\(.*\)/,''))<new Date()&&getAmount(i,provider)>0);
-  const overdueTotal = overdue.reduce((s,i)=>s+getAmount(i,provider),0);
+function buildARAP() {
+  const ar = IND;
   document.getElementById('ar-card').innerHTML = `
-    <div class="card-title">Clients owe you</div>
-    <div style="font-family:var(--mono);font-size:22px;color:var(--tx);margin-bottom:4px">${f$(total)}</div>
-    <div style="font-size:11px;color:var(--tx3);margin-bottom:${overdue.length?'12px':'0'}">${invoices.length} outstanding invoice${invoices.length!==1?'s':''}</div>
-    ${overdue.length>0?`<div style="background:rgba(255,92,92,.07);border:1px solid rgba(255,92,92,.15);border-radius:8px;padding:10px 12px">
-      <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:6px">${f$(overdueTotal)} overdue</div>
-      ${overdue.slice(0,4).map(i=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--red);margin-bottom:3px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${getContact(i,provider)}</span><span style="font-family:var(--mono);flex-shrink:0;margin-left:8px">${f$(getAmount(i,provider))} · ${daysAgo(getDue(i,provider))}d</span></div>`).join('')}
-    </div>`:''}`
+    <div class="card-title">${ar.arTitle}</div>
+    <div style="font-family:var(--mono);font-size:21px;color:var(--tx);margin-bottom:4px">${ar.arTotal}</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:${ar.arAlert?'12px':'0'}">${ar.arSub}</div>
+    ${ar.arAlert ? `<div style="background:rgba(255,92,92,.07);border:1px solid rgba(255,92,92,.15);border-radius:8px;padding:10px 12px">
+      <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:5px">${ar.arAlert.msg}</div>
+      ${ar.arAlert.rows.map(r=>`<div style="font-size:11px;color:var(--red);margin-bottom:2px">${r}</div>`).join('')}
+    </div>` : ''}`;
+
+  document.getElementById('ap-card').innerHTML = `
+    <div class="card-title">${ar.apTitle}</div>
+    <div style="font-family:var(--mono);font-size:21px;color:var(--tx);margin-bottom:4px">${ar.apTotal}</div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:${ar.apAlert?'12px':'0'}">${ar.apSub}</div>
+    ${ar.apAlert ? `<div style="background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.15);border-radius:8px;padding:10px 12px">
+      <div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:5px">${ar.apAlert.msg}</div>
+      ${ar.apAlert.rows.map(r=>`<div style="font-size:11px;color:var(--amber);margin-bottom:2px">${r}</div>`).join('')}
+    </div>` : ''}`;
 }
 
-function buildAPCard(data, provider) {
-  const bills = getBills(data,provider);
-  const total = bills.reduce((s,b)=>s+getAmount(b,provider),0);
-  const overdue = bills.filter(b=>getDue(b,provider)&&new Date(getDue(b,provider).replace(/\(.*\)/,''))<new Date()&&getAmount(b,provider)>0);
-  document.getElementById('ap-card').innerHTML = `
-    <div class="card-title">You owe suppliers</div>
-    <div style="font-family:var(--mono);font-size:22px;color:var(--tx);margin-bottom:4px">${f$(total)}</div>
-    <div style="font-size:11px;color:var(--tx3);margin-bottom:${overdue.length?'12px':'0'}">${bills.length} outstanding bill${bills.length!==1?'s':''}</div>
-    ${overdue.length>0?`<div style="background:rgba(255,179,71,.07);border:1px solid rgba(255,179,71,.15);border-radius:8px;padding:10px 12px">
-      <div style="font-size:11px;font-weight:600;color:var(--amber);margin-bottom:6px">${overdue.length} bill${overdue.length!==1?'s':''} overdue</div>
-      ${overdue.slice(0,3).map(b=>`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--amber);margin-bottom:3px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${getContact(b,provider)}</span><span style="font-family:var(--mono);flex-shrink:0;margin-left:8px">${f$(getAmount(b,provider))}</span></div>`).join('')}
-    </div>`:''}`
+function buildLeaks() {
+  document.getElementById('leak-count').textContent = IND.leaks.length;
+  document.getElementById('leaks-list').innerHTML = IND.leaks.map(lk => `
+    <div class="leak-card" style="border-left:3px solid ${lk.color}">
+      <div class="leak-head">
+        <div class="leak-left">
+          <span class="badge ${lk.level==='critical'?'b-red':'b-amber'}">${lk.level}</span>
+          <span class="leak-title">${lk.title}</span>
+        </div>
+        <div class="leak-impact">
+          <div class="leak-amount" style="color:${lk.color}">$${(lk.amount/1000).toFixed(0)}K</div>
+          <div class="leak-impact-lbl">${lk.alabel}</div>
+        </div>
+      </div>
+      <div class="leak-body">${lk.body}</div>
+      <div class="leak-action" style="background:${lk.abg};border-color:${lk.abd}">
+        <div class="action-title" style="color:${lk.acol}">→ Action</div>
+        <div class="action-body" style="color:var(--tx2)">${lk.action}</div>
+      </div>
+    </div>`).join('');
 }
 
 /* ══════════════════════════════════════════════════
    INVOICES TABLE
 ══════════════════════════════════════════════════ */
-function buildInvoiceTable() {
-  renderTable();
-}
-
-function renderTable() {
-  if (!FIN_DATA) return;
-  const provider = CONNECTION.provider;
-  const items = invTab==='inv' ? getInvoices(FIN_DATA,provider) : getBills(FIN_DATA,provider);
-  const now = new Date();
-  const sorted = [...items].sort((a,b)=>{
-    const ao = getDue(a,provider)&&new Date(getDue(a,provider).replace(/\(.*\)/,''))<now;
-    const bo = getDue(b,provider)&&new Date(getDue(b,provider).replace(/\(.*\)/,''))<now;
-    if(ao&&!bo) return -1; if(!ao&&bo) return 1;
-    return new Date(getDue(a,provider)||0)-new Date(getDue(b,provider)||0);
+function renderInvoices() {
+  const items = invTab === 'inv' ? IND.invoices : IND.bills;
+  const sorted = [...items].sort((a,b) => {
+    if(a.s==='OVERDUE'&&b.s!=='OVERDUE') return -1;
+    if(a.s!=='OVERDUE'&&b.s==='OVERDUE') return 1;
+    return new Date(a.due)-new Date(b.due);
   });
-  const total = items.reduce((s,i)=>s+getAmount(i,provider),0);
-  const overdueTotal = items.filter(i=>getDue(i,provider)&&new Date(getDue(i,provider).replace(/\(.*\)/,''))<now&&getAmount(i,provider)>0).reduce((s,i)=>s+getAmount(i,provider),0);
+  const total = items.reduce((s,i)=>s+i.a,0);
+  const overdueTotal = items.filter(i=>i.s==='OVERDUE').reduce((s,i)=>s+i.a,0);
+  const f$ = n => '$'+Math.round(n/1000)+'K';
+  const fDate = s => new Date(s).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  const daysAgo = s => Math.floor((Date.now()-new Date(s))/86400000);
 
   document.getElementById('tbl-summary').innerHTML = `Total: <strong style="color:var(--tx);font-family:var(--mono)">${f$(total)}</strong>${overdueTotal>0?` &nbsp;·&nbsp; Overdue: <strong style="color:var(--red);font-family:var(--mono)">${f$(overdueTotal)}</strong>`:''}`;
+
+  document.getElementById('tbl-body').innerHTML = sorted.map(item => {
+    const over = item.s === 'OVERDUE';
+    const days = over ? daysAgo(item.due) : 0;
+    return `<tr>
+      <td class="t-name" style="padding-left:22px">${item.c}</td>
+      <td class="t-mono" style="color:var(--tx3)">${item.id}</td>
+      <td style="${over?'color:var(--red)':''}">${fDate(item.due)}${over?`<br><span style="font-size:10px">${days}d overdue</span>`:''}</td>
+      <td class="r t-mono ${over?'t-red':''}" style="padding-right:22px">${f$(item.a)}</td>
+      <td><span class="badge ${over?'b-red':'b-amber'}">${over?'Overdue':'Outstanding'}</span></td>
+    </tr>`;
+  }).join('');
+
   document.getElementById('tab-inv').style.background = invTab==='inv'?'var(--s3)':'transparent';
   document.getElementById('tab-inv').style.color = invTab==='inv'?'var(--tx)':'var(--tx2)';
   document.getElementById('tab-bills').style.background = invTab==='bills'?'var(--s3)':'transparent';
   document.getElementById('tab-bills').style.color = invTab==='bills'?'var(--tx)':'var(--tx2)';
+}
 
-  if (!sorted.length) {
-    document.getElementById('tbl-body').innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tx3)">No ${invTab==='inv'?'invoices':'bills'} found</td></tr>`;
+function switchTab(tab) { invTab = tab; renderInvoices(); }
+
+/* ══════════════════════════════════════════════════
+   AI ANALYSIS (Run button)
+══════════════════════════════════════════════════ */
+const DEMO_ANALYSIS = () => `## Profit Leak Analysis — ${bizName}
+
+Here's what FlowGuard found scanning your ${IND.label} financials:
+
+${IND.leaks.map((lk,i) => `### ${i+1}. ${lk.title} — $${(lk.amount/1000).toFixed(0)}K impact
+${lk.body.replace(/<[^>]+>/g,'')}`).join('\n\n')}
+
+---
+
+## Top 3 Actions This Week
+
+${IND.leaks.slice(0,3).map((lk,i) => `**${i+1}. ${lk.title}**
+${lk.action}`).join('\n\n')}
+
+---
+
+*This is a pre-loaded analysis. Add your Anthropic API key for a live AI analysis of your real Xero or MYOB data.*`;
+
+async function runAnalysis() {
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin" style="width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#0e0f0c;border-radius:50%;display:inline-block"></span> Scanning…';
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('scan-wrap').style.display = 'block';
+  document.getElementById('analysis-box').style.display = 'none';
+
+  // Cycle scanning messages
+  const msgs = ['Analysing transactions…','Checking expense ratios against benchmarks…','Scanning accounts receivable…','Identifying cost anomalies…','Generating recommendations…'];
+  let mi = 0;
+  const interval = setInterval(() => { document.getElementById('scan-text').textContent = msgs[Math.min(++mi,msgs.length-1)]; }, 900);
+
+  await new Promise(r => setTimeout(r, 2200));
+
+  if (!apiKey) {
+    // Show demo analysis
+    clearInterval(interval);
+    document.getElementById('scan-wrap').style.display = 'none';
+    const result = DEMO_ANALYSIS();
+    document.getElementById('analysis-box').textContent = result;
+    document.getElementById('analysis-box').style.display = 'block';
+    analysisHistory.unshift({question:'Full profit leak analysis',result,time:new Date().toLocaleString('en-AU')});
+    renderHistory();
+    btn.disabled = false;
+    btn.innerHTML = '↻ Re-run Analysis';
     return;
   }
 
-  document.getElementById('tbl-body').innerHTML = sorted.map((item,i) => {
-    const due = getDue(item,provider);
-    const over = due && new Date(due.replace(/\(.*\)/,''))<now && getAmount(item,provider)>0;
-    const days = over ? daysAgo(due) : 0;
-    return `<tr>
-      <td class="t-name" style="padding-left:22px">${getContact(item,provider)}</td>
-      <td class="t-mono" style="color:var(--tx3)">${getId(item,provider)}</td>
-      <td style="${over?'color:var(--red)':''}">${fDate(due)}${over?`<br><span style="font-size:10px">${days}d overdue</span>`:''}</td>
-      <td class="r t-mono ${over?'t-red':''}" style="padding-right:22px">${f$(getAmount(item,provider))}</td>
-      <td><span class="badge ${over?'b-red':'b-amber'}">${over?'Overdue':'Outstanding'}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-function switchTab(tab) { invTab=tab; renderTable(); }
-
-/* ══════════════════════════════════════════════════
-   AI ANALYSIS
-══════════════════════════════════════════════════ */
-async function runAnalysis(question=null) {
-  const btn = document.getElementById('run-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;display:inline-block"></span> Scanning…';
-  document.getElementById('analysis-placeholder').style.display = 'none';
-  document.getElementById('scan-wrap').style.display = 'block';
-  document.getElementById('analysis-result').style.display = 'none';
-
-  const msgs = ['Analysing transactions…','Checking expense ratios against benchmarks…','Scanning accounts receivable…','Identifying cost anomalies…','Generating recommendations…'];
-  let mi=0;
-  const interval = setInterval(()=>{ document.getElementById('scan-txt').textContent = msgs[Math.min(++mi,msgs.length-1)]; }, 900);
-
+  // Real AI call
   try {
-    const result = await api('/api/analyse', {
-      method:'POST',
-      body: JSON.stringify({ financialData: FIN_DATA, question }),
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1400,
+        system: IND.sysPrompt + `\n\nBusiness name: ${bizName}`,
+        messages: [{ role: 'user', content: `Analyse all financials for ${bizName}. Find every profit leak with dollar amounts. Give the top 3 actions ranked by dollar impact.` }],
+      }),
     });
     clearInterval(interval);
     document.getElementById('scan-wrap').style.display = 'none';
-    document.getElementById('analysis-result').textContent = result.analysis;
-    document.getElementById('analysis-result').style.display = 'block';
-    analysisHistory.unshift({ question: question||'Full analysis', result: result.analysis, time: new Date().toLocaleString('en-AU') });
-    renderHistory();
+    if (res.status === 401) {
+      document.getElementById('analysis-box').textContent = '⚠ Invalid API key. Please refresh and enter a valid key from console.anthropic.com';
+    } else {
+      const data = await res.json();
+      const result = data.content?.map(c=>c.text||'').join('') || 'Error.';
+      document.getElementById('analysis-box').textContent = result;
+      analysisHistory.unshift({question:'Full profit leak analysis',result,time:new Date().toLocaleString('en-AU')});
+      renderHistory();
+    }
+    document.getElementById('analysis-box').style.display = 'block';
   } catch(e) {
     clearInterval(interval);
     document.getElementById('scan-wrap').style.display = 'none';
-    document.getElementById('analysis-placeholder').textContent = 'Error: '+e.message;
-    document.getElementById('analysis-placeholder').style.display = 'block';
+    document.getElementById('analysis-box').textContent = 'Connection error: ' + e.message;
+    document.getElementById('analysis-box').style.display = 'block';
   }
   btn.disabled = false;
   btn.innerHTML = '↻ Re-run Analysis';
@@ -750,28 +1057,28 @@ async function runAnalysis(question=null) {
    AI CHAT
 ══════════════════════════════════════════════════ */
 function initChat() {
-  const company = CONNECTION.tenant_name||'your business';
-  const provider = (CONNECTION.provider||'').toUpperCase();
-  document.getElementById('chat-ctx-txt').textContent = `Reading live ${provider} data for ${company}`;
-
   chatHistory = [];
   document.getElementById('chat-msgs').innerHTML = '';
-  const welcome = `I've loaded the real ${provider} data for ${company}.\n\nI can see your P&L, invoices, bills, and expense breakdown. Ask me anything — where is money leaking, which clients to chase, what costs are growing fastest, what to do this week.`;
+  document.getElementById('chat-ctx-text').textContent = `Loaded: ${bizName} · ${IND.invoices.length} invoices · ${IND.bills.length} bills · ${IND.label} P&L data`;
+  const welcome = `I've loaded the financial data for ${bizName}.\n\nI can see your P&L, invoices, bills, and expense breakdown. Ask me anything about where your money is going.`;
   chatHistory.push({role:'assistant',content:welcome});
   appendMsg('assistant', welcome);
 
-  const sugs = ['Where am I losing the most money?','Which invoices should I chase this week?','What are my biggest cost problems?','How do I improve cash flow fast?','Give me a complete financial health check'];
-  document.getElementById('sugs').innerHTML = sugs.map(s=>`<button class="sug" onclick="sendChat('${s.replace(/'/g,"\\'")}')">${s}</button>`).join('');
-  document.getElementById('chat-in').addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey&&!chatLoading) sendChat(); });
-  document.getElementById('chat-send').addEventListener('click', ()=>sendChat());
+  document.getElementById('sugs').innerHTML = IND.suggestions.map(s =>
+    `<button class="sug" onclick="sendChat(this.textContent)">${s}</button>`).join('');
+
+  document.getElementById('chat-in').addEventListener('keydown', e => {
+    if(e.key==='Enter'&&!e.shiftKey) sendChat();
+  });
+  document.getElementById('chat-send').addEventListener('click', () => sendChat());
 }
 
 function appendMsg(role, content) {
   const area = document.getElementById('chat-msgs');
   const div = document.createElement('div');
   div.className = `msg ${role}`;
-  div.style.animation = 'fadeup .25s ease forwards';
-  if (role==='assistant') {
+  div.style.animation = 'rise .25s ease forwards';
+  if(role==='assistant') {
     div.innerHTML = `<div class="msg-av">F</div><div class="bubble bubble-a">${esc(content)}</div>`;
   } else {
     div.innerHTML = `<div class="bubble bubble-u">${esc(content)}</div>`;
@@ -780,10 +1087,12 @@ function appendMsg(role, content) {
   area.scrollTop = area.scrollHeight;
 }
 
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
 async function sendChat(text) {
   const inp = document.getElementById('chat-in');
   const msg = text || inp.value.trim();
-  if (!msg||chatLoading) return;
+  if(!msg||chatLoading) return;
   inp.value = '';
   chatLoading = true;
   document.getElementById('chat-send').disabled = true;
@@ -791,25 +1100,60 @@ async function sendChat(text) {
   chatHistory.push({role:'user',content:msg});
   appendMsg('user', msg);
 
+  // Typing indicator
   const area = document.getElementById('chat-msgs');
   const typ = document.createElement('div');
   typ.className = 'msg assistant';
   typ.id = 'typing';
-  typ.innerHTML = `<div class="msg-av">F</div><div class="bubble bubble-a typing-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  typ.innerHTML = `<div class="msg-av">F</div><div class="bubble bubble-a typing"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
   area.appendChild(typ);
   area.scrollTop = area.scrollHeight;
 
+  if (!apiKey) {
+    await new Promise(r=>setTimeout(r,800));
+    document.getElementById('typing')?.remove();
+    // Smart demo responses
+    const lower = msg.toLowerCase();
+    let reply = '';
+    if(lower.includes('cash')||lower.includes('flow')) {
+      reply = `Your cash position is the most urgent issue.\n\nYou have ${IND.arAlert?.msg||'overdue invoices'} — call those clients today, not email. Phone calls get paid 3x faster than emails.\n\nIn parallel, check if any upcoming expenses can be deferred 2–3 weeks to create breathing room.\n\n→ Add your API key for a full live analysis of your specific numbers.`;
+    } else if(lower.includes('invoice')||lower.includes('overdue')||lower.includes('chase')) {
+      reply = `Priority order for chasing:\n\n${IND.arAlert?.rows?.map((r,i)=>`${i+1}. ${r}`).join('\n')||'Focus on the oldest and largest first.'}\n\nCall each one today. Reference the invoice number. Ask for payment by end of week.\n\n→ Add your API key for a full live analysis.`;
+    } else if(lower.includes('this week')||lower.includes('priorit')||lower.includes('first')) {
+      reply = `This week, focus on these 3 things in order:\n\n1. ${IND.leaks[0].title} — ${IND.leaks[0].action.split('.')[0]}\n\n2. ${IND.leaks[1].title} — ${IND.leaks[1].action.split('.')[0]}\n\n3. Chase overdue invoices by phone today\n\n→ Add your API key for a live AI analysis specific to your real numbers.`;
+    } else {
+      reply = `Based on the ${IND.label} data loaded:\n\nYour biggest issue is ${IND.leaks[0].title.toLowerCase()} — costing approximately $${(IND.leaks[0].amount/1000).toFixed(0)}K. ${IND.leaks[0].action.split('.')[0]}.\n\n→ Add your Anthropic API key at the start to get a full live AI analysis tailored to your exact question.`;
+    }
+    chatHistory.push({role:'assistant',content:reply});
+    appendMsg('assistant', reply);
+    chatLoading = false;
+    document.getElementById('chat-send').disabled = false;
+    return;
+  }
+
   try {
-    const result = await api('/api/analyse', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      body: JSON.stringify({ financialData: FIN_DATA, question: msg }),
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:900,
+        system: IND.sysPrompt + `\n\nBusiness name: ${bizName}`,
+        messages: chatHistory.map(m=>({role:m.role,content:m.content})),
+      }),
     });
     document.getElementById('typing')?.remove();
-    chatHistory.push({role:'assistant',content:result.analysis});
-    appendMsg('assistant', result.analysis);
+    if(res.status===401){
+      appendMsg('assistant','Invalid API key — please refresh the page and re-enter your key.');
+    } else {
+      const data = await res.json();
+      const reply = data.content?.map(c=>c.text||'').join('')||'Something went wrong.';
+      chatHistory.push({role:'assistant',content:reply});
+      appendMsg('assistant',reply);
+    }
   } catch(e) {
     document.getElementById('typing')?.remove();
-    appendMsg('assistant', 'Error: '+e.message);
+    appendMsg('assistant','Connection error: '+e.message);
   }
   chatLoading = false;
   document.getElementById('chat-send').disabled = false;
@@ -820,12 +1164,12 @@ async function sendChat(text) {
 ══════════════════════════════════════════════════ */
 function renderHistory() {
   const el = document.getElementById('hist-list');
-  if (!analysisHistory.length) {
-    el.innerHTML = '<div class="empty-box">No analyses yet. Run your first analysis from the Overview tab.</div>';
+  if(!analysisHistory.length) {
+    el.innerHTML = `<div class="card" style="text-align:center;padding:60px;color:var(--tx3);font-size:13px">No analyses saved yet. Run an analysis from the Overview tab.</div>`;
     return;
   }
-  el.innerHTML = analysisHistory.map((a,i)=>`
-    <div class="hist-item" onclick="toggleHist(${i})">
+  el.innerHTML = analysisHistory.map((a,i) => `
+    <div class="hist" onclick="toggleHist(${i})">
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div><div class="hist-q">${a.question}</div><div class="hist-t">${a.time}</div></div>
@@ -837,26 +1181,24 @@ function renderHistory() {
 }
 
 function toggleHist(i) {
-  const b=document.getElementById('hb-'+i), a=document.getElementById('ha-'+i);
+  const b=document.getElementById('hb-'+i),a=document.getElementById('ha-'+i);
   b.classList.toggle('open');
-  a.textContent = b.classList.contains('open')?'↑':'↓';
+  a.textContent=b.classList.contains('open')?'↑':'↓';
 }
 
-/* ══════════════════════════════════════════════════
-   DISCONNECT / LOGOUT
-══════════════════════════════════════════════════ */
-async function disconnect() {
-  if (!confirm('Disconnect your accounting software? You can reconnect anytime.')) return;
-  try {
-    await api('/api/connection', {method:'DELETE'});
-    window.location.reload();
-  } catch(e) { alert('Error: '+e.message); }
+function showConnect() {
+  document.getElementById('connect-overlay').style.display='flex';
+  fetch('/api/auth/me',{credentials:'include'}).catch(()=>{});
 }
 
-async function logout() {
-  try { await api('/api/auth/logout', {method:'POST'}); } catch(e){}
-  window.location.href = '/';
+function hideConnect() {
+  document.getElementById('connect-overlay').style.display='none';
 }
+
+document.addEventListener('click', e => {
+  const o=document.getElementById('connect-overlay');
+  if(e.target===o) hideConnect();
+});
 </script>
 </body>
 </html>
