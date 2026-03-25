@@ -798,6 +798,250 @@ let invTab = 'inv';
 let chatHistory = [];
 let chatLoading = false;
 let analysisHistory = [];
+let isLiveData = false;
+let liveProvider = '';
+let cachedFinancialData = null;
+
+/* ══════════════════════════════════════════════════
+   PAGE INIT — check for live Xero connection
+══════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const meRes = await fetch('/api/auth/me', {credentials:'include'});
+    if (meRes.ok) {
+      const me = await meRes.json();
+      if (me.connection) {
+        await loadRealData(me);
+        return;
+      }
+    }
+  } catch(e) {}
+  document.getElementById('setup-screen').style.display = 'flex';
+});
+
+async function loadRealData(me) {
+  // Show spinner while loading
+  document.getElementById('setup-screen').style.display = 'flex';
+  document.getElementById('setup-screen').innerHTML = `
+    <div style="text-align:center;color:var(--tx2)">
+      <div style="width:32px;height:32px;border:3px solid var(--s3);border-top-color:var(--ac);border-radius:50%;animation:spin .65s linear infinite;display:inline-block;margin-bottom:18px"></div>
+      <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px">Loading your data…</div>
+      <div style="font-size:13px;color:var(--tx3)">Fetching from ${(me.connection.provider||'Xero').toUpperCase()}</div>
+    </div>`;
+
+  try {
+    const dataRes = await fetch('/api/data', {credentials:'include'});
+    const result = await dataRes.json();
+    if (!result.ok) throw new Error(result.error || 'Failed to load data');
+
+    cachedFinancialData = result.data;
+    bizName = me.connection.tenant_name || me.user?.company || 'Your Business';
+    apiKey = '';
+    IND = transformProviderData(result.data, result.provider);
+    isLiveData = true;
+    liveProvider = result.provider;
+
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+
+    // Sidebar
+    document.getElementById('sb-biz-name').textContent = bizName;
+    document.getElementById('sb-source').textContent = result.provider.toUpperCase() + ' · LIVE DATA';
+    document.getElementById('sb-ind-badge').textContent = 'Live Data';
+    const demoNote = document.querySelector('.sb-demo-note');
+    if (demoNote) demoNote.style.display = 'none';
+    const footBtn = document.querySelector('.sb-foot button');
+    if (footBtn) { footBtn.textContent = '↻ Refresh Data'; footBtn.onclick = () => loadRealData(me); }
+
+    // Topbar
+    document.getElementById('tb-sub').textContent = bizName + ' · ' + new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const initials = bizName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('tb-av').textContent = initials || 'FG';
+
+    // Nav
+    document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.addEventListener('click', () => goTo(b.dataset.page)));
+
+    buildKPIs(); buildExpenses(); buildARAP(); buildLeaks(); renderInvoices(); initChat(); renderHistory();
+    goTo('overview');
+
+  } catch(err) {
+    document.getElementById('setup-screen').innerHTML = `
+      <div class="setup-box rise">
+        <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:18px;font-weight:800;color:var(--tx);margin-bottom:10px">Could not load data</div>
+        <div style="color:var(--tx2);font-size:13px;margin-bottom:20px">${err.message}</div>
+        <button class="setup-start" onclick="location.href='/app'">Try Again</button>
+      </div>`;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   XERO DATA TRANSFORMATION
+══════════════════════════════════════════════════ */
+function fmt$(n) {
+  if (!n || isNaN(n)) return '$0';
+  const abs = Math.abs(n);
+  const sign = n < 0 ? '-' : '';
+  if (abs >= 1000000) return sign + '$' + (abs/1000000).toFixed(2) + 'M';
+  if (abs >= 1000) return sign + '$' + Math.round(abs/1000) + 'K';
+  return sign + '$' + Math.round(abs);
+}
+
+function parseXeroDate(d) {
+  if (!d) return '';
+  if (d.includes('/Date(')) { const ts = parseInt(d.match(/\d+/)?.[0]||'0'); return new Date(ts).toISOString().split('T')[0]; }
+  return d.split('T')[0] || d;
+}
+
+function parseXeroPL(plData) {
+  if (!plData?.Reports?.[0]?.Rows) return null;
+  const rows = plData.Reports[0].Rows;
+  const lastVal = cells => { if (!cells?.length) return 0; const v = cells[cells.length-1]?.Value; return parseFloat((v||'0').replace(/[^0-9.-]/g,''))||0; };
+  let revenue=0, netProfit=0, grossProfit=0; const expenses=[];
+  for (const sec of rows) {
+    if (sec.RowType !== 'Section') continue;
+    const t = (sec.Title||'').toLowerCase();
+    for (const row of sec.Rows||[]) {
+      if (row.RowType === 'SummaryRow') {
+        const v = lastVal(row.Cells);
+        if (t.includes('income') || t.includes('revenue') || t.includes('trading')) { if(v>0) revenue=v; }
+        else if (t.includes('gross profit')) { grossProfit=v; }
+        else if (t.includes('net profit') || t.includes('net income') || t === 'profit') { netProfit=v; }
+      }
+      if (row.RowType === 'Row' && row.Cells?.length > 1) {
+        const name = row.Cells[0]?.Value;
+        const amount = lastVal(row.Cells);
+        if (name && amount > 100 && !t.includes('income') && !t.includes('revenue')) {
+          expenses.push({n:name, a:amount});
+        }
+      }
+    }
+  }
+  return {revenue, netProfit, grossProfit, expenses};
+}
+
+function parseXeroBS(bsData) {
+  if (!bsData?.Reports?.[0]?.Rows) return {cash:0};
+  const rows = bsData.Reports[0].Rows;
+  const lastVal = cells => { if (!cells?.length) return 0; const v = cells[cells.length-1]?.Value; return parseFloat((v||'0').replace(/[^0-9.-]/g,''))||0; };
+  let cash = 0;
+  for (const sec of rows) {
+    if (sec.RowType !== 'Section') continue;
+    const t = (sec.Title||'').toLowerCase();
+    if (t.includes('bank') || t.includes('cash') || t.includes('current asset')) {
+      for (const row of sec.Rows||[]) {
+        if (row.RowType === 'Row') {
+          const name = (row.Cells?.[0]?.Value||'').toLowerCase();
+          if (name.includes('bank')||name.includes('cash')||name.includes('cheque')||name.includes('checking')||name.includes('petty')) {
+            cash += lastVal(row.Cells);
+          }
+        }
+      }
+    }
+  }
+  return {cash};
+}
+
+function transformXeroInvoices(invoices) {
+  return (invoices||[]).map(inv => {
+    const due = parseXeroDate(inv.DueDate);
+    const isOverdue = due && new Date(due) < new Date() && (inv.AmountDue||0) > 0;
+    return {id: inv.InvoiceNumber||'INV', c: inv.Contact?.Name||'Unknown', a: inv.AmountDue||0, due, s: isOverdue?'OVERDUE':'OUTSTANDING'};
+  }).filter(i => i.a > 0);
+}
+
+function deriveLeaks(pl, invoices, bills) {
+  const leaks = [];
+  const overdueInv = invoices.filter(i=>i.s==='OVERDUE');
+  const overdueInvTotal = overdueInv.reduce((s,i)=>s+i.a, 0);
+  const overdueBills = bills.filter(b=>b.s==='OVERDUE');
+  const overdueBillsTotal = overdueBills.reduce((s,b)=>s+b.a, 0);
+
+  if (overdueInvTotal > 0) leaks.push({
+    level:'critical', title:`${fmt$(overdueInvTotal)} Overdue — Cash Flow at Risk`, amount:overdueInvTotal, alabel:'Cash impact now', color:'var(--red)',
+    body:`You have <strong style="color:var(--tx)">${fmt$(overdueInvTotal)} overdue</strong> across ${overdueInv.length} invoice${overdueInv.length>1?'s':''}. Every day these go unpaid is money you\'ve earned sitting idle.`,
+    action:`Call your oldest overdue client today — not email. Phone calls get paid 3x faster. Set a 7-day payment deadline and follow up firmly. ${overdueInv[0]?overdueInv[0].c+' ('+fmt$(overdueInv[0].a)+') should be your first call.':''}`,
+    acol:'var(--red)',abg:'rgba(255,92,92,.06)',abd:'rgba(255,92,92,.12)'
+  });
+
+  if (pl?.revenue > 0 && pl?.netProfit !== undefined) {
+    const margin = pl.netProfit / pl.revenue * 100;
+    if (margin < 10) leaks.push({
+      level: margin < 5 ? 'critical' : 'high',
+      title: `Net Margin at ${margin.toFixed(1)}% — Below Healthy Benchmark`,
+      amount: Math.round(pl.revenue * 0.05),
+      alabel: 'Annual impact of 5% margin gain',
+      color: margin < 5 ? 'var(--red)' : 'var(--amber)',
+      body: `Net profit margin is <strong style="color:var(--tx)">${margin.toFixed(1)}%</strong> on ${fmt$(pl.revenue)} revenue. A healthy SMB margin is 10–15%. Closing this gap adds ${fmt$(pl.revenue*0.05)} to the bottom line annually.`,
+      action: 'Review your top 3 expense categories for reduction opportunities. Request competing quotes from suppliers. Check whether any subscriptions or services can be cut or renegotiated.',
+      acol: margin<5?'var(--red)':'var(--amber)', abg: margin<5?'rgba(255,92,92,.06)':'rgba(255,179,71,.06)', abd: margin<5?'rgba(255,92,92,.12)':'rgba(255,179,71,.15)'
+    });
+  }
+
+  if (pl?.expenses?.length > 0 && pl?.revenue > 0) {
+    const top = [...pl.expenses].sort((a,b)=>b.a-a.a)[0];
+    const pct = top.a/pl.revenue*100;
+    if (pct > 35) leaks.push({
+      level:'high', title:`${top.n} at ${pct.toFixed(0)}% of Revenue`, amount:Math.round(top.a*0.05), alabel:'Saving from 5% reduction', color:'var(--amber)',
+      body:`<strong style="color:var(--tx)">${top.n}</strong> is your single largest cost at ${pct.toFixed(0)}% of revenue (${fmt$(top.a)}). A 5% reduction alone saves ${fmt$(top.a*0.05)} annually.`,
+      action:`Audit ${top.n} line items in detail. Identify sub-categories that have grown vs last year. Look for contracts up for renewal or services that can be renegotiated or cut.`,
+      acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'
+    });
+  }
+
+  if (overdueBillsTotal > 0) leaks.push({
+    level:'high', title:`${overdueBills.length} Overdue Bill${overdueBills.length>1?'s':''} — Supplier Risk`, amount:overdueBillsTotal, alabel:'Outstanding to suppliers', color:'var(--amber)',
+    body:`You have <strong style="color:var(--tx)">${fmt$(overdueBillsTotal)} overdue</strong> to ${overdueBills.length} supplier${overdueBills.length>1?'s':''}. This risks damaging supplier relationships and losing credit terms.`,
+    action:'Contact your largest overdue supplier and negotiate a payment plan. Prioritise before new orders. Set calendar reminders for all future bill due dates.',
+    acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'
+  });
+
+  if (leaks.length === 0) leaks.push({
+    level:'high', title:'Run AI Analysis for Full Profit Leak Detection', amount:0, alabel:'Connect AI for insights', color:'var(--amber)',
+    body:'Your basic financials are loaded. Run the AI analysis below to get a detailed breakdown of where your money is going and specific actions to improve profitability.',
+    action:'Click "Run Profit Leak Analysis" in the Overview tab to get a full AI-powered analysis of your specific numbers.',
+    acol:'var(--amber)',abg:'rgba(255,179,71,.06)',abd:'rgba(255,179,71,.15)'
+  });
+
+  return leaks;
+}
+
+function transformProviderData(data, provider) {
+  const pl = parseXeroPL(data.profitLoss);
+  const bs = parseXeroBS(data.balanceSheet);
+  const invoices = transformXeroInvoices(data.invoices);
+  const bills = transformXeroInvoices(data.bills);
+
+  const revenue = pl?.revenue||0, netProfit = pl?.netProfit||0, cash = bs?.cash||0;
+  const margin = revenue>0 ? netProfit/revenue*100 : 0;
+  const overdueInv = invoices.filter(i=>i.s==='OVERDUE');
+  const overdueInvTotal = overdueInv.reduce((s,i)=>s+i.a,0);
+  const totalAR = invoices.reduce((s,i)=>s+i.a,0);
+  const totalAP = bills.reduce((s,b)=>s+b.a,0);
+  const overdueBills = bills.filter(b=>b.s==='OVERDUE');
+  const overdueBillsTotal = overdueBills.reduce((s,b)=>s+b.a,0);
+
+  const expenses = (pl?.expenses||[]).sort((a,b)=>b.a-a.a).slice(0,8).map(e => ({n:e.n, a:e.a, pct:revenue>0?parseFloat((e.a/revenue*100).toFixed(1)):0}));
+  if (expenses.length===0) expenses.push({n:'No expense data available',a:0,pct:0});
+
+  const kpis = [
+    {l:'Revenue (YTD)', v:revenue>0?fmt$(revenue):'—', delta:'▲ From '+provider, up:true, sub:'From '+provider.toUpperCase()},
+    {l:'Net Profit', v:netProfit!==0?fmt$(Math.abs(netProfit)):'—', color:netProfit<0?'var(--red)':margin<10?'var(--amber)':'var(--green)', delta:(netProfit>=0?'▲':'▼')+' '+Math.abs(margin).toFixed(1)+'% margin', up:netProfit>=0, sub:margin<5?'Below benchmark':margin<10?'Room to improve':'Strong'},
+    {l:'Cash Position', v:cash>0?fmt$(cash):'—', color:cash<20000?'var(--red)':cash<50000?'var(--amber)':'', sub:cash<20000?'Critically low':cash<50000?'Watch closely':'Healthy'},
+    {l:'Overdue Invoices', v:overdueInvTotal>0?fmt$(overdueInvTotal):'$0', color:overdueInvTotal>0?'var(--red)':'var(--green)', delta:overdueInvTotal>0?'▼ '+overdueInv.length+' invoice'+(overdueInv.length>1?'s':'')+' unpaid':'✓ All current', up:false, sub:overdueInv.length>0?'Oldest: '+Math.floor((Date.now()-new Date(overdueInv.sort((a,b)=>new Date(a.due)-new Date(b.due))[0]?.due||Date.now()))/86400000)+'d':''}
+  ];
+
+  const leaks = deriveLeaks(pl, invoices, bills);
+
+  return {
+    label:'Live Data', icon:'📊', kpis, expenses, invoices, bills, leaks,
+    arTitle:'Clients owe you', arTotal:fmt$(totalAR), arSub:`Across ${invoices.length} outstanding invoice${invoices.length!==1?'s':''}`,
+    arAlert: overdueInvTotal>0 ? {msg:fmt$(overdueInvTotal)+' overdue', rows:overdueInv.slice(0,3).map(i=>`${i.c} · ${fmt$(i.a)} · ${Math.floor((Date.now()-new Date(i.due))/86400000)}d`)} : null,
+    apTitle:'You owe suppliers', apTotal:fmt$(totalAP), apSub:`Across ${bills.length} outstanding bill${bills.length!==1?'s':''}`,
+    apAlert: overdueBillsTotal>0 ? {msg:overdueBills.length+' bill'+(overdueBills.length>1?'s':'')+' overdue', rows:overdueBills.slice(0,3).map(b=>`${b.c} · ${fmt$(b.a)} · ${Math.floor((Date.now()-new Date(b.due))/86400000)}d overdue`)} : null,
+    sysPrompt:`You are FlowGuard AI for ${bizName}. Real ${provider} data: Revenue ${fmt$(revenue)}, Net Profit ${fmt$(netProfit)} (${margin.toFixed(1)}% margin), Cash ${fmt$(cash)}. Overdue AR: ${fmt$(overdueInvTotal)} across ${overdueInv.length} invoices. Top expenses: ${expenses.slice(0,3).map(e=>e.n+' '+fmt$(e.a)).join(', ')}. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
+    suggestions:['Where is my biggest profit leak?','Which invoices should I chase today?','How do I improve my cash position?','What should I do this week to save the most money?']
+  };
+}
 
 /* ══════════════════════════════════════════════════
    SETUP
@@ -1001,6 +1245,33 @@ async function runAnalysis() {
 
   await new Promise(r => setTimeout(r, 2200));
 
+  // Use backend if live data
+  if (isLiveData) {
+    try {
+      const res = await fetch('/api/analyse', {
+        method:'POST', credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({financialData: cachedFinancialData, question:null})
+      });
+      clearInterval(interval);
+      document.getElementById('scan-wrap').style.display = 'none';
+      const data = await res.json();
+      const result = data.analysis || data.error || 'Analysis failed.';
+      document.getElementById('analysis-box').textContent = result;
+      document.getElementById('analysis-box').style.display = 'block';
+      analysisHistory.unshift({question:'Full profit leak analysis',result,time:new Date().toLocaleString('en-AU')});
+      renderHistory();
+    } catch(e) {
+      clearInterval(interval);
+      document.getElementById('scan-wrap').style.display = 'none';
+      document.getElementById('analysis-box').textContent = 'Error: ' + e.message;
+      document.getElementById('analysis-box').style.display = 'block';
+    }
+    btn.disabled = false;
+    btn.innerHTML = '↻ Re-run Analysis';
+    return;
+  }
+
   if (!apiKey) {
     // Show demo analysis
     clearInterval(interval);
@@ -1109,6 +1380,27 @@ async function sendChat(text) {
   typ.innerHTML = `<div class="msg-av">F</div><div class="bubble bubble-a typing"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
   area.appendChild(typ);
   area.scrollTop = area.scrollHeight;
+
+  if (isLiveData) {
+    try {
+      const res = await fetch('/api/analyse', {
+        method:'POST', credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({financialData: cachedFinancialData, question: msg})
+      });
+      document.getElementById('typing')?.remove();
+      const data = await res.json();
+      const reply = data.analysis || data.error || 'Something went wrong.';
+      chatHistory.push({role:'assistant',content:reply});
+      appendMsg('assistant', reply);
+    } catch(e) {
+      document.getElementById('typing')?.remove();
+      appendMsg('assistant','Connection error: '+e.message);
+    }
+    chatLoading = false;
+    document.getElementById('chat-send').disabled = false;
+    return;
+  }
 
   if (!apiKey) {
     await new Promise(r=>setTimeout(r,800));
