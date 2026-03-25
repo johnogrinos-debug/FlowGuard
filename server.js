@@ -453,7 +453,7 @@ Rules: Real numbers only. Biggest impact first. Direct like a CFO. Use ## header
 
   try {
     const r = await axios.post('https://api.anthropic.com/v1/messages',
-      { model:'claude-sonnet-4-20250514', max_tokens:2500, system, messages:[{ role:'user', content:prompt }] },
+      { model:'claude-sonnet-4-6', max_tokens:2500, system, messages:[{ role:'user', content:prompt }] },
       { headers:{ 'x-api-key':CONFIG.anthropicKey, 'anthropic-version':'2023-06-01', 'Content-Type':'application/json' } }
     );
     const analysis = r.data.content.map(c=>c.text||'').join('');

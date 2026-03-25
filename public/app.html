@@ -961,27 +961,68 @@ function parseXeroDate(d) {
 function parseXeroPL(plData) {
   if (!plData?.Reports?.[0]?.Rows) return null;
   const rows = plData.Reports[0].Rows;
-  const lastVal = cells => { if (!cells?.length) return 0; const v = cells[cells.length-1]?.Value; return parseFloat((v||'0').replace(/[^0-9.-]/g,''))||0; };
-  let revenue=0, netProfit=0, grossProfit=0; const expenses=[];
-  for (const sec of rows) {
-    if (sec.RowType !== 'Section') continue;
-    const t = (sec.Title||'').toLowerCase();
-    for (const row of sec.Rows||[]) {
-      if (row.RowType === 'SummaryRow') {
-        const v = lastVal(row.Cells);
-        if (t.includes('income') || t.includes('revenue') || t.includes('trading')) { if(v>0) revenue=v; }
-        else if (t.includes('gross profit')) { grossProfit=v; }
-        else if (t.includes('net profit') || t.includes('net income') || t === 'profit') { netProfit=v; }
+  const lastVal = cells => {
+    if (!cells?.length) return 0;
+    // Try last cell first, then second-to-last
+    for (let i = cells.length - 1; i >= 0; i--) {
+      const v = cells[i]?.Value;
+      if (v && v !== '' && v !== ' ') {
+        const n = parseFloat(v.replace(/[^0-9.-]/g,''));
+        if (!isNaN(n)) return n;
       }
-      if (row.RowType === 'Row' && row.Cells?.length > 1) {
-        const name = row.Cells[0]?.Value;
-        const amount = lastVal(row.Cells);
-        if (name && amount > 100 && !t.includes('income') && !t.includes('revenue')) {
-          expenses.push({n:name, a:amount});
+    }
+    return 0;
+  };
+  let revenue=0, netProfit=0, grossProfit=0;
+  const expenses=[];
+  const allRows = [];
+
+  // Flatten all rows for easier parsing
+  const flatten = (rowList, depth=0) => {
+    for (const row of rowList||[]) {
+      allRows.push({...row, _depth: depth});
+      if (row.Rows) flatten(row.Rows, depth+1);
+    }
+  };
+  flatten(rows);
+
+  for (const row of allRows) {
+    const title = (row.Title||row.Cells?.[0]?.Value||'').toLowerCase();
+    const val = lastVal(row.Cells);
+
+    if (row.RowType === 'SummaryRow' || row.RowType === 'Row') {
+      if (title.includes('total income') || title.includes('total revenue') || title.includes('total operating income') || title === 'total trading income') {
+        if (val > 0) revenue = val;
+      }
+      if (title.includes('total gross profit') || title === 'gross profit') {
+        grossProfit = val;
+      }
+      if (title.includes('net profit') || title.includes('net income') || title.includes('profit for') || title === 'profit') {
+        netProfit = val;
+      }
+    }
+    // Collect expense line items
+    if (row.RowType === 'Row' && row._depth >= 1 && val > 0) {
+      const name = row.Cells?.[0]?.Value||'';
+      if (name && !name.toLowerCase().includes('total') && name.toLowerCase() !== 'revenue' && name.toLowerCase() !== 'income') {
+        expenses.push({n: name, a: val});
+      }
+    }
+  }
+
+  // Fallback: if revenue still 0, sum all positive income section values
+  if (revenue === 0) {
+    for (const row of allRows) {
+      if (row.RowType === 'SummaryRow') {
+        const title = (row.Title||row.Cells?.[0]?.Value||'').toLowerCase();
+        const val = lastVal(row.Cells);
+        if ((title.includes('income') || title.includes('revenue') || title.includes('sales')) && val > 0) {
+          revenue = Math.max(revenue, val);
         }
       }
     }
   }
+
   return {revenue, netProfit, grossProfit, expenses};
 }
 
