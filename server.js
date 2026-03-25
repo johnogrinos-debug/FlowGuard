@@ -370,6 +370,20 @@ async function fetchQuickBooksData(conn) {
   };
 }
 
+// ── DEBUG ─────────────────────────────────────────────────────────────
+app.get('/api/debug', auth, async (req, res) => {
+  const conn = db.prepare('SELECT * FROM connections WHERE user_id=? ORDER BY created_at DESC LIMIT 1').get(req.user.id);
+  if (!conn) return res.json({ error:'No connection' });
+  try {
+    const token = await getValidXeroToken(conn);
+    const headers = { Authorization:'Bearer '+token, 'Xero-tenant-id':conn.tenant_id, Accept:'application/json' };
+    const toDate = new Date().toISOString().split('T')[0];
+    const fromDate = new Date(Date.now()-365*86400000).toISOString().split('T')[0];
+    const pl = await axios.get(CONFIG.xero.apiBase+'/Reports/ProfitAndLoss', { headers, params:{ fromDate, toDate } });
+    res.json({ tenant_id: conn.tenant_id, tenant_name: conn.tenant_name, pl: pl.data });
+  } catch(e) { res.json({ error: e.message, data: e.response?.data }); }
+});
+
 app.get('/api/data', auth, async (req, res) => {
   const conn = db.prepare('SELECT * FROM connections WHERE user_id=? ORDER BY created_at DESC LIMIT 1').get(req.user.id);
   if (!conn) return res.status(404).json({ error:'No accounting software connected' });
@@ -442,18 +456,31 @@ app.post('/api/analyse', auth, async (req, res) => {
   if (!financialData) return res.status(400).json({ error:'No financial data provided' });
 
   const summary = buildSummary(financialData, conn.provider);
-  const system = `You are FlowGuard AI — a sharp CFO-level analyst for ${conn.tenant_name||'this business'} (${conn.provider.toUpperCase()} data).
+  const system = `You are FlowGuard AI — a senior CFO and business advisor analysing ${conn.tenant_name||'this business'} using live ${conn.provider.toUpperCase()} data.
 
-Find: 1) Profit leaks with dollar amounts 2) Cash flow risks 3) Cost trends 4) Top actions this week.
-Rules: Real numbers only. Biggest impact first. Direct like a CFO. Use ## headers.`;
+Your job is to find profit leaks, cash flow risks, and growth opportunities — then give specific, actionable recommendations with dollar amounts.
+
+ANALYSIS FRAMEWORK:
+1. PROFIT LEAKS — Every cost that is above industry benchmark or growing faster than revenue. Always include the dollar amount of the leak and what benchmark it should be at.
+2. CASH FLOW RISKS — Overdue invoices, upcoming bill payments, cash runway. Name specific clients/suppliers and amounts.
+3. EXPENSE TRENDS — Which costs are eating margin? What % of revenue are they? Compare to healthy benchmarks.
+4. REVENUE OPPORTUNITIES — Based on the data, what quick wins could add revenue this month?
+5. THIS WEEK'S ACTION PLAN — Exactly 3 actions, ranked by dollar impact. Be specific: name the client to call, the cost to cut, the price to raise.
+
+RULES:
+- Use real numbers from the data. Never say "significant" — say "$12,400".
+- Be direct and honest. If the business is in trouble, say so clearly.
+- Format with ## headers for each section.
+- End every analysis with a "FlowScore" out of 100 with a one-line explanation.
+- For each leak, include: what it is, how much it's costing, what the benchmark is, and the specific action to fix it.`;
 
   const prompt = question
-    ? `Financial data:\n\n${summary}\n\nQuestion: ${question}`
-    : `Financial data:\n\n${summary}\n\nGive a complete profit leak analysis: dollar amounts, cash flow risks, top 3 actions this week ranked by impact.`;
+    ? `Financial data:\n\n${summary}\n\nQuestion: ${question}\n\nAnswer based strictly on the data above. Include specific dollar amounts and a concrete recommendation.`
+    : `Financial data:\n\n${summary}\n\nDeliver a complete FlowGuard profit analysis. Cover all 5 sections of the framework. Be specific with every dollar amount. End with the FlowScore.`;
 
   try {
     const r = await axios.post('https://api.anthropic.com/v1/messages',
-      { model:'claude-sonnet-4-6', max_tokens:2500, system, messages:[{ role:'user', content:prompt }] },
+      { model:'claude-sonnet-4-6', max_tokens:3000, system, messages:[{ role:'user', content:prompt }] },
       { headers:{ 'x-api-key':CONFIG.anthropicKey, 'anthropic-version':'2023-06-01', 'Content-Type':'application/json' } }
     );
     const analysis = r.data.content.map(c=>c.text||'').join('');
