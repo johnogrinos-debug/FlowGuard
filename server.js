@@ -84,7 +84,7 @@ const CONFIG = {
     authUrl:      'https://login.xero.com/identity/connect/authorize',
     tokenUrl:     'https://identity.xero.com/connect/token',
     apiBase:      'https://api.xero.com/api.xro/2.0',
-    scopes:       'openid profile email accounting.reports.read accounting.transactions.read accounting.settings.read offline_access',
+    scopes:       'openid profile email accounting.READ offline_access',
   },
   myob: {
     clientId:     process.env.MYOB_CLIENT_ID     || '',
