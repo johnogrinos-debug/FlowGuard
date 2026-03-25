@@ -480,15 +480,15 @@ RULES:
 
   try {
     const r = await axios.post('https://api.anthropic.com/v1/messages',
-      { model:'claude-sonnet-4-6', max_tokens:3000, system, messages:[{ role:'user', content:prompt }] },
+      { model:'claude-haiku-4-5-20251001', max_tokens:3000, system, messages:[{ role:'user', content:prompt }] },
       { headers:{ 'x-api-key':CONFIG.anthropicKey, 'anthropic-version':'2023-06-01', 'Content-Type':'application/json' } }
     );
     const analysis = r.data.content.map(c=>c.text||'').join('');
     db.prepare('INSERT INTO analyses (user_id,question,result) VALUES (?,?,?)').run(req.user.id, question||null, analysis);
     res.json({ ok:true, analysis });
   } catch(err) {
-    console.error('AI error:', err.response?.data||err.message);
-    res.status(500).json({ error:'AI analysis failed: '+err.message });
+    console.error('AI error full:', JSON.stringify(err.response?.data||err.message));
+    res.status(500).json({ error:'AI analysis failed: '+(err.response?.data?.error?.message||err.message) });
   }
 });
 

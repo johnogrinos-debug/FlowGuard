@@ -1004,7 +1004,8 @@ function parseXeroPL(plData) {
     // Collect expense line items
     if (row.RowType === 'Row' && row._depth >= 1 && val > 0) {
       const name = row.Cells?.[0]?.Value||'';
-      if (name && !name.toLowerCase().includes('total') && name.toLowerCase() !== 'revenue' && name.toLowerCase() !== 'income') {
+      const nameLower = name.toLowerCase();
+      if (name && !nameLower.includes('total') && !nameLower.includes('gross profit') && !nameLower.includes('net profit') && nameLower !== 'revenue' && nameLower !== 'income' && nameLower !== 'sales') {
         expenses.push({n: name, a: val});
       }
     }
