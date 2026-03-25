@@ -189,7 +189,7 @@ app.get('/callback/xero', async (req, res) => {
     );
     const { access_token, refresh_token, expires_in } = t.data;
     const tenants = await axios.get('https://api.xero.com/connections', { headers:{ Authorization:'Bearer '+access_token } });
-    const tenant = tenants.data[0];
+    const tenant = tenants.data.find(t => t.tenantName?.toLowerCase().includes('demo')) || tenants.data[tenants.data.length-1] || tenants.data[0];
     const ex = db.prepare('SELECT id FROM connections WHERE user_id=? AND provider=?').get(stateRow.user_id,'xero');
     if (ex) {
       db.prepare('UPDATE connections SET tenant_id=?,tenant_name=?,access_token=?,refresh_token=?,expires_at=? WHERE id=?')
