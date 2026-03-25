@@ -321,7 +321,7 @@ async function fetchXeroData(conn) {
   const toDate   = new Date().toISOString().split('T')[0];
   const fromDate = new Date(Date.now()-365*86400000).toISOString().split('T')[0];
   const [pl,bs,inv,bills] = await Promise.allSettled([
-    axios.get(CONFIG.xero.apiBase+'/Reports/ProfitAndLoss', { headers, params:{ fromDate, toDate, periods:12, timeframe:'MONTH' } }),
+    axios.get(CONFIG.xero.apiBase+'/Reports/ProfitAndLoss', { headers, params:{ fromDate, toDate } }),
     axios.get(CONFIG.xero.apiBase+'/Reports/BalanceSheet',  { headers, params:{ date:toDate } }),
     axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ where:'Status=="AUTHORISED"&&Type=="ACCREC"', order:'DueDate ASC', pageSize:100 } }),
     axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ where:'Status=="AUTHORISED"&&Type=="ACCPAY"', order:'DueDate ASC', pageSize:100 } }),
