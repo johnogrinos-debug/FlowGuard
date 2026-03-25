@@ -225,7 +225,54 @@ nav{padding:9px 8px;flex:1}
      SETUP SCREEN
 ═══════════════════════════════════ -->
 <div id="setup-screen">
-  <div class="setup-box rise">
+
+  <!-- AUTH PANEL (login/signup) -->
+  <div class="setup-box rise" id="auth-panel" style="display:none">
+    <div class="setup-logo">
+      <div class="setup-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+      </div>
+      <div>
+        <div class="setup-brand">FlowGuard</div>
+        <div style="font-size:9px;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase">AI Profit Intelligence</div>
+      </div>
+    </div>
+
+    <div id="auth-mode-tabs" style="display:flex;gap:0;margin-bottom:24px;border:1px solid var(--b2);border-radius:9px;overflow:hidden">
+      <button id="tab-login" onclick="showAuthMode('login')" style="flex:1;padding:10px;background:var(--s3);border:none;color:var(--tx);font-size:13px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer">Log In</button>
+      <button id="tab-signup" onclick="showAuthMode('signup')" style="flex:1;padding:10px;background:transparent;border:none;color:var(--tx2);font-size:13px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer">Sign Up</button>
+    </div>
+
+    <div id="signup-fields" style="display:none">
+      <div class="setup-field">
+        <div class="setup-label">Your name</div>
+        <input class="setup-input" id="auth-name" placeholder="John Smith">
+      </div>
+      <div class="setup-field">
+        <div class="setup-label">Company name</div>
+        <input class="setup-input" id="auth-company" placeholder="Smith Plumbing Pty Ltd">
+      </div>
+    </div>
+
+    <div class="setup-field">
+      <div class="setup-label">Email</div>
+      <input class="setup-input" id="auth-email" type="email" placeholder="you@company.com" oninput="clearAuthErr()">
+    </div>
+    <div class="setup-field">
+      <div class="setup-label">Password</div>
+      <input class="setup-input" id="auth-password" type="password" placeholder="Min 8 characters" oninput="clearAuthErr()">
+    </div>
+
+    <div id="auth-err" style="display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:14px"></div>
+
+    <button class="setup-start" id="auth-btn" onclick="doAuth()">Log In →</button>
+    <div class="setup-note" style="margin-top:14px">
+      <span id="auth-switch-text">Don't have an account?</span> <a href="#" onclick="showAuthMode(document.getElementById('tab-signup').style.fontWeight==='600'?'login':'signup');return false" id="auth-switch-link" style="color:var(--ac)">Sign up free</a>
+    </div>
+  </div>
+
+  <!-- DEMO PANEL (industry selection) -->
+  <div class="setup-box rise" id="demo-panel" style="display:none">
     <div class="setup-logo">
       <div class="setup-mark">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
@@ -268,6 +315,7 @@ nav{padding:9px 8px;flex:1}
       <a href="https://console.anthropic.com" target="_blank">Get a free API key →</a>
     </div>
   </div>
+
 </div>
 
 <!-- ═══════════════════════════════════
@@ -814,9 +862,27 @@ window.addEventListener('DOMContentLoaded', async () => {
         await loadRealData(me);
         return;
       }
+      // Logged in but no Xero connected — show connect overlay
+      document.getElementById('setup-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      bizName = me.user?.company || me.user?.name || 'Your Business';
+      selectedInd = 'other';
+      IND = INDUSTRIES['other'];
+      document.getElementById('sb-biz-name').textContent = bizName;
+      document.getElementById('sb-ind-badge').textContent = 'Demo';
+      document.getElementById('sb-source').textContent = 'DEMO DATA';
+      document.getElementById('tb-sub').textContent = bizName + ' · ' + new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      const initials = bizName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      document.getElementById('tb-av').textContent = initials || 'FG';
+      document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.addEventListener('click', () => goTo(b.dataset.page)));
+      buildKPIs(); buildExpenses(); buildARAP(); buildLeaks(); renderInvoices(); initChat(); renderHistory();
+      showConnect();
+      return;
     }
   } catch(e) {}
+  // Not logged in — show auth panel
   document.getElementById('setup-screen').style.display = 'flex';
+  document.getElementById('auth-panel').style.display = 'block';
 });
 
 async function loadRealData(me) {
@@ -1041,6 +1107,72 @@ function transformProviderData(data, provider) {
     sysPrompt:`You are FlowGuard AI for ${bizName}. Real ${provider} data: Revenue ${fmt$(revenue)}, Net Profit ${fmt$(netProfit)} (${margin.toFixed(1)}% margin), Cash ${fmt$(cash)}. Overdue AR: ${fmt$(overdueInvTotal)} across ${overdueInv.length} invoices. Top expenses: ${expenses.slice(0,3).map(e=>e.n+' '+fmt$(e.a)).join(', ')}. Be direct. Specific dollar amounts. End with 2-3 ranked actions.`,
     suggestions:['Where is my biggest profit leak?','Which invoices should I chase today?','How do I improve my cash position?','What should I do this week to save the most money?']
   };
+}
+
+/* ══════════════════════════════════════════════════
+   AUTH UI
+══════════════════════════════════════════════════ */
+let authMode = 'login';
+
+function showAuthMode(mode) {
+  authMode = mode;
+  const isLogin = mode === 'login';
+  document.getElementById('tab-login').style.background = isLogin ? 'var(--s3)' : 'transparent';
+  document.getElementById('tab-login').style.color = isLogin ? 'var(--tx)' : 'var(--tx2)';
+  document.getElementById('tab-signup').style.background = !isLogin ? 'var(--s3)' : 'transparent';
+  document.getElementById('tab-signup').style.color = !isLogin ? 'var(--tx)' : 'var(--tx2)';
+  document.getElementById('signup-fields').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('auth-btn').textContent = isLogin ? 'Log In →' : 'Create Account →';
+  document.getElementById('auth-switch-text').textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+  document.getElementById('auth-switch-link').textContent = isLogin ? 'Sign up free' : 'Log in';
+  document.getElementById('auth-switch-link').onclick = () => { showAuthMode(isLogin ? 'signup' : 'login'); return false; };
+  clearAuthErr();
+}
+
+function clearAuthErr() { document.getElementById('auth-err').style.display = 'none'; }
+
+function showAuthErr(msg) {
+  const el = document.getElementById('auth-err');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function doAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) { showAuthErr('Please enter your email and password.'); return; }
+  const btn = document.getElementById('auth-btn');
+  btn.disabled = true;
+  btn.textContent = authMode === 'login' ? 'Logging in…' : 'Creating account…';
+
+  try {
+    const body = authMode === 'login'
+      ? {email, password}
+      : {email, password, name: document.getElementById('auth-name').value.trim(), company: document.getElementById('auth-company').value.trim()};
+
+    const res = await fetch('/api/auth/' + authMode, {
+      method:'POST', headers:{'Content-Type':'application/json'}, credentials:'include',
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthErr(data.error || 'Something went wrong.'); btn.disabled=false; btn.textContent=authMode==='login'?'Log In →':'Create Account →'; return; }
+
+    // Success — check for Xero connection
+    const meRes = await fetch('/api/auth/me', {credentials:'include'});
+    if (meRes.ok) {
+      const me = await meRes.json();
+      if (me.connection) { await loadRealData(me); return; }
+    }
+
+    // No connection yet — show connect screen
+    document.getElementById('auth-panel').style.display = 'none';
+    document.getElementById('demo-panel').style.display = 'block';
+
+  } catch(e) {
+    showAuthErr('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = authMode === 'login' ? 'Log In →' : 'Create Account →';
+  }
 }
 
 /* ══════════════════════════════════════════════════
