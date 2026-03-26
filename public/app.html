@@ -6,43 +6,37 @@
 <title>FlowGuard — Find Your Profit Leaks</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#070808;color:#efefed;font-family:"DM Sans",sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
 button{cursor:pointer;font-family:inherit;border:none;background:none;transition:all .15s}
 input,select{font-family:inherit}
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-thumb{background:#252525;border-radius:3px}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* AUTH SCREEN */
-.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#070808}
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .auth-box{width:100%;max-width:420px;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
 .auth-logo{display:flex;align-items:center;gap:9px;margin-bottom:28px}
 .auth-mark{width:30px;height:30px;border-radius:8px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
 .auth-brand{font-family:"Syne",sans-serif;font-size:16px;font-weight:800}
 .auth-h{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
 .auth-sub{font-size:13px;color:#5a5d5d;margin-bottom:24px;line-height:1.6}
-.err-box{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.2);border-radius:9px;padding:11px 14px;font-size:12px;color:#ff5555;margin-bottom:14px;display:none;line-height:1.5}
+.err-box{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.25);border-radius:9px;padding:11px 14px;font-size:13px;color:#ff6666;margin-bottom:14px;display:none;line-height:1.5}
 .err-box.on{display:block}
 .f{margin-bottom:12px}
 .f label{display:block;font-size:9px;font-weight:700;color:#5a5d5d;text-transform:uppercase;letter-spacing:.12em;font-family:"Syne",sans-serif;margin-bottom:5px}
 .f input,.f select{width:100%;padding:11px 13px;background:#161818;border:1px solid rgba(255,255,255,.08);border-radius:9px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
-.f input:focus,.f select:focus{border-color:rgba(184,255,87,.35)}
+.f input:focus,.f select:focus{border-color:rgba(184,255,87,.4)}
 .f select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='none' stroke='%235a5d5d' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.auth-btn{width:100%;padding:13px;border-radius:10px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:9px}
+.auth-btn{width:100%;padding:14px;border-radius:10px;background:#b8ff57;color:#070808;font-size:15px;font-weight:800;font-family:"Syne",sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:9px;border:none;cursor:pointer}
 .auth-btn:hover{background:#ccff6b}
 .auth-btn:disabled{opacity:.45;cursor:not-allowed}
 .auth-sw{text-align:center;margin-top:16px;font-size:12px;color:#5a5d5d}
 .auth-sw a{color:#b8ff57;cursor:pointer;font-weight:600}
-.auth-sw a:hover{text-decoration:underline}
-
-/* APP SHELL */
-#app{display:none;min-height:100vh;background:#070808}
+#app{display:none;min-height:100vh}
 .topbar{max-width:720px;margin:0 auto;padding:18px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
 .logo{display:flex;align-items:center;gap:8px}
 .logo-mark{width:26px;height:26px;border-radius:7px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
@@ -50,23 +44,16 @@ input,select{font-family:inherit}
 .topbar-r{display:flex;align-items:center;gap:10px}
 .conn-btn{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:500;color:#5a5d5d;cursor:pointer;transition:all .14s}
 .conn-btn:hover{border-color:rgba(184,255,87,.3);color:#b8ff57}
-.conn-dot{width:5px;height:5px;border-radius:50%;background:#34d399;flex-shrink:0}
+.conn-dot{width:5px;height:5px;border-radius:50%;background:#34d399}
 .conn-dot.off{background:#2e3030}
-.user-av{width:28px;height:28px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);color:#b8ff57;font-family:"Syne",sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.user-av{width:28px;height:28px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);color:#b8ff57;font-family:"Syne",sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .out-btn{color:#2e3030;font-size:13px;padding:5px;border-radius:5px}
 .out-btn:hover{color:#ff5555;background:rgba(255,60,60,.08)}
-
-/* MAIN CONTENT */
 .main{max-width:720px;margin:0 auto;padding:0 20px 80px}
-
-/* DEMO BAR */
 .demo-bar{margin:16px 0;padding:10px 16px;background:rgba(184,255,87,.05);border:1px solid rgba(184,255,87,.12);border-radius:10px;display:none;align-items:center;justify-content:space-between;gap:12px}
 .demo-bar.on{display:flex}
 .demo-bar-t{font-size:12px;color:rgba(184,255,87,.6)}
-.demo-bar-btn{font-size:11px;font-weight:700;color:#b8ff57;font-family:"Syne",sans-serif;padding:5px 12px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2)}
-.demo-bar-btn:hover{background:rgba(184,255,87,.18)}
-
-/* HERO */
+.demo-bar-btn{font-size:11px;font-weight:700;color:#b8ff57;padding:5px 12px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);cursor:pointer}
 .hero{padding:36px 0 28px;text-align:center}
 .hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:12px}
 .hero-num{font-family:"DM Mono",monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;margin-bottom:10px;color:#2e3030}
@@ -74,24 +61,15 @@ input,select{font-family:inherit}
 .hero-num.green{color:#34d399}
 .hero-msg{font-size:15px;color:#5a5d5d;line-height:1.6}
 .hero-msg b{color:#efefed;font-weight:600}
-
-/* FORECAST */
 .forecast{margin:0 0 24px;padding:14px 18px;border-radius:12px;display:none;align-items:center;gap:13px;font-size:13px;line-height:1.6}
 .forecast.on{display:flex}
 .forecast.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.18)}
 .forecast.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.16)}
 .forecast.ok{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.16)}
-.forecast b.red{color:#ff4444}
-.forecast b.amber{color:#f59e0b}
-.forecast b.green{color:#34d399}
-
-/* RUN BTN */
 .run-wrap{text-align:center;margin:0 0 28px}
-.run-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:12px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 28px rgba(184,255,87,.22)}
-.run-btn:hover{background:#ccff6b;box-shadow:0 0 40px rgba(184,255,87,.3)}
+.run-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:12px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 28px rgba(184,255,87,.22);border:none;cursor:pointer}
+.run-btn:hover{background:#ccff6b}
 .run-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-
-/* SECTION */
 .sec{margin-bottom:28px}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif}
@@ -99,8 +77,6 @@ input,select{font-family:inherit}
 .b-red{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid rgba(255,68,68,.16)}
 .b-green{background:rgba(52,211,153,.08);color:#34d399;border:1px solid rgba(52,211,153,.16)}
 .b-muted{background:#1c1e1e;color:#5a5d5d;border:1px solid rgba(255,255,255,.06)}
-
-/* LEAK CARDS */
 .leak-card{background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:10px;animation:fadeUp .2s ease both}
 .leak-card:nth-child(2){animation-delay:.06s}
 .leak-card:nth-child(3){animation-delay:.12s}
@@ -113,62 +89,51 @@ input,select{font-family:inherit}
 .lc-bot{padding:12px 20px;border-top:1px solid rgba(255,255,255,.05);background:#0c0d0d;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .lc-action{font-size:12px;color:#5a5d5d;line-height:1.6;flex:1}
 .lc-action b{color:#efefed;font-weight:600}
-.fix-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;white-space:nowrap;border:1px solid}
-.fix-red{background:rgba(255,68,68,.08);color:#ff4444;border-color:rgba(255,68,68,.18)}
+.fix-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;white-space:nowrap;cursor:pointer}
+.fix-red{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid rgba(255,68,68,.18)}
 .fix-red:hover{background:rgba(255,68,68,.15)}
-.fix-amber{background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.18)}
+.fix-amber{background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.18)}
 .fix-amber:hover{background:rgba(245,158,11,.15)}
-
-/* EMPTY STATE */
 .empty-card{text-align:center;padding:52px 24px;background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px}
 .empty-ico{font-size:34px;margin-bottom:14px}
 .empty-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:7px}
 .empty-sub{font-size:13px;color:#5a5d5d;line-height:1.7;max-width:300px;margin:0 auto}
-
-/* ALERTS */
-.alert-card{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:8px;animation:fadeUp .2s ease}
+.alert-card{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:8px}
 .alert-card.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.14)}
 .alert-card.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.14)}
-.al-ico{font-size:15px;flex-shrink:0;margin-top:1px}
 .al-text{font-size:13px;line-height:1.55;flex:1}
 .al-text b{font-weight:600;color:#efefed}
-
-/* ASK AI */
 .ask-row{display:flex;gap:9px}
 .ask-inp{flex:1;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 16px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
 .ask-inp:focus{border-color:rgba(184,255,87,.3)}
 .ask-inp::placeholder{color:#2e3030}
-.ask-go{padding:12px 20px;border-radius:11px;background:#b8ff57;color:#070808;font-size:13px;font-weight:700;font-family:"Syne",sans-serif;flex-shrink:0}
+.ask-go{padding:12px 20px;border-radius:11px;background:#b8ff57;color:#070808;font-size:13px;font-weight:700;font-family:"Syne",sans-serif;flex-shrink:0;border:none;cursor:pointer}
 .ask-go:hover{background:#ccff6b}
 .ask-go:disabled{opacity:.4;cursor:not-allowed}
 .ask-ans{margin-top:12px;padding:16px;background:#0f1010;border:1px solid rgba(255,255,255,.07);border-radius:12px;font-size:13px;line-height:1.8;color:#5a5d5d;display:none;animation:fadeUp .2s ease}
 .ask-ans.on{display:block}
 .ask-ans b{color:#efefed;font-weight:600}
-
-/* FIX MODAL */
-.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(7,8,8,.93);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px;animation:fadeIn .18s ease}
-.modal-bg.on{display:flex}
+.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(7,8,8,.93);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal-bg.on{display:flex;animation:fadeIn .18s ease}
 .modal-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s ease}
 .modal-pill{width:34px;height:3px;background:#252525;border-radius:3px;margin:14px auto 0}
 .modal-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .modal-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
 .modal-sub{font-size:12px;color:#5a5d5d}
-.modal-close{color:#5a5d5d;font-size:20px;line-height:1;padding:2px;flex-shrink:0}
+.modal-close{color:#5a5d5d;font-size:20px;line-height:1;padding:2px;background:none;border:none;cursor:pointer}
 .modal-close:hover{color:#efefed}
 .modal-body{padding:18px 22px}
-.modal-sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:9px}
+.modal-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:9px}
 .modal-draft{background:#161818;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:16px;font-size:13px;line-height:1.8;color:#5a5d5d;white-space:pre-wrap;margin-bottom:16px}
 .modal-draft b{color:#efefed;font-weight:600}
 .modal-btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
-.modal-copy{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:9px;background:#b8ff57;color:#070808;font-size:12px;font-weight:700;font-family:"Syne",sans-serif}
+.modal-copy{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:9px;background:#b8ff57;color:#070808;font-size:12px;font-weight:700;font-family:"Syne",sans-serif;border:none;cursor:pointer}
 .modal-copy:hover{background:#ccff6b}
-.modal-sec-btn{padding:10px 16px;border-radius:9px;background:#161818;color:#5a5d5d;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.07)}
+.modal-sec-btn{padding:10px 16px;border-radius:9px;background:#161818;color:#5a5d5d;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.07);cursor:pointer}
 .modal-sec-btn:hover{background:#1c1e1e;color:#efefed}
 .modal-loading{display:flex;align-items:center;gap:12px;font-size:13px;color:#5a5d5d;padding:24px 0}
-
-/* CONNECT OVERLAY */
-.conn-overlay{position:fixed;inset:0;z-index:70;background:rgba(7,8,8,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .18s ease}
-.conn-overlay.on{display:flex}
+.conn-overlay{position:fixed;inset:0;z-index:70;background:rgba(7,8,8,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.conn-overlay.on{display:flex;animation:fadeIn .18s ease}
 .conn-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:40px 36px;width:100%;max-width:460px;animation:fadeUp .25s ease}
 .conn-h{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
 .conn-sub{font-size:13px;color:#5a5d5d;margin-bottom:28px;line-height:1.65}
@@ -183,26 +148,23 @@ input,select{font-family:inherit}
 .conn-skip{text-align:center;margin-top:8px}
 .conn-skip a{font-size:12px;color:#5a5d5d;cursor:pointer}
 .conn-skip a:hover{color:#efefed}
-
-/* UTILS */
 .spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.08);border-top-color:#b8ff57;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;font-family:"Syne",sans-serif;display:none;animation:fadeUp .2s ease}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;font-family:"Syne",sans-serif;display:none}
 .toast.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.22);color:#34d399}
-.toast.err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.22);color:#ff5555}
+.toast.err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.22);color:#ff6666}
 .toast.info{background:rgba(184,255,87,.07);border:1px solid rgba(184,255,87,.16);color:#b8ff57}
+
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ AUTH ═══════════════════════ -->
+<!-- AUTH -->
 <div id="auth-screen" class="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">
       <div class="auth-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <span class="auth-brand">FlowGuard</span>
     </div>
-
-    <!-- SIGNUP -->
     <div id="v-signup">
       <div class="auth-h">Find your profit leaks</div>
       <div class="auth-sub">Free 14-day trial. No credit card required.</div>
@@ -227,28 +189,26 @@ input,select{font-family:inherit}
           </select>
         </div>
       </div>
-      <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial →</button>
+      <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
       <div class="auth-sw">Already have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
-
-    <!-- LOGIN -->
     <div id="v-login" style="display:none">
       <div class="auth-h">Welcome back</div>
       <div class="auth-sub">Log in to your FlowGuard account.</div>
       <div class="err-box" id="li-err"></div>
       <div class="f"><label>Email</label><input id="li-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
       <div class="f"><label>Password</label><input id="li-pass" type="password" placeholder="Password" autocomplete="current-password"></div>
-      <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in →</button>
+      <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
       <div class="auth-sw">No account? <a onclick="showSignup()">Start free trial</a></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════ APP ═══════════════════════ -->
+<!-- APP -->
 <div id="app">
   <div class="topbar">
     <div class="logo">
-      <div class="logo-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="logo-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <span class="logo-name">FlowGuard</span>
     </div>
     <div class="topbar-r">
@@ -256,51 +216,40 @@ input,select{font-family:inherit}
         <div class="conn-dot off" id="conn-dot"></div>
         <span id="conn-label">Connect software</span>
       </div>
-      <div class="user-av" id="user-av" title="Account">?</div>
-      <button class="out-btn" onclick="doLogout()" title="Log out">⏏</button>
+      <div class="user-av" id="user-av">?</div>
+      <button class="out-btn" onclick="doLogout()" title="Log out">&#x23CF;</button>
     </div>
   </div>
-
   <div class="main">
     <div class="demo-bar" id="demo-bar">
-      <span class="demo-bar-t">⚡ Demo mode — connect Xero, MYOB or QuickBooks for real numbers</span>
-      <button class="demo-bar-btn" onclick="openConn()">Connect now →</button>
+      <span class="demo-bar-t">&#x26A1; Demo mode &#x2014; connect Xero, MYOB or QuickBooks for your real numbers</span>
+      <button class="demo-bar-btn" onclick="openConn()">Connect now &#x2192;</button>
     </div>
-
-    <!-- HERO NUMBER -->
     <div class="hero">
       <div class="hero-label">Monthly profit leaking</div>
-      <div class="hero-num" id="hero-num">—</div>
+      <div class="hero-num" id="hero-num">&#x2014;</div>
       <div class="hero-msg" id="hero-msg">Connect your accounting software to see where your money is going</div>
     </div>
-
-    <!-- FORECAST -->
     <div class="forecast" id="forecast"></div>
-
-    <!-- RUN BUTTON -->
     <div class="run-wrap">
       <button class="run-btn" id="run-btn" onclick="runAnalysis()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Find My Profit Leaks
       </button>
     </div>
-
-    <!-- LEAKS -->
     <div class="sec">
       <div class="sec-hdr">
         <div class="sec-title">Top profit leaks</div>
-        <div class="badge b-muted" id="leaks-badge">—</div>
+        <div class="badge b-muted" id="leaks-badge">&#x2014;</div>
       </div>
       <div id="leaks-list">
         <div class="empty-card">
-          <div class="empty-ico">🔍</div>
+          <div class="empty-ico">&#x1F50D;</div>
           <div class="empty-title">No analysis yet</div>
-          <div class="empty-sub">Connect Xero, MYOB or QuickBooks and click "Find My Profit Leaks" — we'll show you exactly where your money is going.</div>
+          <div class="empty-sub">Connect Xero, MYOB or QuickBooks and click Find My Profit Leaks &#x2014; we'll show you exactly where your money is going.</div>
         </div>
       </div>
     </div>
-
-    <!-- ALERTS -->
     <div class="sec" id="alerts-sec" style="display:none">
       <div class="sec-hdr">
         <div class="sec-title">Smart alerts</div>
@@ -308,37 +257,33 @@ input,select{font-family:inherit}
       </div>
       <div id="alerts-list"></div>
     </div>
-
-    <!-- ASK AI -->
     <div class="sec">
       <div class="sec-hdr"><div class="sec-title">Ask anything</div></div>
       <div class="ask-row">
-        <input class="ask-inp" id="ask-inp" type="text" placeholder='"Which client is hurting my margins?" or "Should I hire someone?"'>
-        <button class="ask-go" id="ask-go" onclick="askAI()">Ask →</button>
+        <input class="ask-inp" id="ask-inp" type="text" placeholder="Which client is hurting my margins? Should I hire someone?">
+        <button class="ask-go" id="ask-go" onclick="askAI()">Ask &#x2192;</button>
       </div>
       <div class="ask-ans" id="ask-ans"></div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════ FIX MODAL ═══════════════════════ -->
+<!-- FIX MODAL -->
 <div class="modal-bg" id="fix-modal">
   <div class="modal-box">
     <div class="modal-pill"></div>
     <div class="modal-head">
       <div>
         <div class="modal-title" id="modal-title">Fix This For Me</div>
-        <div class="modal-sub" id="modal-sub">Generating your action plan…</div>
+        <div class="modal-sub" id="modal-sub"></div>
       </div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
-    <div class="modal-body" id="modal-body">
-      <div class="modal-loading"><div class="spinner"></div> Generating your action plan…</div>
-    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
-<!-- ═══════════════════════ CONNECT ═══════════════════════ -->
+<!-- CONNECT -->
 <div class="conn-overlay" id="conn-overlay">
   <div class="conn-box">
     <div class="auth-logo" style="margin-bottom:20px">
@@ -347,20 +292,33 @@ input,select{font-family:inherit}
     </div>
     <div class="conn-h">Connect your accounts</div>
     <div class="conn-sub">Read-only access only. We never modify your data or make any changes to your accounts.</div>
-    <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia's most popular accounting platform</div></div><div class="conn-arr">→</div></a>
-    <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">MYOB AccountRight &amp; Essentials</div></div><div class="conn-arr">→</div></a>
-    <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">→</div></a>
-    <div class="conn-trust">🔒 Read-only · Encrypted · Never sold</div>
-    <div class="conn-skip"><a onclick="skipConn()">Skip — use demo data instead</a></div>
+    <a class="conn-opt" href="/auth/xero">
+      <div class="conn-ico" style="background:#13b5ea">X</div>
+      <div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia's most popular accounting platform</div></div>
+      <div class="conn-arr">&#x2192;</div>
+    </a>
+    <a class="conn-opt" href="/auth/myob">
+      <div class="conn-ico" style="background:#6c47ff">M</div>
+      <div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">MYOB AccountRight &amp; Essentials</div></div>
+      <div class="conn-arr">&#x2192;</div>
+    </a>
+    <a class="conn-opt" href="/auth/quickbooks">
+      <div class="conn-ico" style="background:#2ca01c">Q</div>
+      <div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div>
+      <div class="conn-arr">&#x2192;</div>
+    </a>
+    <div class="conn-trust">&#x1F512; Read-only &middot; Encrypted &middot; Never sold</div>
+    <div class="conn-skip"><a onclick="skipConn()">Skip &#x2014; use demo data instead</a></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
-const S = { user: null, conn: null, data: null, parsed: null, loading: false };
-const BENCH = {
+
+var S = { user: null, conn: null, data: null, parsed: null, loading: false };
+
+var BENCH = {
   trades:       { net:[8,14],  labour:[38,42], debtor:[30,45] },
   retail:       { net:[5,10],  labour:[12,18], debtor:[14,30] },
   hospitality:  { net:[6,9],   labour:[30,35], debtor:[7,21]  },
@@ -371,61 +329,70 @@ const BENCH = {
   other:        { net:[8,15],  labour:[30,45], debtor:[30,45] }
 };
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-const $  = id => document.getElementById(id);
-const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
-const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fmt = n => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : Math.round(n).toLocaleString();
-const md  = t => t ? t
-  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-  .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
-  .replace(/^#{1,3} (.+)$/gm,'<b>$1</b>')
-  .replace(/
+var FIX = {
+  invoices:      "MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [Invoice Number] for $[Amount], which was due on [Due Date].\n\nCould you please confirm when payment will be processed? We'd appreciate settlement by [3 days from now].\n\nIf there's any issue with the invoice let me know and I'll resolve it immediately.\n\nThanks,\n[Your Name]\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Call (don't email) every overdue client over $1,000. A phone call recovers 3x more than a follow-up email.\nDay 3: Send written follow-up with invoice attached to anyone who didn't answer.\nDay 7: For anything still unpaid, issue a formal overdue notice and offer a payment plan.",
+  roster:        "MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI'd like to review our labour cost breakdown for the last 3 months. Can you pull together:\n1. Labour as a % of revenue by week\n2. Cost by role or shift\n3. Any recurring overtime or penalty rates\n\nBy [3 days from now] please.\n\nThanks\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Get the labour report and identify your 3 most expensive shifts vs revenue generated.\nDay 3: Compare output against cost. Look for obvious mismatches.\nDay 7: Redesign your roster around highest-revenue periods. Trial it for 2 weeks.",
+  pricing:       "PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [Date 30 days from now] our pricing will increase by [X]% to reflect rising costs.\n\nYour new rate will be [New Amount].\n\nWe value working with you and are committed to delivering the same high standard of service.\n\n[Your Name]\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Identify your 20% of clients with the lowest margins. Raise their prices first.\nDay 3: Send the notice to all clients with 30 days lead time. Most won't leave.\nDay 7: For clients who push back — if they're already low-margin, let them go.",
+  subscriptions: "MESSAGE TO YOUR BOOKKEEPER\n\nHi [Name],\n\nCan you pull every recurring subscription charge from the last 3 months? I want to review anything over $50/month.\n\nCategories: Still in use / Not used in 30+ days / Unsure.\n\nBy [3 days from now] please.\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Get the list and mark everything not used in the last 30 days.\nDay 3: Cancel every unused subscription. Most have instant cancellation.\nDay 7: Review the 'unsure' pile with your team. Default to cancelling if no one champions it.",
+  supplier:      "EMAIL TO YOUR SUPPLIER\n\nHi [Contact Name],\n\nI've been reviewing our costs and want to discuss our current pricing arrangement.\n\nI've received alternative quotes coming in below our current rate. Before making any changes I wanted to give you the opportunity to review our pricing first.\n\nCould we speak this week?\n\nThanks,\n[Your Name]\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Get 2-3 quotes from competing suppliers. You need leverage before negotiating.\nDay 3: Send this email to your top 2 suppliers by spend.\nDay 7: If no offer to match — switch at least one as a clear signal.",
+  overheads:     "OVERHEAD REVIEW CHECKLIST\n\nPull every recurring expense over $200/month and ask:\n1. Does this directly generate revenue?\n2. If we cancelled it tomorrow, would it hurt a client?\n3. Can we get the same thing cheaper?\n\nYOUR 3 STEPS THIS WEEK\n\nDay 1: Get your full overhead list from your bookkeeper or accounting software.\nDay 3: Mark each: Keep / Cancel / Negotiate / Review.\nDay 7: Action everything in the Cancel column immediately."
+};
 
-/g,'<br><br>').replace(/
-/g,'<br>') : '';
-
-let toastTimer;
-function toast(msg, type='info') {
-  const el = $('toast');
-  el.textContent = msg; el.className = 'toast ' + type; el.style.display = 'block';
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.display='none', 4000);
+function $(id) { return document.getElementById(id); }
+function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : s; }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(n) { return n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : Math.round(n).toLocaleString(); }
+function mdlight(t) {
+  if (!t) return '';
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
 }
 
-// ─── BOOT ─────────────────────────────────────────────────────────────────────
-window.addEventListener('load', async () => {
-  const p = new URLSearchParams(location.search);
-  const connected = p.get('connected'), error = p.get('error');
+var toastTimer;
+function showToast(msg, type) {
+  var el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type||'info');
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.style.display = 'none'; }, 4000);
+}
+
+// ── BOOT ─────────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  var params = new URLSearchParams(location.search);
+  var connected = params.get('connected');
+  var error = params.get('error');
   history.replaceState({}, '', '/app');
 
-  try {
-    const r = await fetch('/api/auth/me', { credentials: 'include' });
-    if (r.ok) {
-      const d = await r.json();
-      S.user = d.user; S.conn = d.connection;
+  fetch('/api/auth/me', { credentials: 'include' })
+    .then(function(r) {
+      if (r.ok) return r.json();
+      throw new Error('not authed');
+    })
+    .then(function(d) {
+      S.user = d.user;
+      S.conn = d.connection;
       showApp();
-      if (connected) { toast('Connected to ' + cap(connected) + ' ✓', 'ok'); }
-      if (error) toast('Connection failed — ' + error.replace(/_/g,' '), 'err');
+      if (connected) showToast('Connected to ' + cap(connected) + ' \u2713', 'ok');
+      if (error) showToast('Connection failed \u2014 ' + error.replace(/_/g,' '), 'err');
       if (S.conn) loadData(); else openConn();
-    } else {
+    })
+    .catch(function() {
       showAuth();
-    }
-  } catch(e) {
-    showAuth();
-  }
+    });
 });
 
-// ─── AUTH SHOW/HIDE ───────────────────────────────────────────────────────────
+// ── SHOW/HIDE ─────────────────────────────────────────────────────────
 function showApp() {
   $('auth-screen').style.display = 'none';
   $('app').style.display = 'block';
-  if (S.user) {
-    $('user-av').textContent = (S.user.name || S.user.email)[0].toUpperCase();
-  }
+  if (S.user) $('user-av').textContent = (S.user.name || S.user.email)[0].toUpperCase();
   if (S.conn) {
     $('conn-dot').className = 'conn-dot';
     $('conn-label').textContent = S.conn.tenant_name || cap(S.conn.provider);
-    $('demo-bar').classList.remove('on');
   } else {
     $('demo-bar').classList.add('on');
   }
@@ -448,573 +415,453 @@ function showSignup() {
   $('su-err').classList.remove('on');
 }
 
-// ─── SIGNUP ───────────────────────────────────────────────────────────────────
-async function doSignup() {
-  const btn = $('su-btn'), err = $('su-err');
-  const email    = $('su-email').value.trim();
-  const password = $('su-pass').value;
-  const name     = $('su-name').value.trim();
-  const company  = $('su-co').value.trim();
-  const industry = $('su-ind').value;
+// ── SIGNUP ─────────────────────────────────────────────────────────────
+function doSignup() {
+  var btn   = $('su-btn');
+  var err   = $('su-err');
+  var email    = $('su-email').value.trim();
+  var password = $('su-pass').value;
+  var name     = $('su-name').value.trim();
+  var company  = $('su-co').value.trim();
+  var industry = $('su-ind').value;
 
   err.classList.remove('on');
 
   if (!email || !password) {
     err.textContent = 'Email and password are required.';
-    err.classList.add('on'); return;
+    err.classList.add('on');
+    return;
   }
   if (password.length < 8) {
     err.textContent = 'Password must be at least 8 characters.';
-    err.classList.add('on'); return;
+    err.classList.add('on');
+    return;
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Creating your account…';
+  btn.innerHTML = '<span class="spinner"></span> Creating account\u2026';
 
-  try {
-    const r = await fetch('/api/auth/signup', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, name, company, industry })
-    });
-
-    const d = await r.json();
-
-    if (!r.ok) {
-      err.textContent = d.error || 'Signup failed. Please try again.';
+  fetch('/api/auth/signup', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: password, name: name, company: company, industry: industry })
+  })
+  .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+  .then(function(res) {
+    if (!res.ok) {
+      err.textContent = res.data.error || 'Signup failed. Please try again.';
       err.classList.add('on');
+      btn.disabled = false;
+      btn.innerHTML = 'Start free trial \u2192';
       return;
     }
-
-    S.user = d.user;
+    S.user = res.data.user;
     S.conn = null;
     showApp();
     openConn();
-    toast('Account created! Welcome to FlowGuard 🎉', 'info');
-
-  } catch(e) {
-    err.textContent = 'Network error. Check your connection and try again.';
+    showToast('Account created! Welcome to FlowGuard \uD83C\uDF89', 'info');
+  })
+  .catch(function(e) {
+    err.textContent = 'Network error: ' + e.message + '. Check your connection and try again.';
     err.classList.add('on');
-  } finally {
     btn.disabled = false;
-    btn.innerHTML = 'Start free trial →';
-  }
+    btn.innerHTML = 'Start free trial \u2192';
+  });
 }
 
-// ─── LOGIN ─────────────────────────────────────────────────────────────────────
-async function doLogin() {
-  const btn = $('li-btn'), err = $('li-err');
-  const email    = $('li-email').value.trim();
-  const password = $('li-pass').value;
+// ── LOGIN ─────────────────────────────────────────────────────────────
+function doLogin() {
+  var btn      = $('li-btn');
+  var err      = $('li-err');
+  var email    = $('li-email').value.trim();
+  var password = $('li-pass').value;
 
   err.classList.remove('on');
 
   if (!email || !password) {
     err.textContent = 'Email and password are required.';
-    err.classList.add('on'); return;
+    err.classList.add('on');
+    return;
   }
 
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Logging in…';
+  btn.innerHTML = '<span class="spinner"></span> Logging in\u2026';
 
-  try {
-    const r = await fetch('/api/auth/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    const d = await r.json();
-
-    if (!r.ok) {
-      err.textContent = d.error || 'Login failed. Check your email and password.';
+  fetch('/api/auth/login', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: password })
+  })
+  .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+  .then(function(res) {
+    if (!res.ok) {
+      err.textContent = res.data.error || 'Login failed. Check your email and password.';
       err.classList.add('on');
+      btn.disabled = false;
+      btn.innerHTML = 'Log in \u2192';
       return;
     }
-
-    S.user = d.user;
-
-    // Get connection info
-    try {
-      const me = await fetch('/api/auth/me', { credentials: 'include' });
-      if (me.ok) { const md2 = await me.json(); S.conn = md2.connection; }
-    } catch(e) {}
-
+    S.user = res.data.user;
+    return fetch('/api/auth/me', { credentials: 'include' });
+  })
+  .then(function(r) {
+    if (r && r.ok) return r.json();
+  })
+  .then(function(d) {
+    if (d) S.conn = d.connection;
     showApp();
     if (S.conn) loadData(); else openConn();
-
-  } catch(e) {
-    err.textContent = 'Network error. Check your connection and try again.';
+  })
+  .catch(function(e) {
+    err.textContent = 'Network error: ' + e.message;
     err.classList.add('on');
-  } finally {
     btn.disabled = false;
-    btn.innerHTML = 'Log in →';
-  }
+    btn.innerHTML = 'Log in \u2192';
+  });
 }
 
-async function doLogout() {
-  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-  S.user = null; S.conn = null; S.data = null; S.parsed = null;
-  showAuth();
+function doLogout() {
+  fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).then(function() {
+    S.user = null; S.conn = null; S.data = null; S.parsed = null;
+    showAuth();
+  });
 }
 
-// ─── CONNECT OVERLAY ─────────────────────────────────────────────────────────
+// ── CONNECT ─────────────────────────────────────────────────────────────
 function openConn()  { $('conn-overlay').classList.add('on'); }
 function closeConn() { $('conn-overlay').classList.remove('on'); }
 function skipConn()  { closeConn(); loadDemo(); }
 
-// ─── LOAD REAL DATA ───────────────────────────────────────────────────────────
-async function loadData() {
-  $('hero-num').innerHTML = '<div class="spinner" style="width:20px;height:20px;margin:0 auto"></div>';
-  $('hero-msg').textContent = 'Reading your accounts…';
-  try {
-    const r = await fetch('/api/data', { credentials: 'include' });
-    if (r.ok) {
-      const d = await r.json();
+// ── LOAD DATA ─────────────────────────────────────────────────────────
+function loadData() {
+  $('hero-num').innerHTML = '<span class="spinner" style="width:20px;height:20px;margin:0 auto;display:block"></span>';
+  $('hero-msg').textContent = 'Reading your accounts\u2026';
+  fetch('/api/data', { credentials: 'include' })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) {
+      if (!d) return;
       S.data = d.data;
       S.parsed = parseFinancials(d.data, d.provider);
       paintFromData();
-    }
-  } catch(e) {
-    $('hero-num').textContent = '—';
-    $('hero-msg').textContent = 'Could not load financial data';
-  }
+    })
+    .catch(function() {
+      $('hero-num').textContent = '\u2014';
+      $('hero-msg').textContent = 'Could not load financial data';
+    });
 }
 
-// ─── RUN ANALYSIS ─────────────────────────────────────────────────────────────
-async function runAnalysis() {
+// ── RUN ANALYSIS ─────────────────────────────────────────────────────
+function runAnalysis() {
   if (S.loading) return;
-  if (!S.conn) { toast('Connect your accounting software first', 'err'); openConn(); return; }
+  if (!S.conn) { showToast('Connect your accounting software first', 'err'); openConn(); return; }
 
-  if (!S.data) { await loadData(); }
-  if (!S.data) return;
+  var doRun = function() {
+    S.loading = true;
+    var btn = $('run-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Scanning\u2026';
 
-  S.loading = true;
-  const btn = $('run-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Scanning your accounts…';
-
-  try {
-    const r = await fetch('/api/analyse', {
+    fetch('/api/analyse', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ financialData: S.data })
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      S.loading = false;
+      btn.disabled = false;
+      btn.innerHTML = 'Run Again';
+      if (!res.ok) { showToast(res.data.error || 'Analysis failed', 'err'); return; }
+      parseAndRenderLeaks(res.data.analysis);
+      showToast('Done \u2014 here are your top leaks', 'ok');
+    })
+    .catch(function() {
+      S.loading = false;
+      btn.disabled = false;
+      btn.innerHTML = 'Run Again';
+      showToast('Analysis failed \u2014 try again', 'err');
     });
-    const d = await r.json();
-    if (!r.ok) { toast(d.error || 'Analysis failed', 'err'); return; }
-    parseAndRenderLeaks(d.analysis);
-    toast('Done — here are your top leaks', 'ok');
-  } catch(e) {
-    toast('Analysis failed — try again', 'err');
-  } finally {
-    S.loading = false;
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Run Again';
+  };
+
+  if (!S.data) {
+    fetch('/api/data', { credentials: 'include' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { S.data = d.data; S.parsed = parseFinancials(d.data, d.provider); doRun(); })
+      .catch(function() { showToast('Could not load data', 'err'); });
+  } else {
+    doRun();
   }
 }
 
-// ─── PARSE FINANCIALS ─────────────────────────────────────────────────────────
+// ── PARSE FINANCIALS ─────────────────────────────────────────────────
 function parseFinancials(data, provider) {
-  const o = { rev:0, profit:0, cash:0, ovdAmt:0, ovdCount:0, bills:0, netMargin:0, labourPct:0, debtorDays:0, provider: provider||'unknown' };
+  var o = { rev:0, profit:0, cash:0, ovdAmt:0, ovdCount:0, bills:0, netMargin:0, labourPct:0, debtorDays:0, provider: provider||'unknown' };
   if (!data) return o;
-
-  if (provider === 'xero' && data.profitLoss?.Reports?.[0]) {
-    let labour = 0;
-    (data.profitLoss.Reports[0].Rows || []).forEach(row => {
-      const lbl = (row.Cells?.[0]?.Value || '').toLowerCase();
-      const val = parseFloat(row.Cells?.[1]?.Value || row.Cells?.[2]?.Value || 0) || 0;
+  if (provider === 'xero' && data.profitLoss && data.profitLoss.Reports && data.profitLoss.Reports[0]) {
+    var labour = 0;
+    var rows = data.profitLoss.Reports[0].Rows || [];
+    rows.forEach(function(row) {
+      var lbl = ((row.Cells && row.Cells[0] && row.Cells[0].Value) || '').toLowerCase();
+      var val = parseFloat((row.Cells && (row.Cells[1] || row.Cells[2]) && (row.Cells[1] || row.Cells[2]).Value) || 0) || 0;
       if (row.RowType === 'SummaryRow') {
         if (/total income|total revenue/.test(lbl)) o.rev = Math.abs(val) || o.rev;
         if (/net profit|net loss/.test(lbl)) o.profit = val || o.profit;
       }
-      (row.Rows || []).forEach(r2 => {
-        const l2 = (r2.Cells?.[0]?.Value || '').toLowerCase();
-        const v2 = parseFloat(r2.Cells?.[1]?.Value || r2.Cells?.[2]?.Value || 0) || 0;
+      var sub = row.Rows || [];
+      sub.forEach(function(r2) {
+        var l2 = ((r2.Cells && r2.Cells[0] && r2.Cells[0].Value) || '').toLowerCase();
+        var v2 = parseFloat((r2.Cells && (r2.Cells[1] || r2.Cells[2]) && (r2.Cells[1] || r2.Cells[2]).Value) || 0) || 0;
         if (/total income|total trading income/.test(l2)) o.rev = Math.abs(v2) || o.rev;
         if (/wages|salaries|labour|payroll/.test(l2)) labour += Math.abs(v2);
       });
     });
-    if (o.rev > 0) { o.labourPct = (labour/o.rev)*100; o.netMargin = (o.profit/o.rev)*100; }
-
-    if (data.balanceSheet?.Reports?.[0]) {
-      (data.balanceSheet.Reports[0].Rows || []).forEach(row => {
-        (row.Rows || []).forEach(r2 => {
-          (r2.Rows || []).forEach(r3 => {
-            const l = (r3.Cells?.[0]?.Value || '').toLowerCase();
-            const v = parseFloat(r3.Cells?.[1]?.Value || 0) || 0;
+    if (o.rev > 0) { o.labourPct = (labour / o.rev) * 100; o.netMargin = (o.profit / o.rev) * 100; }
+    if (data.balanceSheet && data.balanceSheet.Reports && data.balanceSheet.Reports[0]) {
+      (data.balanceSheet.Reports[0].Rows || []).forEach(function(row) {
+        (row.Rows || []).forEach(function(r2) {
+          (r2.Rows || []).forEach(function(r3) {
+            var l = ((r3.Cells && r3.Cells[0] && r3.Cells[0].Value) || '').toLowerCase();
+            var v = parseFloat((r3.Cells && r3.Cells[1] && r3.Cells[1].Value) || 0) || 0;
             if (o.cash === 0 && /cash|bank/.test(l) && v !== 0) o.cash = v;
           });
         });
       });
     }
   }
-
-  if (data.invoices?.length) {
-    const now = new Date();
-    let td = 0, c = 0;
-    data.invoices.forEach(i => {
-      if (i.DueDate) {
-        const due = new Date(i.DueDate);
-        if (due < now) { o.ovdAmt += (i.AmountDue || 0); o.ovdCount++; }
+  if (data.invoices && data.invoices.length) {
+    var now = new Date();
+    var td = 0, c = 0;
+    data.invoices.forEach(function(inv) {
+      if (inv.DueDate) {
+        var due = new Date(inv.DueDate);
+        if (due < now) { o.ovdAmt += (inv.AmountDue || 0); o.ovdCount++; }
         td += Math.max(0, Math.floor((now - due) / 86400000));
         c++;
       }
     });
     if (c > 0) o.debtorDays = td / c;
   }
-  if (data.bills?.length) data.bills.forEach(b => { o.bills += (b.AmountDue || 0); });
+  if (data.bills && data.bills.length) data.bills.forEach(function(b) { o.bills += (b.AmountDue || 0); });
   return o;
 }
 
-// ─── PAINT FROM DATA ──────────────────────────────────────────────────────────
+// ── BUILD LEAKS ──────────────────────────────────────────────────────
+function buildLeaks(p, b) {
+  var leaks = [];
+  if (p.labourPct > 0 && p.labourPct > b.labour[1]) {
+    var ex = Math.round(((p.labourPct - b.labour[1]) / 100) * p.rev / 12);
+    if (ex > 100) leaks.push({ name:'Labour cost blowout', desc:'Running at ' + p.labourPct.toFixed(1) + '% of revenue \u2014 benchmark is ' + b.labour[1] + '%. This is the single biggest drain on your profit.', monthly:ex, color:'red', action:'<b>This week:</b> Pull your labour cost by shift. Identify your 3 most expensive shifts vs revenue generated. Restructure those first.', fix:'roster' });
+  }
+  if (p.ovdAmt > 2000) {
+    leaks.push({ name:'Overdue invoices unpaid', desc:p.ovdCount + ' client' + (p.ovdCount > 1 ? 's' : '') + ' owe you $' + fmt(p.ovdAmt) + ' \u2014 it\'s sitting there waiting to be collected.', monthly:Math.round(p.ovdAmt / 3), color:'red', action:'<b>Today:</b> Call (not email) your largest overdue client first. A 2-minute call recovers 3\u00D7 more than a follow-up email.', fix:'invoices' });
+  }
+  if (p.netMargin > 0 && p.netMargin < b.net[0]) {
+    var gap = Math.round(((b.net[0] - p.netMargin) / 100) * p.rev / 12);
+    if (gap > 100) leaks.push({ name:'Prices below industry minimum', desc:'Net margin ' + p.netMargin.toFixed(1) + '% \u2014 industry minimum is ' + b.net[0] + '%. Your costs have risen but your prices haven\'t.', monthly:gap, color:'amber', action:'<b>This month:</b> A 5% price increase adds $' + fmt(Math.round(p.rev * 0.05 / 12)) + '/month to profit with zero extra work.', fix:'pricing' });
+  }
+  return leaks;
+}
+
+// ── PAINT FROM DATA ──────────────────────────────────────────────────
 function paintFromData() {
-  const p = S.parsed;
+  var p = S.parsed;
   if (!p || p.rev === 0) return;
-  const b = BENCH[S.user?.industry || 'other'] || BENCH.other;
-  const leaks = buildLeaks(p, b);
-  const total = leaks.reduce((s,l) => s + l.monthly, 0);
-  setHero(total > 0 ? total : 0, leaks.length > 0);
+  var industry = (S.user && S.user.industry) || 'other';
+  var b = BENCH[industry] || BENCH.other;
+  var leaks = buildLeaks(p, b);
+  var total = leaks.reduce(function(s,l){ return s + l.monthly; }, 0);
+  setHero(total);
   paintForecast(p);
   renderLeaks(leaks);
   renderAlerts(p, b);
 }
 
-function buildLeaks(p, b) {
-  const leaks = [];
-  if (p.labourPct > 0 && p.labourPct > b.labour[1]) {
-    const ex = Math.round(((p.labourPct - b.labour[1]) / 100) * p.rev / 12);
-    if (ex > 100) leaks.push({ name:'Labour cost blowout', desc:'Running at ' + p.labourPct.toFixed(1) + '% of revenue — benchmark is ' + b.labour[1] + '%. That's the single biggest drain on your profit.', monthly:ex, color:'red', action:'<b>This week:</b> Pull your labour cost by shift or role. Identify your 3 highest-cost, lowest-revenue periods. Restructure roster around those first.', fix:'roster' });
-  }
-  if (p.ovdAmt > 2000) {
-    leaks.push({ name:'Overdue invoices unpaid', desc:p.ovdCount + ' client' + (p.ovdCount>1?'s':'') + ' owe you $' + fmt(p.ovdAmt) + ' — it's sitting there waiting to be collected.', monthly:Math.round(p.ovdAmt / 3), color:'red', action:'<b>Today:</b> Call (not email) your largest overdue client first. A 2-minute phone call recovers 3× more than a follow-up email.', fix:'invoices' });
-  }
-  if (p.netMargin > 0 && p.netMargin < b.net[0]) {
-    const gap = Math.round(((b.net[0] - p.netMargin) / 100) * p.rev / 12);
-    if (gap > 100) leaks.push({ name:'Prices below industry minimum', desc:'Net margin ' + p.netMargin.toFixed(1) + '% — the industry minimum is ' + b.net[0] + '%. Your costs have risen but your prices haven't.', monthly:gap, color:'amber', action:'<b>This month:</b> A 5% price increase adds $' + fmt(Math.round(p.rev * 0.05 / 12)) + '/month to profit with zero extra work or cost.', fix:'pricing' });
-  }
-  return leaks;
-}
-
-// ─── HERO ─────────────────────────────────────────────────────────────────────
-function setHero(monthly, hasLeaks) {
-  const num = $('hero-num'), msg = $('hero-msg');
+// ── HERO ─────────────────────────────────────────────────────────────
+function setHero(monthly) {
+  var num = $('hero-num'), msg = $('hero-msg');
   if (monthly > 0) {
     num.textContent = '$' + fmt(monthly) + '/mo';
     num.className = 'hero-num red';
-    msg.innerHTML = 'leaking out of your business every month — <b>here's where it's going</b>';
+    msg.innerHTML = 'leaking out of your business every month \u2014 <b>here\'s where it\'s going</b>';
   } else {
     num.textContent = '$0';
     num.className = 'hero-num green';
-    msg.innerHTML = '<b>No major leaks detected</b> — run the full AI analysis for a deeper scan';
+    msg.innerHTML = '<b>No major leaks detected</b> \u2014 run the full AI analysis for a deeper scan';
   }
 }
 
-// ─── FORECAST ─────────────────────────────────────────────────────────────────
+// ── FORECAST ─────────────────────────────────────────────────────────
 function paintForecast(p) {
   if (!p || p.rev === 0) return;
-  const wBurn = (p.rev / 52) * (1 - (p.netMargin / 100));
-  const weeks = p.cash > 0 ? Math.round(p.cash / Math.max(wBurn, 1)) : 0;
-  const days = weeks * 7;
-  const el = $('forecast');
-  let cls, ico, html;
+  var wBurn = (p.rev / 52) * (1 - (p.netMargin / 100));
+  var weeks = p.cash > 0 ? Math.round(p.cash / Math.max(wBurn, 1)) : 0;
+  var days = weeks * 7;
+  var el = $('forecast');
+  var cls, ico, html;
   if (days < 28) {
-    cls='urgent'; ico='🚨';
-    html='<b class="red">At this rate, your cash will drop below safe levels in ' + days + ' days.</b> Collect overdue invoices immediately.';
+    cls='urgent'; ico='\uD83D\uDEA8';
+    html = '<b style="color:#ff4444">At this rate, your cash will drop below safe levels in ' + days + ' days.</b> Collect overdue invoices immediately.';
   } else if (days < 84) {
-    cls='warn'; ico='⚠️';
-    html='Cash runway is <b class="amber">' + weeks + ' weeks</b> — below the 12-week safe buffer. Start building your reserve now.';
+    cls='warn'; ico='\u26A0\uFE0F';
+    html = 'Cash runway is <b style="color:#f59e0b">' + weeks + ' weeks</b> \u2014 below the 12-week safe buffer. Start building your reserve now.';
   } else {
-    cls='ok'; ico='✅';
-    html='Cash runway is <b class="green">' + weeks + ' weeks</b> — healthy buffer. Keep it above 12 weeks.';
+    cls='ok'; ico='\u2705';
+    html = 'Cash runway is <b style="color:#34d399">' + weeks + ' weeks</b> \u2014 healthy buffer. Keep it above 12 weeks.';
   }
   el.className = 'forecast ' + cls + ' on';
   el.innerHTML = '<span style="font-size:18px;flex-shrink:0">' + ico + '</span><span style="font-size:13px;line-height:1.6">' + html + '</span>';
 }
 
-// ─── RENDER LEAKS ─────────────────────────────────────────────────────────────
+// ── RENDER LEAKS ─────────────────────────────────────────────────────
 function renderLeaks(leaks) {
-  const list = $('leaks-list'), badge = $('leaks-badge');
+  var list = $('leaks-list'), badge = $('leaks-badge');
   if (!leaks.length) {
     badge.textContent = '0'; badge.className = 'badge b-muted';
-    list.innerHTML = '<div class="empty-card"><div class="empty-ico">✅</div><div class="empty-title">No leaks found</div><div class="empty-sub">Your numbers look healthy. Run the full AI analysis for a deeper scan of subscriptions, supplier pricing and client margins.</div></div>';
+    list.innerHTML = '<div class="empty-card"><div class="empty-ico">\u2705</div><div class="empty-title">No leaks found</div><div class="empty-sub">Your numbers look healthy. Run the full AI analysis for a deeper scan of subscriptions, supplier pricing and client margins.</div></div>';
     return;
   }
   badge.textContent = leaks.length + ' found'; badge.className = 'badge b-red';
-  const labels = ['#1 Leak', '#2 Leak', '#3 Leak'];
-  const rankColors = { red:'#ff4444', amber:'#f59e0b' };
-  list.innerHTML = leaks.slice(0,3).map((l, i) => {
-    const rc = rankColors[l.color] || rankColors.amber;
-    const btnCls = l.color === 'red' ? 'fix-red' : 'fix-amber';
-    return \`<div class="leak-card">
-      <div class="lc-top">
-        <div>
-          <div class="lc-rank" style="color:\${rc}">\${labels[i]}</div>
-          <div class="lc-name">\${esc(l.name)}</div>
-          <div class="lc-desc">\${esc(l.desc)}</div>
-        </div>
-        <div>
-          <div class="lc-amt" style="color:\${rc}">$\${fmt(l.monthly)}</div>
-          <div class="lc-mo">/month</div>
-        </div>
-      </div>
-      <div class="lc-bot">
-        <div class="lc-action">\${l.action}</div>
-        <button class="fix-btn \${btnCls}" onclick="openFix(\${i})">⚡ Fix This For Me</button>
-      </div>
-    </div>\`;
-  }).join('');
+  var labels = ['#1 Leak', '#2 Leak', '#3 Leak'];
+  var html = '';
+  for (var i = 0; i < Math.min(leaks.length, 3); i++) {
+    var l = leaks[i];
+    var rc = l.color === 'red' ? '#ff4444' : '#f59e0b';
+    var btnCls = l.color === 'red' ? 'fix-red' : 'fix-amber';
+    html += '<div class="leak-card">';
+    html += '<div class="lc-top">';
+    html += '<div>';
+    html += '<div class="lc-rank" style="color:' + rc + '">' + labels[i] + '</div>';
+    html += '<div class="lc-name">' + esc(l.name) + '</div>';
+    html += '<div class="lc-desc">' + esc(l.desc) + '</div>';
+    html += '</div>';
+    html += '<div>';
+    html += '<div class="lc-amt" style="color:' + rc + '">$' + fmt(l.monthly) + '</div>';
+    html += '<div class="lc-mo">/month</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="lc-bot">';
+    html += '<div class="lc-action">' + l.action + '</div>';
+    html += '<button class="fix-btn ' + btnCls + '" onclick="openFix(' + i + ')">\u26A1 Fix This For Me</button>';
+    html += '</div>';
+    html += '</div>';
+  }
+  list.innerHTML = html;
   window._leaks = leaks;
 }
 
-// ─── PARSE AI LEAKS ───────────────────────────────────────────────────────────
+// ── PARSE AI RESPONSE ────────────────────────────────────────────────
 function parseAndRenderLeaks(text) {
-  const p = S.parsed;
+  var p = S.parsed;
   if (!p || p.rev === 0) return;
-  const b = BENCH[S.user?.industry || 'other'] || BENCH.other;
-
-  // Try to extract structured leaks from AI text
-  const aiLeaks = [];
-  const lines = text.split('\n');
-  const defs = [
-    { rx:/subscri|saas|software\.?cost/i, name:'Wasted subscriptions & SaaS', fix:'subscriptions', color:'red' },
-    { rx:/supplier|vendor|cost.of.goods/i,  name:'Supplier overpricing',         fix:'supplier',     color:'amber' },
-    { rx:/low.margin|unprofitable.client/i, name:'Low-margin clients',           fix:'pricing',      color:'amber' },
-    { rx:/overd|unpaid.invoice|debtor/i,    name:'Overdue invoices',             fix:'invoices',     color:'red' },
-    { rx:/labour|wages|payroll/i,           name:'Labour cost blowout',          fix:'roster',       color:'red' },
-    { rx:/overhead|rent|utility/i,          name:'Overhead creep',               fix:'overheads',    color:'amber' },
+  var industry = (S.user && S.user.industry) || 'other';
+  var b = BENCH[industry] || BENCH.other;
+  var dataLeaks = buildLeaks(p, b);
+  // Extract any extra amounts from AI text
+  var aiLeaks = [];
+  var lines = text.split('\n');
+  var defs = [
+    { rx:/subscri|saas/i,           name:'Wasted subscriptions', fix:'subscriptions', color:'red' },
+    { rx:/supplier|vendor/i,        name:'Supplier overpricing',  fix:'supplier',      color:'amber' },
+    { rx:/low.margin|unprofitable/i,name:'Low-margin clients',    fix:'pricing',       color:'amber' },
   ];
-
-  lines.forEach(line => {
-    const amtMatch = line.match(/\$([\d,]+(?:\.\d+)?)[kKmM]?/);
-    if (!amtMatch || line.trim().length < 12) return;
-    let amtNum = parseFloat(amtMatch[1].replace(/,/g,''));
-    if (/[kK]/.test(amtMatch[0])) amtNum *= 1000;
-    if (/[mM]/.test(amtMatch[0])) amtNum *= 1000000;
-    if (amtNum < 100) return;
-    for (const def of defs) {
-      if (def.rx.test(line) && !aiLeaks.find(x => x.name === def.name)) {
-        const monthly = amtNum > p.rev / 2 ? Math.round(amtNum / 12) : Math.round(amtNum);
-        aiLeaks.push({ name:def.name, desc:line.replace(/^[•\-\*\d\.\s]+/,'').trim().slice(0,140), monthly, color:def.color, action:fixAction(def.fix, monthly, p), fix:def.fix });
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var amtM = line.match(/\$[\d,]+[kKmM]?/);
+    if (!amtM || line.trim().length < 12) continue;
+    var raw = amtM[0].replace(/[$,]/g,'');
+    var n = parseFloat(raw);
+    if (/[kK]/.test(amtM[0])) n *= 1000;
+    if (/[mM]/.test(amtM[0])) n *= 1000000;
+    if (n < 200) continue;
+    for (var j = 0; j < defs.length; j++) {
+      if (defs[j].rx.test(line) && !aiLeaks.find(function(x){ return x.name === defs[j].name; })) {
+        aiLeaks.push({ name:defs[j].name, desc:line.replace(/^[*\-\d.\s]+/,'').trim().slice(0,120), monthly:Math.round(n > p.rev/2 ? n/12 : n), color:defs[j].color, action:'<b>This week:</b> Investigate and cut this cost. It\'s costing you $' + fmt(Math.round(n > p.rev/2 ? n/12 : n)) + '/month.', fix:defs[j].fix });
         break;
       }
     }
-  });
-
-  // Merge with data-based leaks
-  const dataLeaks = buildLeaks(p, b);
-  const final = [...aiLeaks];
-  dataLeaks.forEach(dl => { if (!final.find(x => x.name === dl.name)) final.push(dl); });
+  }
+  var final = aiLeaks.concat(dataLeaks.filter(function(d){ return !aiLeaks.find(function(a){ return a.name === d.name; }); }));
   if (!final.length) { paintFromData(); return; }
-
-  const total = final.slice(0,3).reduce((s,l) => s + l.monthly, 0);
-  setHero(total, true);
+  var total = final.slice(0,3).reduce(function(s,l){ return s + l.monthly; }, 0);
+  setHero(total);
   paintForecast(p);
   renderLeaks(final);
   renderAlerts(p, b);
 }
 
-function fixAction(fix, monthly, p) {
-  const m = { monthly };
-  const acts = {
-    subscriptions: '<b>This week:</b> Audit every recurring charge in your bank. Cancel anything not used weekly. Target: eliminate $' + fmt(monthly) + '/month.',
-    supplier:      '<b>This week:</b> Get 3 competing quotes. Even a 10% reduction on your biggest supplier is significant at scale.',
-    pricing:       '<b>This month:</b> A 5% price increase adds $' + fmt(Math.round((S.parsed?.rev||0)*0.05/12)) + '/month straight to profit. Most clients won't leave.',
-    invoices:      '<b>Today:</b> Call (not email) your ' + (p.ovdCount||'overdue') + ' overdue client' + (p.ovdCount>1?'s':'') + '. Start with the largest amount.',
-    roster:        '<b>This week:</b> Pull labour cost by shift. Identify 3 highest-cost, lowest-output periods. Restructure those first.',
-    overheads:     '<b>This week:</b> List every recurring cost over $200/month. Cut or negotiate anything that doesn't directly generate revenue.',
-  };
-  return acts[fix] || '<b>Priority:</b> This is costing you $' + fmt(monthly) + '/month — investigate and cut it this week.';
-}
-
-// ─── ALERTS ───────────────────────────────────────────────────────────────────
+// ── ALERTS ───────────────────────────────────────────────────────────
 function renderAlerts(p, b) {
-  const alerts = [];
-  if (p.labourPct > b.labour[1] * 1.15) alerts.push({ type:'urgent', ico:'🔴', text:'<b>Labour at ' + p.labourPct.toFixed(0) + '% of revenue</b> — ' + (p.labourPct - b.labour[1]).toFixed(0) + '% above benchmark. Review your roster this week.' });
-  if (p.ovdAmt > p.cash * 0.5 && p.ovdAmt > 5000) alerts.push({ type:'urgent', ico:'🔴', text:'<b>$' + fmt(p.ovdAmt) + ' overdue is larger than your cash buffer.</b> Chase these invoices before paying bills.' });
-  if (p.netMargin > 0 && p.netMargin < b.net[0]) alerts.push({ type:'warn', ico:'🟡', text:'<b>Margin below industry minimum</b> — you're at ' + p.netMargin.toFixed(1) + '%, benchmark is ' + b.net[0] + '%. Prices need a review.' });
-  if (p.debtorDays > b.debtor[1]) alerts.push({ type:'warn', ico:'🟡', text:'<b>Clients taking ' + Math.round(p.debtorDays) + ' days to pay</b> — benchmark is ' + b.debtor[1] + ' days. Tighten your payment terms.' });
+  var alerts = [];
+  if (p.labourPct > b.labour[1] * 1.15) alerts.push({ type:'urgent', ico:'\uD83D\uDD34', text:'<b>Labour at ' + p.labourPct.toFixed(0) + '% of revenue</b> \u2014 ' + (p.labourPct - b.labour[1]).toFixed(0) + '% above benchmark. Review your roster this week.' });
+  if (p.ovdAmt > p.cash * 0.5 && p.ovdAmt > 5000) alerts.push({ type:'urgent', ico:'\uD83D\uDD34', text:'<b>$' + fmt(p.ovdAmt) + ' overdue is larger than your cash buffer.</b> Chase these invoices before paying bills.' });
+  if (p.netMargin > 0 && p.netMargin < b.net[0]) alerts.push({ type:'warn', ico:'\uD83D\uDFE1', text:'<b>Margin below industry minimum</b> \u2014 you\'re at ' + p.netMargin.toFixed(1) + '%, benchmark is ' + b.net[0] + '%. Prices need a review.' });
   if (!alerts.length) return;
   $('alerts-sec').style.display = '';
   $('alerts-badge').textContent = alerts.length;
-  $('alerts-badge').className = 'badge ' + (alerts.some(a => a.type==='urgent') ? 'b-red' : 'b-muted');
-  $('alerts-list').innerHTML = alerts.map(a => \`<div class="alert-card \${a.type}"><div class="al-ico">\${a.ico}</div><div class="al-text">\${a.text}</div></div>\`).join('');
+  $('alerts-badge').className = 'badge ' + (alerts.some(function(a){ return a.type === 'urgent'; }) ? 'b-red' : 'b-muted');
+  var html = '';
+  alerts.forEach(function(a) {
+    html += '<div class="alert-card ' + a.type + '"><span style="font-size:15px;flex-shrink:0;margin-top:1px">' + a.ico + '</span><div class="al-text">' + a.text + '</div></div>';
+  });
+  $('alerts-list').innerHTML = html;
 }
 
-// ─── FIX THIS FOR ME ──────────────────────────────────────────────────────────
-const FIX_TEMPLATES = {
-  invoices: `## Message to send today
-
-Hi [Client Name],
-
-Following up on invoice [Invoice Number] for $[Amount], which was due on [Due Date].
-
-Could you please confirm when payment will be processed? We'd appreciate settlement by [3 days from now].
-
-Happy to resolve any issues with the invoice immediately if needed.
-
-Thanks,
-[Your Name]
-
-## Your 3 steps this week
-
-**Day 1:** Call every client with an overdue invoice over $1,000. Don't email — call.
-**Day 3:** Send written follow-up with invoice attached to anyone who didn't answer.
-**Day 7:** For anything still unpaid, issue formal overdue notice and offer a payment plan.`,
-
-  roster: `## Message to your manager or bookkeeper
-
-Hi [Name],
-
-I'd like to review our labour cost breakdown for the last 3 months. Can you pull together:
-
-1. Labour as % of revenue by week
-2. Cost by role or shift
-3. Any recurring overtime or penalty rates
-
-I'd like this by [3 days from now] please.
-
-Thanks
-
-## Your 3 steps this week
-
-**Day 1:** Get the labour cost report and identify your 3 most expensive shifts vs revenue generated.
-**Day 3:** Compare output (jobs done, revenue per shift) against cost. Look for the obvious mismatches.
-**Day 7:** Redesign your roster around your highest-revenue periods. Trial it for 2 weeks and measure.`,
-
-  pricing: `## Price increase notice to clients
-
-Hi [Client Name],
-
-From [Date 30 days from now], our pricing will increase by [X]% to reflect rising costs.
-
-Your new rate will be [New Amount].
-
-We genuinely value working with you and are committed to delivering the same high standard of service.
-
-[Your Name]
-
-## Your 3 steps this week
-
-**Day 1:** Identify your 20% of clients with the lowest margins. Raise their prices first.
-**Day 3:** Send the notice to all clients with 30 days lead time. The vast majority won't leave.
-**Day 7:** For any clients who push back — if they're already low-margin, let them go.`,
-
-  subscriptions: `## Message to your bookkeeper
-
-Hi [Name],
-
-Can you pull every recurring subscription charge from the last 3 months? I want to review anything over $50/month.
-
-Please categorise by: still in use / not used in 30+ days / unsure.
-
-I'd like this by [3 days from now].
-
-Thanks
-
-## Your 3 steps this week
-
-**Day 1:** Get the list and mark everything you haven't used in the last 30 days.
-**Day 3:** Cancel or pause every unused subscription. Most have instant cancellation.
-**Day 7:** Review the "unsure" pile with your team. Default to cancelling if no one champions it.`,
-
-  supplier: `## Email to your supplier
-
-Hi [Supplier Contact],
-
-I've been reviewing our costs and want to discuss our current pricing arrangement.
-
-I've received alternative quotes that are coming in lower than our current rate. Before making any changes I wanted to give you the opportunity to review our pricing first.
-
-Could we speak this week?
-
-Thanks,
-[Your Name]
-
-## Your 3 steps this week
-
-**Day 1:** Get 2-3 quotes from competing suppliers online. You need leverage before negotiating.
-**Day 3:** Send this email to your top 2 suppliers by spend. Even a 10% reduction is significant.
-**Day 7:** If no offer to match — switch at least one supplier as a clear signal.`,
-
-  overheads: `## Overhead review checklist
-
-Pull every recurring expense over $200/month and ask:
-
-1. Does this directly generate revenue or protect it?
-2. If we cancelled it tomorrow, would it hurt a client?
-3. Can we get the same thing cheaper elsewhere?
-
-## Your 3 steps this week
-
-**Day 1:** Get your full overhead list from your bookkeeper or accounting software.
-**Day 3:** Mark each line as: Keep / Cancel / Negotiate / Review.
-**Day 7:** Action everything in the Cancel column immediately. Schedule negotiations for the rest.`,
-};
-
-async function openFix(i) {
-  const leaks = window._leaks;
+// ── FIX THIS FOR ME ──────────────────────────────────────────────────
+function openFix(i) {
+  var leaks = window._leaks;
   if (!leaks || !leaks[i]) return;
-  const leak = leaks[i];
-
-  $('modal-title').textContent = '⚡ Fix This For Me';
+  var leak = leaks[i];
+  $('modal-title').textContent = '\u26A1 Fix This For Me';
   $('modal-sub').textContent = leak.name;
-  $('modal-body').innerHTML = '<div class="modal-loading"><div class="spinner"></div> Generating your action plan…</div>';
+  $('modal-body').innerHTML = '<div class="modal-loading"><span class="spinner"></span> Generating your action plan\u2026</div>';
   $('fix-modal').classList.add('on');
   document.body.style.overflow = 'hidden';
 
-  // Try AI first, fall back to template
-  let text = '';
-  try {
-    const p = S.parsed || {};
-    const prompt = \`A small business owner has this profit leak: "\${leak.name}" costing $\${leak.monthly}/month.
-Context: Revenue ~$\${fmt(p.rev||0)}/year, Cash ~$\${fmt(p.cash||0)}, \${p.ovdCount||0} overdue invoices totalling $\${fmt(p.ovdAmt||0)}.
+  var p = S.parsed || {};
+  var prompt = 'A small business owner has this profit leak: "' + leak.name + '" costing $' + leak.monthly + '/month. Revenue ~$' + fmt(p.rev||0) + '/year, Cash ~$' + fmt(p.cash||0) + ', ' + (p.ovdCount||0) + ' overdue invoices totalling $' + fmt(p.ovdAmt||0) + '. Write 2 sections with ## headings: 1) A ready-to-send message template (email or text) to fix this TODAY. Use [Placeholder] for fill-ins. 2) Exactly 3 action steps: Day 1, Day 3, Day 7. Be brutally practical. No fluff.';
 
-Write 2 things:
-1. A ready-to-send email or message template they can use TODAY to fix this. Use [Placeholder] for anything they need to fill in. Keep it short and direct.
-2. Exactly 3 bullet steps: Day 1, Day 3, Day 7.
-
-Format with ## headings. Be brutally practical. No fluff.\`;
-
-    const r = await fetch('/api/analyse', {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ financialData: S.data || {}, question: prompt })
-    });
-    const d = await r.json();
-    if (r.ok && d.analysis) text = d.analysis;
-  } catch(e) {}
-
-  // Use template if AI failed or returned nothing
-  if (!text) text = FIX_TEMPLATES[leak.fix] || FIX_TEMPLATES.overheads;
-
-  renderModal(leak, text);
+  fetch('/api/analyse', {
+    method: 'POST', credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ financialData: S.data || {}, question: prompt })
+  })
+  .then(function(r) { return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+  .then(function(res) {
+    var text = (res.ok && res.data.analysis) ? res.data.analysis : (FIX[leak.fix] || FIX.overheads);
+    renderModal(leak, text);
+  })
+  .catch(function() {
+    renderModal(leak, FIX[leak.fix] || FIX.overheads);
+  });
 }
 
 function renderModal(leak, text) {
   window._fixText = text;
-  const sections = text.split(/\n## /).filter(Boolean);
-  let html = '';
-  sections.forEach((s, i) => {
-    const lines = s.split('\n');
-    const heading = lines[0].replace(/^## /, '').trim();
-    const body = lines.slice(1).join('\n').trim();
-    html += \`<div style="margin-bottom:20px">
-      <div class="modal-sec-lbl">\${esc(heading)}</div>
-      <div class="modal-draft">\${md(body)}</div>
-    </div>\`;
+  var sections = text.split('\n## ');
+  var html = '';
+  sections.forEach(function(s, i) {
+    var lines = s.split('\n');
+    var heading = lines[0].replace(/^## /, '').trim();
+    var body = lines.slice(1).join('\n').trim();
+    html += '<div style="margin-bottom:20px">';
+    html += '<div class="modal-lbl">' + esc(heading) + '</div>';
+    html += '<div class="modal-draft">' + mdlight(body) + '</div>';
+    html += '</div>';
   });
-  html += \`<div class="modal-btns">
-    <button class="modal-copy" onclick="copyFix()">📋 Copy to clipboard</button>
-    <button class="modal-sec-btn" onclick="closeModal()">Done</button>
-  </div>\`;
+  html += '<div class="modal-btns"><button class="modal-copy" onclick="copyFix()">\uD83D\uDCCB Copy to clipboard</button><button class="modal-sec-btn" onclick="closeModal()">Done</button></div>';
   $('modal-body').innerHTML = html;
 }
 
 function copyFix() {
-  navigator.clipboard.writeText(window._fixText || '').then(() => toast('Copied ✓', 'ok')).catch(() => toast('Select the text and copy manually', 'err'));
+  var text = window._fixText || '';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){ showToast('Copied \u2713', 'ok'); }).catch(function(){ showToast('Select text and copy manually', 'err'); });
+  } else {
+    showToast('Select the text above and copy manually', 'info');
+  }
 }
 
 function closeModal() {
@@ -1022,73 +869,76 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
-// ─── ASK AI ───────────────────────────────────────────────────────────────────
-async function askAI() {
-  const inp = $('ask-inp'), q = inp.value.trim();
+// ── ASK AI ───────────────────────────────────────────────────────────
+function askAI() {
+  var inp = $('ask-inp'), q = inp.value.trim();
   if (!q) return;
-  if (!S.conn && !S.data) { toast('Connect your accounting software first', 'err'); openConn(); return; }
-
-  const btn = $('ask-go');
-  btn.disabled = true; btn.textContent = '…';
+  if (!S.conn && !S.data) { showToast('Connect your accounting software first', 'err'); openConn(); return; }
+  var btn = $('ask-go');
+  btn.disabled = true; btn.textContent = '\u2026';
   inp.disabled = true;
-
-  const ans = $('ask-ans');
+  var ans = $('ask-ans');
   ans.classList.remove('on');
 
-  let fd = S.data;
-  if (!fd && S.conn) {
-    try { const r = await fetch('/api/data', { credentials:'include' }); if (r.ok) { const d = await r.json(); fd = d.data; S.data = fd; S.parsed = parseFinancials(fd, d.provider); } } catch(e) {}
-  }
-
-  try {
-    const r = await fetch('/api/analyse', {
+  var fd = S.data;
+  var doAsk = function(fd2) {
+    fetch('/api/analyse', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ financialData: fd || {}, question: q })
-    });
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.error);
-    ans.innerHTML = md(d.analysis);
-    ans.classList.add('on');
-    inp.value = '';
-  } catch(e) {
-    toast('Could not get answer — try again', 'err');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Ask →';
-    inp.disabled = false; inp.focus();
+      body: JSON.stringify({ financialData: fd2 || {}, question: q })
+    })
+    .then(function(r) { return r.json().then(function(d){ return {ok:r.ok,data:d}; }); })
+    .then(function(res) {
+      if (!res.ok) throw new Error(res.data.error || 'Failed');
+      ans.innerHTML = mdlight(res.data.analysis);
+      ans.classList.add('on');
+      inp.value = '';
+    })
+    .catch(function(e) { showToast('Could not get answer \u2014 try again', 'err'); })
+    .finally(function() { btn.disabled = false; btn.textContent = 'Ask \u2192'; inp.disabled = false; inp.focus(); });
+  };
+
+  if (!fd && S.conn) {
+    fetch('/api/data', { credentials: 'include' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { S.data = d.data; S.parsed = parseFinancials(d.data, d.provider); doAsk(d.data); })
+      .catch(function() { doAsk(null); });
+  } else {
+    doAsk(fd);
   }
 }
 
-// ─── DEMO DATA ────────────────────────────────────────────────────────────────
+// ── DEMO ─────────────────────────────────────────────────────────────
 function loadDemo() {
   $('demo-bar').classList.add('on');
   S.parsed = { rev:1840000, profit:94200, cash:38400, ovdAmt:184000, ovdCount:9, bills:42000, netMargin:5.1, labourPct:52.3, debtorDays:48, provider:'demo' };
   S.data = { invoices:[
     { Contact:{Name:'Westfield Developments'}, AmountDue:84000, DueDate:new Date(Date.now()-74*86400000).toISOString() },
     { Contact:{Name:'Smith & Co Builders'},    AmountDue:47000, DueDate:new Date(Date.now()-32*86400000).toISOString() },
-    { Contact:{Name:'Metro Retail Group'},     AmountDue:31000, DueDate:new Date(Date.now()-18*86400000).toISOString() },
+    { Contact:{Name:'Metro Retail Group'},     AmountDue:31000, DueDate:new Date(Date.now()-18*86400000).toISOString() }
   ], bills:[{AmountDue:42000}] };
-
-  const b = BENCH.trades;
   window._leaks = [
-    { name:'Labour cost blowout',       desc:'Running at 52.3% of revenue — trades benchmark is 38–42%. This single issue is your biggest profit drain.', monthly:9333, color:'red',   action:'<b>This week:</b> Pull your labour cost by shift. Identify your 3 most expensive shifts vs revenue generated.', fix:'roster' },
-    { name:'$184K overdue invoices',    desc:'9 clients haven't paid — your cash buffer is critically low while $184K sits uncollected.', monthly:15333, color:'red',   action:'<b>Today:</b> Call Westfield Developments and Smith & Co first. Those 2 clients owe you $131K.', fix:'invoices' },
-    { name:'Prices behind rising costs',desc:'Net margin 5.1% — trades minimum is 8%. Costs have risen 12% since your last price increase.', monthly:4282, color:'amber', action:'<b>This month:</b> A 5% price increase adds $7,667/month to profit. Most clients won't push back.', fix:'pricing' },
+    { name:'Labour cost blowout',       desc:'Running at 52.3% of revenue \u2014 trades benchmark is 38\u201342%. This is the single biggest drain on your profit.', monthly:9333, color:'red',   action:'<b>This week:</b> Pull your labour cost by shift. Identify your 3 most expensive shifts vs revenue generated.', fix:'roster' },
+    { name:'$184K overdue invoices',    desc:'9 clients haven\'t paid \u2014 your cash is critically low while $184K sits uncollected.', monthly:15333, color:'red', action:'<b>Today:</b> Call Westfield Developments and Smith & Co first. Those 2 clients owe you $131K.', fix:'invoices' },
+    { name:'Prices behind rising costs',desc:'Net margin 5.1% \u2014 trades minimum is 8%. Costs have risen 12% since your last price increase.', monthly:4282, color:'amber', action:'<b>This month:</b> A 5% price increase adds $7,667/month to profit. Most clients won\'t push back.', fix:'pricing' }
   ];
-
-  setHero(window._leaks.reduce((s,l)=>s+l.monthly,0), true);
+  setHero(window._leaks.reduce(function(s,l){ return s+l.monthly; }, 0));
   paintForecast(S.parsed);
   renderLeaks(window._leaks);
-  renderAlerts(S.parsed, b);
+  renderAlerts(S.parsed, BENCH.trades);
 }
 
-// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
+// ── KEYBOARD ─────────────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') { closeModal(); $('conn-overlay').classList.remove('on'); }
-  if (e.key === 'Enter' && document.activeElement === $('ask-inp')) askAI();
-  if (e.key === 'Enter' && document.activeElement?.closest('#v-signup')) doSignup();
-  if (e.key === 'Enter' && document.activeElement?.closest('#v-login')) doLogin();
+  if (e.key === 'Enter') {
+    var active = document.activeElement;
+    if (active === $('ask-inp')) { askAI(); return; }
+    if (active && active.closest && active.closest('#v-signup')) { doSignup(); return; }
+    if (active && active.closest && active.closest('#v-login')) { doLogin(); return; }
+  }
 });
+
 </script>
 </body>
 </html>
