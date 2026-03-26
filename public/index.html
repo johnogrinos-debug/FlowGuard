@@ -3,413 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowGuard — AI Profit Intelligence for SMBs</title>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>FlowGuard — Find Your Profit Leaks</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0e0f0c;
-  --s1: #141510;
-  --s2: #1a1c17;
-  --s3: #22241e;
-  --b1: rgba(255,255,255,.07);
-  --b2: rgba(255,255,255,.12);
-  --b3: rgba(255,255,255,.2);
-  --ac: #c8f060;
-  --ac2: #a8d040;
-  --red: #ff5c5c;
-  --amber: #ffb347;
-  --green: #5cffa0;
-  --tx: #e8e9e4;
-  --tx2: #888980;
-  --tx3: #484940;
-  --mono: 'JetBrains Mono', monospace;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--tx); font-family: 'Instrument Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
-a { text-decoration: none; color: inherit; }
-button { cursor: pointer; font-family: inherit; transition: all .14s; }
-
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
-@keyframes scan { 0%{top:0}100%{top:100%} }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#070808;color:#efefed;font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
 /* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 0 52px; height: 64px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(14,15,12,.92); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--b1);
-}
-.nav-logo { display: flex; align-items: center; gap: 10px; }
-.nav-mark { width: 32px; height: 32px; background: var(--ac); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-.nav-brand { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 800; }
-.nav-links { display: flex; gap: 32px; }
-.nav-links a { font-size: 14px; color: var(--tx2); transition: color .14s; }
-.nav-links a:hover { color: var(--tx); }
-.nav-cta { display: flex; gap: 10px; }
-.btn-ghost { padding: 9px 18px; border-radius: 8px; border: 1px solid var(--b2); background: transparent; color: var(--tx2); font-size: 14px; }
-.btn-ghost:hover { border-color: var(--b3); color: var(--tx); }
-.btn-primary { padding: 9px 18px; border-radius: 8px; background: var(--ac); color: var(--bg); font-size: 14px; font-weight: 700; border: none; font-family: 'Cabinet Grotesk', sans-serif; }
-.btn-primary:hover { background: var(--ac2); }
+nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,8,.85);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-logo{display:flex;align-items:center;gap:9px}
+.nav-mark{width:26px;height:26px;border-radius:7px;background:#b8ff57;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-name{font-family:"Syne",sans-serif;font-size:15px;font-weight:800}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-login{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;color:#5a5d5d;transition:color .14s}
+.nav-login:hover{color:#efefed}
+.nav-cta{padding:8px 18px;border-radius:8px;background:#b8ff57;color:#070808;font-size:13px;font-weight:800;font-family:"Syne",sans-serif}
+.nav-cta:hover{background:#ccff6b}
 
 /* HERO */
-.hero-outer { max-width: 1200px; margin: 0 auto; padding: 0 52px; }
-.hero {
-  min-height: 100vh;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 72px; align-items: center;
-  padding: 140px 0 100px;
-}
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 5px 12px; border-radius: 20px;
-  background: rgba(200,240,96,.08); border: 1px solid rgba(200,240,96,.2);
-  font-size: 11px; font-weight: 600; color: var(--ac);
-  letter-spacing: .05em; text-transform: uppercase;
-  margin-bottom: 24px;
-  animation: rise .5s ease both;
-}
-.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ac); animation: blink 2s infinite; }
-.hero-h {
-  font-family: 'Cabinet Grotesk', sans-serif;
-  font-size: clamp(38px, 4.5vw, 58px);
-  font-weight: 900; line-height: 1.05; letter-spacing: -.02em;
-  margin-bottom: 20px;
-  animation: rise .5s .1s ease both;
-}
-.hero-h span { color: var(--ac); }
-.hero-sub {
-  font-size: 17px; color: var(--tx2); line-height: 1.7;
-  margin-bottom: 36px; max-width: 460px;
-  animation: rise .5s .2s ease both;
-}
-.hero-actions { display: flex; gap: 12px; margin-bottom: 20px; animation: rise .5s .3s ease both; }
-.btn-hero { padding: 14px 28px; border-radius: 10px; background: var(--ac); color: var(--bg); font-size: 15px; font-weight: 800; border: none; font-family: 'Cabinet Grotesk', sans-serif; box-shadow: 0 0 32px rgba(200,240,96,.15); }
-.btn-hero:hover { background: var(--ac2); transform: translateY(-1px); }
-.btn-hero-out { padding: 14px 24px; border-radius: 10px; border: 1px solid var(--b2); background: transparent; color: var(--tx2); font-size: 15px; }
-.btn-hero-out:hover { border-color: var(--b3); color: var(--tx); }
-.hero-note { font-size: 12px; color: var(--tx3); animation: rise .5s .4s ease both; }
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px 60px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(184,255,87,.07) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;background:rgba(184,255,87,.08);border:1px solid rgba(184,255,87,.18);font-size:11px;font-weight:700;color:#b8ff57;text-transform:uppercase;letter-spacing:.13em;font-family:"Syne",sans-serif;margin-bottom:24px;animation:fadeUp .5s ease}
+.hero-live{width:6px;height:6px;border-radius:50%;background:#b8ff57;animation:blink 2s infinite}
+.hero-h1{font-family:"Syne",sans-serif;font-size:clamp(40px,7vw,72px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:22px;animation:fadeUp .5s .08s ease both}
+.hero-h1 span{color:#b8ff57}
+.hero-sub{font-size:clamp(16px,2.2vw,19px);color:#5a5d5d;max-width:520px;line-height:1.7;margin-bottom:36px;animation:fadeUp .5s .16s ease both}
+.hero-btns{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .5s .24s ease both}
+.btn-hero-primary{display:inline-flex;align-items:center;gap:9px;padding:15px 32px;border-radius:12px;background:#b8ff57;color:#070808;font-size:15px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 40px rgba(184,255,87,.25)}
+.btn-hero-primary:hover{background:#ccff6b;box-shadow:0 0 60px rgba(184,255,87,.35);transform:translateY(-1px)}
+.btn-hero-secondary{display:inline-flex;align-items:center;gap:7px;padding:15px 24px;border-radius:12px;border:1px solid rgba(255,255,255,.1);color:#5a5d5d;font-size:14px;font-weight:600;transition:all .14s}
+.btn-hero-secondary:hover{border-color:rgba(255,255,255,.2);color:#efefed}
+.hero-trust{margin-top:28px;font-size:12px;color:#2e3030;animation:fadeUp .5s .32s ease both}
+.hero-trust b{color:#5a5d5d}
 
-/* DASHBOARD PREVIEW */
-.hero-right { animation: rise .5s .2s ease both; }
-.dash {
-  background: #0a0b09; border-radius: 14px;
-  overflow: hidden; border: 1px solid var(--b2);
-  box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04);
-  position: relative;
-}
-.dash-bar { background: var(--s1); padding: 11px 14px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid var(--b1); }
-.d-dot { width: 9px; height: 9px; border-radius: 50%; }
-.dash-url { flex: 1; text-align: center; font-size: 9px; color: var(--tx3); font-family: var(--mono); }
-.dash-body { padding: 18px; }
-.dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.dash-co-name { font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 700; }
-.dash-live { display: flex; align-items: center; gap: 5px; font-size: 8px; color: var(--tx3); font-family: var(--mono); letter-spacing: .06em; }
-.dash-ldot { width: 4px; height: 4px; border-radius: 50%; background: var(--green); animation: blink 2.5s infinite; }
-.dash-kpis { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 10px; }
-.dash-kpi { background: var(--s1); border: 1px solid var(--b1); border-radius: 9px; padding: 12px 13px; }
-.dash-kpi-l { font-size: 7px; color: var(--tx3); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 7px; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; }
-.dash-kpi-v { font-family: var(--mono); font-size: 20px; font-weight: 500; margin-bottom: 2px; }
-.dash-kpi-d { font-size: 9px; }
-.dash-leaks { display: flex; flex-direction: column; gap: 6px; }
-.dash-leak { background: var(--s1); border: 1px solid var(--b1); border-left-width: 2px; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.dash-leak-t { font-size: 10px; font-weight: 600; margin-bottom: 2px; font-family: 'Cabinet Grotesk', sans-serif; }
-.dash-leak-s { font-size: 9px; color: var(--tx2); }
-.dash-leak-a { font-family: var(--mono); font-size: 14px; font-weight: 500; flex-shrink: 0; }
-.dash-scan { position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg,transparent,rgba(200,240,96,.3),transparent); animation: scan 4s linear infinite; pointer-events: none; }
+/* MOCK DASHBOARD */
+.hero-mock{margin-top:60px;animation:fadeUp .6s .4s ease both;width:100%;max-width:640px;position:relative}
+.mock-card{background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.mock-bar{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+.mock-dots{display:flex;gap:6px}
+.mock-dot{width:10px;height:10px;border-radius:50%}
+.mock-title-bar{flex:1;height:10px;background:#161818;border-radius:5px}
+.mock-body{padding:22px 20px}
+.mock-hero-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:8px;text-align:center}
+.mock-hero-num{font-family:"DM Mono",monospace;font-size:52px;font-weight:500;color:#ff4444;text-align:center;margin-bottom:4px;line-height:1}
+.mock-hero-sub{font-size:12px;color:#5a5d5d;text-align:center;margin-bottom:20px}
+.mock-leaks{display:flex;flex-direction:column;gap:8px}
+.mock-leak{background:#161818;border-radius:10px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;border-left:3px solid}
+.mock-leak-name{font-family:"Syne",sans-serif;font-size:12px;font-weight:700;margin-bottom:2px}
+.mock-leak-desc{font-size:11px;color:#5a5d5d}
+.mock-leak-amt{font-family:"DM Mono",monospace;font-size:16px;font-weight:500}
+.mock-fix{margin-top:8px;display:flex;justify-content:flex-end}
+.mock-fix-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:10px;font-weight:700;font-family:"Syne",sans-serif;background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
 
-/* LOGOS */
-.logos { padding: 40px 52px; text-align: center; border-top: 1px solid var(--b1); border-bottom: 1px solid var(--b1); background: var(--s1); }
-.logos-lbl { font-size: 11px; color: var(--tx3); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 20px; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; }
-.logos-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-.logo-chip { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--b1); background: var(--s2); }
-.logo-ico { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; font-family: 'Cabinet Grotesk', sans-serif; }
-.logo-name { font-size: 13px; font-weight: 600; color: var(--tx2); }
-.logos-note { font-size: 12px; color: var(--tx3); padding: 0 12px; }
-
-/* SECTIONS */
-.section { max-width: 1100px; margin: 0 auto; padding: 90px 52px; }
-.sec-tag { font-size: 11px; color: var(--ac); text-transform: uppercase; letter-spacing: .14em; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; margin-bottom: 12px; }
-.sec-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(28px,3.5vw,42px); font-weight: 900; line-height: 1.1; letter-spacing: -.01em; margin-bottom: 14px; }
-.sec-sub { font-size: 16px; color: var(--tx2); max-width: 500px; line-height: 1.7; margin-bottom: 52px; }
-
-/* STEPS */
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-.step { background: var(--s1); border: 1px solid var(--b1); border-radius: 14px; padding: 28px 24px; }
-.step-num { width: 36px; height: 36px; border-radius: 9px; background: rgba(200,240,96,.1); border: 1px solid rgba(200,240,96,.15); color: var(--ac); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 500; margin-bottom: 18px; }
-.step-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 9px; }
-.step-body { font-size: 13px; color: var(--tx2); line-height: 1.75; }
-
-/* LEAKS */
-.leaks { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.lk { background: var(--s1); border: 1px solid var(--b1); border-radius: 12px; padding: 20px 22px; display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; transition: border-color .14s; }
-.lk:hover { border-color: var(--b2); }
-.lk-bdg { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 8px; font-weight: 700; font-family: 'Cabinet Grotesk', sans-serif; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
-.lk-bdg.cr { background: rgba(255,92,92,.1); color: var(--red); border: 1px solid rgba(255,92,92,.2); }
-.lk-bdg.hi { background: rgba(255,179,71,.1); color: var(--amber); border: 1px solid rgba(255,179,71,.2); }
-.lk-t { font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 800; margin-bottom: 5px; }
-.lk-d { font-size: 12px; color: var(--tx2); line-height: 1.65; }
-.lk-amt { font-family: var(--mono); font-size: 18px; font-weight: 500; flex-shrink: 0; }
+/* SOCIAL PROOF */
+.proof-bar{padding:20px 24px;text-align:center;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);background:#0a0b0b}
+.proof-text{font-size:12px;color:#2e3030;letter-spacing:.04em}
+.proof-text b{color:#5a5d5d}
 
 /* FEATURES */
-.feats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.feat { background: var(--s1); border: 1px solid var(--b1); border-radius: 14px; padding: 28px 24px; transition: border-color .14s; }
-.feat:hover { border-color: var(--b2); }
-.feat-ico { width: 44px; height: 44px; border-radius: 11px; background: rgba(200,240,96,.08); border: 1px solid rgba(200,240,96,.12); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
-.feat-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-.feat-b { font-size: 13px; color: var(--tx2); line-height: 1.75; }
+.features{padding:100px 20px;max-width:760px;margin:0 auto}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#b8ff57;font-family:"Syne",sans-serif;margin-bottom:14px;text-align:center}
+.section-h{font-family:"Syne",sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.025em;text-align:center;margin-bottom:14px;line-height:1.15}
+.section-sub{font-size:16px;color:#5a5d5d;text-align:center;max-width:480px;margin:0 auto 60px;line-height:1.7}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.feat-card{background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:26px 24px;transition:border-color .14s}
+.feat-card:hover{border-color:rgba(255,255,255,.12)}
+.feat-ico{font-size:28px;margin-bottom:14px}
+.feat-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+.feat-desc{font-size:13px;color:#5a5d5d;line-height:1.7}
+.feat-highlight{color:#b8ff57;font-weight:600}
 
-/* TESTIMONIALS */
-.testimonials { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-.testi { background: var(--s1); border: 1px solid var(--b1); border-radius: 14px; padding: 24px; }
-.testi-stars { color: var(--amber); font-size: 13px; letter-spacing: 2px; margin-bottom: 12px; }
-.testi-body { font-size: 14px; color: var(--tx2); line-height: 1.7; margin-bottom: 16px; font-style: italic; }
-.testi-author { font-size: 13px; font-weight: 600; }
-.testi-co { font-size: 12px; color: var(--tx3); }
+/* HOW IT WORKS */
+.how{padding:80px 20px;max-width:700px;margin:0 auto;text-align:center}
+.steps{display:flex;flex-direction:column;gap:0;margin-top:50px;text-align:left;position:relative}
+.steps::before{content:"";position:absolute;left:19px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,.06)}
+.step{display:flex;gap:20px;padding:20px 0}
+.step-num{width:40px;height:40px;border-radius:10px;background:#0f1010;border:1px solid rgba(255,255,255,.1);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:14px;font-weight:800;color:#b8ff57;position:relative;z-index:1}
+.step-body{}
+.step-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:5px;margin-top:8px}
+.step-desc{font-size:13px;color:#5a5d5d;line-height:1.7}
 
-/* PRICING */
-.plans { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
-.plan { background: var(--s1); border: 1px solid var(--b1); border-radius: 14px; padding: 28px 24px; position: relative; }
-.plan.featured { border-color: rgba(200,240,96,.3); background: linear-gradient(160deg, rgba(200,240,96,.05) 0%, var(--s1) 55%); }
-.plan-pill { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); padding: 3px 14px; border-radius: 20px; background: var(--ac); color: var(--bg); font-size: 9px; font-weight: 800; font-family: 'Cabinet Grotesk', sans-serif; text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; }
-.plan-tier { font-family: 'Cabinet Grotesk', sans-serif; font-size: 11px; font-weight: 700; color: var(--tx3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 12px; }
-.plan-price { font-family: var(--mono); font-size: 38px; font-weight: 500; margin-bottom: 4px; }
-.plan-price span { font-size: 14px; color: var(--tx3); font-family: 'Instrument Sans', sans-serif; }
-.plan-desc { font-size: 12px; color: var(--tx3); margin-bottom: 24px; }
-.plan-list { list-style: none; margin-bottom: 26px; }
-.plan-list li { font-size: 13px; color: var(--tx2); padding: 8px 0; border-bottom: 1px solid var(--b1); display: flex; align-items: center; gap: 9px; }
-.plan-list li:last-child { border: none; }
-.plan-ck { color: var(--ac); font-size: 11px; flex-shrink: 0; }
-.plan-btn { width: 100%; padding: 12px; border-radius: 9px; font-size: 14px; font-weight: 700; font-family: 'Cabinet Grotesk', sans-serif; transition: all .14s; border: none; }
-.plan-btn.out { background: transparent; border: 1px solid var(--b2); color: var(--tx2); }
-.plan-btn.out:hover { border-color: var(--b3); color: var(--tx); }
-.plan-btn.sol { background: var(--ac); color: var(--bg); }
-.plan-btn.sol:hover { background: var(--ac2); }
+/* INTEGRATIONS */
+.integrations{padding:80px 20px;text-align:center;background:#0a0b0b;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
+.int-title{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#2e3030;margin-bottom:28px}
+.int-logos{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.int-logo{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:12px;background:#0f1010;border:1px solid rgba(255,255,255,.07)}
+.int-logo-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:14px;font-weight:900;color:#fff}
+.int-logo-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:700}
+.int-sub{margin-top:20px;font-size:12px;color:#2e3030}
 
 /* CTA */
-.cta { text-align: center; padding: 90px 52px; border-top: 1px solid var(--b1); background: linear-gradient(160deg, rgba(200,240,96,.05) 0%, transparent 60%); }
-.cta-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: clamp(28px,4vw,48px); font-weight: 900; margin-bottom: 16px; line-height: 1.1; }
-.cta-sub { font-size: 17px; color: var(--tx2); max-width: 420px; margin: 0 auto 36px; line-height: 1.7; }
-.cta-note { font-size: 12px; color: var(--tx3); margin-top: 14px; }
+.cta-section{padding:100px 20px;text-align:center}
+.cta-box{background:#0f1010;border:1px solid rgba(184,255,87,.14);border-radius:24px;padding:60px 40px;max-width:560px;margin:0 auto;position:relative;overflow:hidden}
+.cta-box::before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(184,255,87,.08) 0%,transparent 70%);pointer-events:none}
+.cta-h{font-family:"Syne",sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.025em;margin-bottom:14px;line-height:1.15}
+.cta-sub{font-size:15px;color:#5a5d5d;margin-bottom:32px;line-height:1.65}
+.cta-note{margin-top:16px;font-size:12px;color:#2e3030}
 
 /* FOOTER */
-footer { padding: 36px 52px; border-top: 1px solid var(--b1); background: var(--s1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-.ft-logo { display: flex; align-items: center; gap: 9px; }
-.ft-mark { width: 28px; height: 28px; background: var(--ac); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-.ft-brand { font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 800; }
-.ft-copy { font-size: 12px; color: var(--tx3); }
-.ft-links { display: flex; gap: 22px; }
-.ft-links a { font-size: 13px; color: var(--tx3); transition: color .14s; }
-.ft-links a:hover { color: var(--tx2); }
+footer{padding:30px 24px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-mark{width:22px;height:22px;border-radius:6px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
+.footer-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:800;color:#5a5d5d}
+.footer-copy{font-size:12px;color:#2e3030}
 
-@media (max-width: 900px) {
-  nav { padding: 0 24px; }
-  .nav-links { display: none; }
-  .hero-outer { padding: 0 24px; }
-  .hero { grid-template-columns: 1fr; gap: 48px; padding: 100px 0 60px; }
-  .steps, .feats, .leaks, .plans, .testimonials { grid-template-columns: 1fr; }
-  .section { padding: 60px 24px; }
-  .logos { padding: 32px 24px; }
-  .cta { padding: 60px 24px; }
-  footer { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
-}
+@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column;align-items:stretch;width:100%;max-width:320px}.btn-hero-primary,.btn-hero-secondary{justify-content:center}}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo">
-    <div class="nav-mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg></div>
-    <span class="nav-brand">FlowGuard</span>
+    <div class="nav-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <span class="nav-name">FlowGuard</span>
   </div>
-  <div class="nav-links">
-    <a href="#how">How it works</a>
-    <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
-  </div>
-  <div class="nav-cta">
-    <a href="/app"><button class="btn-ghost">Log in</button></a>
-    <a href="/app"><button class="btn-primary">Start free trial →</button></a>
+  <div class="nav-r">
+    <a href="/app" class="nav-login" onclick="goLogin(event)">Log in</a>
+    <a href="/app" class="nav-cta">Start free trial</a>
   </div>
 </nav>
 
-<div class="hero-outer">
-<div class="hero">
-  <div>
-    <div class="hero-badge"><div class="badge-dot"></div>AI-Powered Profit Intelligence</div>
-    <h1 class="hero-h">Find where your business is <span>losing money</span> — in minutes</h1>
-    <p class="hero-sub">FlowGuard connects to Xero, MYOB or QuickBooks and uses AI to identify exactly where profit is leaking — with specific dollar amounts and a clear action plan.</p>
-    <div class="hero-actions">
-      <a href="/app"><button class="btn-hero">Start free 14-day trial →</button></a>
-      <a href="#how"><button class="btn-hero-out">How it works</button></a>
-    </div>
-    <p class="hero-note">No credit card required · Connects in under 60 seconds · Cancel anytime</p>
+<section class="hero">
+  <div class="hero-eyebrow"><div class="hero-live"></div>AI-powered for Australian SMBs</div>
+  <h1 class="hero-h1">Find out exactly<br>where you're <span>losing money</span></h1>
+  <p class="hero-sub">Connect your Xero, MYOB or QuickBooks. In 60 seconds, FlowGuard shows you your top profit leaks and exactly what to do about them.</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-hero-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Start free trial
+    </a>
+    <a href="#how" class="btn-hero-secondary">See how it works &#x2193;</a>
   </div>
-  <div class="hero-right">
-    <div class="dash">
-      <div class="dash-bar">
-        <div class="d-dot" style="background:#ff5f57"></div>
-        <div class="d-dot" style="background:#ffbd2e"></div>
-        <div class="d-dot" style="background:#28c840"></div>
-        <div class="dash-url">FlowGuard — AI Profit Intelligence · XERO · LIVE DATA</div>
+  <div class="hero-trust">Free for 14 days &nbsp;&middot;&nbsp; <b>No credit card required</b> &nbsp;&middot;&nbsp; Read-only access to your accounts</div>
+
+  <div class="hero-mock">
+    <div class="mock-card">
+      <div class="mock-bar">
+        <div class="mock-dots">
+          <div class="mock-dot" style="background:#ff5f57"></div>
+          <div class="mock-dot" style="background:#febc2e"></div>
+          <div class="mock-dot" style="background:#28c840"></div>
+        </div>
+        <div class="mock-title-bar"></div>
       </div>
-      <div class="dash-body">
-        <div class="dash-header">
-          <div class="dash-co-name">Smith Plumbing Pty Ltd</div>
-          <div class="dash-live"><div class="dash-ldot"></div>XERO · LIVE</div>
+      <div class="mock-body">
+        <div class="mock-hero-label">Monthly profit leaking</div>
+        <div class="mock-hero-num">$28,948</div>
+        <div class="mock-hero-sub">leaking out of your business every month &#x2014; <strong style="color:#efefed">here's where it's going</strong></div>
+        <div class="mock-leaks">
+          <div class="mock-leak" style="border-color:#ff4444">
+            <div><div class="mock-leak-name">#1 Labour cost blowout</div><div class="mock-leak-desc">Running 52.3% of revenue &#x2014; benchmark is 38&#x2013;42%</div></div>
+            <div style="text-align:right"><div class="mock-leak-amt" style="color:#ff4444">$9,333</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
+          </div>
+          <div class="mock-leak" style="border-color:#ff4444">
+            <div><div class="mock-leak-name">#2 Overdue invoices unpaid</div><div class="mock-leak-desc">9 clients owe you $184K &#x2014; sitting uncollected</div></div>
+            <div style="text-align:right"><div class="mock-leak-amt" style="color:#ff4444">$15,333</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
+          </div>
+          <div class="mock-leak" style="border-color:#f59e0b">
+            <div><div class="mock-leak-name">#3 Prices behind rising costs</div><div class="mock-leak-desc">Net margin 5.1% &#x2014; trades minimum is 8%</div></div>
+            <div style="text-align:right"><div class="mock-leak-amt" style="color:#f59e0b">$4,282</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
+          </div>
         </div>
-        <div class="dash-kpis">
-          <div class="dash-kpi"><div class="dash-kpi-l">Revenue (YTD)</div><div class="dash-kpi-v">$1.84M</div><div class="dash-kpi-d" style="color:var(--green)">▲ 12.4% vs prior</div></div>
-          <div class="dash-kpi"><div class="dash-kpi-l">Net Profit</div><div class="dash-kpi-v" style="color:var(--amber)">$94.2K</div><div class="dash-kpi-d" style="color:var(--red)">▼ Margin fell 4pts</div></div>
-          <div class="dash-kpi"><div class="dash-kpi-l">Cash Position</div><div class="dash-kpi-v" style="color:var(--red)">$38.4K</div><div class="dash-kpi-d" style="color:var(--red)">▼ Critically low</div></div>
-          <div class="dash-kpi"><div class="dash-kpi-l">Overdue Invoices</div><div class="dash-kpi-v" style="color:var(--red)">$184K</div><div class="dash-kpi-d" style="color:var(--red)">▼ 9 unpaid</div></div>
-        </div>
-        <div class="dash-leaks">
-          <div class="dash-leak" style="border-left-color:var(--red)"><div><div class="dash-leak-t">🔴 Labour Cost Blowout</div><div class="dash-leak-s">52.3% of revenue vs 38–42% benchmark</div></div><div class="dash-leak-a" style="color:var(--red)">$112K</div></div>
-          <div class="dash-leak" style="border-left-color:var(--amber)"><div><div class="dash-leak-t">🟡 $184K Overdue Invoices</div><div class="dash-leak-s">Westfield Developments · 74 days overdue</div></div><div class="dash-leak-a" style="color:var(--amber)">$184K</div></div>
+        <div class="mock-fix">
+          <div class="mock-fix-btn">&#x26A1; Fix This For Me</div>
         </div>
       </div>
-      <div class="dash-scan"></div>
     </div>
   </div>
-</div>
+</section>
+
+<div class="proof-bar">
+  <div class="proof-text">Works with &nbsp;<b>Xero</b>&nbsp; &middot; &nbsp;<b>MYOB</b>&nbsp; &middot; &nbsp;<b>QuickBooks</b>&nbsp; &nbsp;&#x2014;&nbsp; &nbsp;Read-only. Bank-level encryption. Never modify your data.</div>
 </div>
 
-<div class="logos">
-  <div class="logos-lbl">Connects directly to your accounting software</div>
-  <div class="logos-row">
-    <div class="logo-chip"><div class="logo-ico" style="background:#1ab4d7">X</div><span class="logo-name">Xero</span></div>
-    <div class="logo-chip"><div class="logo-ico" style="background:#8b5cf6">M</div><span class="logo-name">MYOB</span></div>
-    <div class="logo-chip"><div class="logo-ico" style="background:#2ca01c">Q</div><span class="logo-name">QuickBooks</span></div>
-    <span class="logos-note">Read-only access · Bank-level security · Your data is never sold</span>
+<section class="features">
+  <div class="section-label">What FlowGuard does</div>
+  <h2 class="section-h">Four things. That's it.</h2>
+  <p class="section-sub">Most accounting tools show you data. FlowGuard tells you what to <em>do</em> about it.</p>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F4B8;</div>
+      <div class="feat-title">Profit Leak Detection</div>
+      <div class="feat-desc">Connects to your accounts and finds the <span class="feat-highlight">top 3 places you're losing money</span> &#x2014; with exact dollar amounts. Not 20 charts. Three numbers.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x26A1;</div>
+      <div class="feat-title">Fix This For Me</div>
+      <div class="feat-desc">One click generates a <span class="feat-highlight">ready-to-send email or message</span> to fix each leak &#x2014; whether that's chasing an invoice, negotiating a supplier, or raising prices.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F52E;</div>
+      <div class="feat-title">Cash Forecast</div>
+      <div class="feat-desc">Not a graph. Just one line: <span class="feat-highlight">"At this rate, your cash drops below safe levels in 52 days."</span> That hits hard and creates urgency.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-ico">&#x1F6A8;</div>
+      <div class="feat-title">Smart Alerts</div>
+      <div class="feat-desc">Only alerts when it actually matters. <span class="feat-highlight">"Unusual expense detected +45%"</span> or <span class="feat-highlight">"Profit dropped this week."</span> No noise.</div>
+    </div>
   </div>
-</div>
+</section>
 
-<div id="how" style="border-top:1px solid var(--b1)">
-<div class="section">
-  <div class="sec-tag">How it works</div>
-  <h2 class="sec-h">From connected to insights<br>in under 2 minutes</h2>
-  <p class="sec-sub">FlowGuard does the work — you just read the results and act on them.</p>
+<section class="how" id="how">
+  <div class="section-label">How it works</div>
+  <h2 class="section-h">Up and running in 3 steps</h2>
   <div class="steps">
-    <div class="step"><div class="step-num">01</div><div class="step-h">Connect your accounting software</div><div class="step-body">Sign up and connect Xero, MYOB or QuickBooks with one click. Read-only access — we never touch your data or make changes to your accounts.</div></div>
-    <div class="step"><div class="step-num">02</div><div class="step-h">AI scans your financials</div><div class="step-body">FlowGuard reads your P&L, invoices, bills and cash position — then AI identifies every profit leak with real dollar amounts from your actual data.</div></div>
-    <div class="step"><div class="step-num">03</div><div class="step-h">Get a specific action plan</div><div class="step-body">Plain-English breakdown of where money is leaking — ranked by dollar impact — with specific actions to take this week. No accounting degree needed.</div></div>
-  </div>
-</div>
-</div>
-
-<div style="border-top:1px solid var(--b1)">
-<div class="section">
-  <div class="sec-tag">What we find</div>
-  <h2 class="sec-h">Real profit leaks,<br>real dollar amounts</h2>
-  <p class="sec-sub">These are the types of issues FlowGuard surfaces from real SMB data — issues most owners don't know they have until it's too late.</p>
-  <div class="leaks">
-    <div class="lk" style="border-left:3px solid var(--red)"><div><span class="lk-bdg cr">Critical</span><div class="lk-t">Labour cost blowout</div><div class="lk-d">Labour running at 52% of revenue vs 38–42% industry benchmark. Overtime up 34% — excess identified per job type.</div></div><div class="lk-amt" style="color:var(--red)">$112K</div></div>
-    <div class="lk" style="border-left:3px solid var(--red)"><div><span class="lk-bdg cr">Critical</span><div class="lk-t">$184K stuck in overdue invoices</div><div class="lk-d">Cash position only $38K. Specific clients, amounts and chase priority surfaced automatically.</div></div><div class="lk-amt" style="color:var(--red)">$184K</div></div>
-    <div class="lk" style="border-left:3px solid var(--amber)"><div><span class="lk-bdg hi">High</span><div class="lk-t">Food cost above benchmark</div><div class="lk-d">Food cost 32.4% vs 28–30% benchmark on $1.2M revenue. Waste tracking and portion inconsistency identified.</div></div><div class="lk-amt" style="color:var(--amber)">$52K</div></div>
-    <div class="lk" style="border-left:3px solid var(--amber)"><div><span class="lk-bdg hi">High</span><div class="lk-t">No price increase in 18 months</div><div class="lk-d">Input costs up 12% while prices unchanged. A 3–5% increase adds $42K revenue with no extra work.</div></div><div class="lk-amt" style="color:var(--amber)">$42K</div></div>
-  </div>
-</div>
-</div>
-
-<div id="features" style="border-top:1px solid var(--b1)">
-<div class="section">
-  <div class="sec-tag">Features</div>
-  <h2 class="sec-h">Everything you need.<br>Nothing you don't.</h2>
-  <p class="sec-sub">Built for business owners — not accountants.</p>
-  <div class="feats">
-    <div class="feat"><div class="feat-ico">🔍</div><div class="feat-h">Profit Leak Detection</div><div class="feat-b">AI scans your real financial data and identifies every cost above industry benchmark — with specific dollar amounts and a fix for each one.</div></div>
-    <div class="feat"><div class="feat-ico">📊</div><div class="feat-h">FlowScore™ Health Rating</div><div class="feat-b">A 0–100 health score based on margin, cash cover, debtor days and cost ratios — benchmarked against your specific industry.</div></div>
-    <div class="feat"><div class="feat-ico">💬</div><div class="feat-h">Ask AI Anything</div><div class="feat-b">"Why is my cash so low?" "Which client should I chase first?" Get specific answers based on your actual numbers — not generic advice.</div></div>
-    <div class="feat"><div class="feat-ico">⚡</div><div class="feat-h">Always Live Data</div><div class="feat-b">Not exports. Not spreadsheets. Connect once and every analysis is based on what's happening in your business right now.</div></div>
-  </div>
-</div>
-</div>
-
-<div style="border-top:1px solid var(--b1)">
-<div class="section">
-  <div class="sec-tag">What business owners say</div>
-  <h2 class="sec-h">Trusted by SMBs<br>across Australia</h2>
-  <p class="sec-sub" style="margin-bottom:48px">Real results from real business owners.</p>
-  <div class="testimonials">
-    <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-body">"FlowGuard found $84K in overdue invoices I hadn't noticed. The AI told me exactly which clients to call. Got paid within a week."</div><div class="testi-author">Marcus T.</div><div class="testi-co">Trades & Construction · Sydney</div></div>
-    <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-body">"I knew something was off with my margins but couldn't pinpoint it. FlowGuard showed me my labour cost was 14 points above benchmark — in plain English."</div><div class="testi-author">Sarah K.</div><div class="testi-co">Hospitality · Melbourne</div></div>
-    <div class="testi"><div class="testi-stars">★★★★★</div><div class="testi-body">"Connects to Xero in seconds and gives you a CFO-level analysis in minutes. I use it every week to stay on top of the numbers."</div><div class="testi-author">James R.</div><div class="testi-co">Professional Services · Brisbane</div></div>
-  </div>
-</div>
-</div>
-
-<div id="pricing" style="border-top:1px solid var(--b1)">
-<div class="section">
-  <div class="sec-tag">Pricing</div>
-  <h2 class="sec-h">Simple, transparent pricing</h2>
-  <p class="sec-sub">Start free. No hidden fees. Cancel anytime.</p>
-  <div class="plans">
-    <div class="plan">
-      <div class="plan-tier">Starter</div>
-      <div class="plan-price">Free</div>
-      <div class="plan-desc">14-day trial — no card required</div>
-      <ul class="plan-list">
-        <li><span class="plan-ck">✓</span>Connect 1 accounting software</li>
-        <li><span class="plan-ck">✓</span>Live overview dashboard</li>
-        <li><span class="plan-ck">✓</span>Basic profit leak detection</li>
-        <li><span class="plan-ck">✓</span>Invoices & bills overview</li>
-      </ul>
-      <a href="/app"><button class="plan-btn out">Start free trial</button></a>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Create your free account</div>
+        <div class="step-desc">Takes 30 seconds. No credit card required. Free for 14 days.</div>
+      </div>
     </div>
-    <div class="plan featured">
-      <div class="plan-pill">Most Popular</div>
-      <div class="plan-tier">Pro</div>
-      <div class="plan-price">$99<span>/mo</span></div>
-      <div class="plan-desc">Per business, billed monthly</div>
-      <ul class="plan-list">
-        <li><span class="plan-ck">✓</span>Everything in Starter</li>
-        <li><span class="plan-ck">✓</span>Full AI profit leak analysis</li>
-        <li><span class="plan-ck">✓</span>Unlimited Ask AI</li>
-        <li><span class="plan-ck">✓</span>FlowScore™ health rating</li>
-        <li><span class="plan-ck">✓</span>Industry benchmarking</li>
-        <li><span class="plan-ck">✓</span>Full analysis history</li>
-      </ul>
-      <a href="/app"><button class="plan-btn sol">Get started →</button></a>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Connect your accounting software</div>
+        <div class="step-desc">One click to connect Xero, MYOB or QuickBooks. Read-only access &#x2014; we never touch your data.</div>
+      </div>
     </div>
-    <div class="plan">
-      <div class="plan-tier">Agency</div>
-      <div class="plan-price">$299<span>/mo</span></div>
-      <div class="plan-desc">For accountants & advisors</div>
-      <ul class="plan-list">
-        <li><span class="plan-ck">✓</span>Everything in Pro</li>
-        <li><span class="plan-ck">✓</span>Up to 20 client businesses</li>
-        <li><span class="plan-ck">✓</span>White-label reports</li>
-        <li><span class="plan-ck">✓</span>Client management dashboard</li>
-        <li><span class="plan-ck">✓</span>Priority support</li>
-      </ul>
-      <a href="/app"><button class="plan-btn out">Contact us</button></a>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">See your top 3 profit leaks</div>
+        <div class="step-desc">In under 60 seconds, FlowGuard shows exactly where your money is going &#x2014; and what to do about it today.</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<div class="integrations">
+  <div class="int-title">Works with your accounting software</div>
+  <div class="int-logos">
+    <div class="int-logo"><div class="int-logo-ico" style="background:#13b5ea">X</div><div class="int-logo-name">Xero</div></div>
+    <div class="int-logo"><div class="int-logo-ico" style="background:#6c47ff">M</div><div class="int-logo-name">MYOB</div></div>
+    <div class="int-logo"><div class="int-logo-ico" style="background:#2ca01c">Q</div><div class="int-logo-name">QuickBooks</div></div>
+  </div>
+  <div class="int-sub">Read-only access &nbsp;&middot;&nbsp; Bank-level encryption &nbsp;&middot;&nbsp; We never modify your data</div>
 </div>
 
-<div class="cta">
-  <h2 class="cta-h">Stop guessing.<br>Start knowing.</h2>
-  <p class="cta-sub">Connect your accounting software and find your first profit leak in under 2 minutes — free.</p>
-  <a href="/app"><button class="btn-hero">Start your free trial →</button></a>
-  <p class="cta-note">No credit card required · 14-day trial · Cancel anytime</p>
-</div>
+<section class="cta-section">
+  <div class="cta-box">
+    <h2 class="cta-h">Stop guessing.<br>Find the leaks today.</h2>
+    <p class="cta-sub">Most FlowGuard users find more than $2,000/month in profit leaks within their first 60 seconds.</p>
+    <a href="/app" class="btn-hero-primary" style="display:inline-flex">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Start free trial
+    </a>
+    <div class="cta-note">14 days free &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; Cancel anytime</div>
+  </div>
+</section>
 
 <footer>
-  <div class="ft-logo">
-    <div class="ft-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg></div>
-    <span class="ft-brand">FlowGuard</span>
+  <div class="footer-logo">
+    <div class="footer-mark"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <span class="footer-name">FlowGuard</span>
   </div>
-  <div class="ft-copy">© 2026 FlowGuard. AI Profit Intelligence for SMBs.</div>
-  <div class="ft-links">
-    <a href="/app">Log in</a>
-    <a href="/app">Sign up</a>
-    <a href="mailto:hello@flowguard.com">Contact</a>
-  </div>
+  <div class="footer-copy">&copy; 2025 FlowGuard. All rights reserved.</div>
 </footer>
 
+<script>
+function goLogin(e) {
+  e.preventDefault();
+  sessionStorage.setItem('fg_show', 'login');
+  window.location.href = '/app';
+}
+</script>
 </body>
 </html>
