@@ -3,276 +3,832 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowGuard — Find Your Profit Leaks</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>FlowGuard — Stop Losing Money You Don't Know About</title>
+<meta name="description" content="FlowGuard connects to your Xero, MYOB or QuickBooks and tells you exactly where your money is going — and what to do about it in seconds.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:#070808;color:#efefed;font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+:root {
+  --bg: #08090a;
+  --s1: #0f1012;
+  --s2: #161719;
+  --s3: #1e2022;
+  --s4: #272a2d;
+  --bdr: rgba(255,255,255,.055);
+  --bdr2: rgba(255,255,255,.1);
+  --tx: #f2f2f0;
+  --tx2: #6b6f73;
+  --tx3: #32373b;
+  --ac: #b8ff57;
+  --ac2: rgba(184,255,87,.08);
+  --ac3: rgba(184,255,87,.22);
+  --red: #ff5050;
+  --grn: #4ade80;
+  --amb: #fbbf24;
+  --disp: "Bricolage Grotesque", sans-serif;
+  --body: "Figtree", sans-serif;
+  --mono: "DM Mono", monospace;
+}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,8,.85);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
-.nav-logo{display:flex;align-items:center;gap:9px}
-.nav-mark{width:26px;height:26px;border-radius:7px;background:#b8ff57;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-name{font-family:"Syne",sans-serif;font-size:15px;font-weight:800}
-.nav-r{display:flex;align-items:center;gap:10px}
-.nav-login{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;color:#5a5d5d;transition:color .14s}
-.nav-login:hover{color:#efefed}
-.nav-cta{padding:8px 18px;border-radius:8px;background:#b8ff57;color:#070808;font-size:13px;font-weight:800;font-family:"Syne",sans-serif}
-.nav-cta:hover{background:#ccff6b}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--tx); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
 
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px 60px;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(184,255,87,.07) 0%,transparent 70%);pointer-events:none}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;background:rgba(184,255,87,.08);border:1px solid rgba(184,255,87,.18);font-size:11px;font-weight:700;color:#b8ff57;text-transform:uppercase;letter-spacing:.13em;font-family:"Syne",sans-serif;margin-bottom:24px;animation:fadeUp .5s ease}
-.hero-live{width:6px;height:6px;border-radius:50%;background:#b8ff57;animation:blink 2s infinite}
-.hero-h1{font-family:"Syne",sans-serif;font-size:clamp(40px,7vw,72px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:22px;animation:fadeUp .5s .08s ease both}
-.hero-h1 span{color:#b8ff57}
-.hero-sub{font-size:clamp(16px,2.2vw,19px);color:#5a5d5d;max-width:520px;line-height:1.7;margin-bottom:36px;animation:fadeUp .5s .16s ease both}
-.hero-btns{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .5s .24s ease both}
-.btn-hero-primary{display:inline-flex;align-items:center;gap:9px;padding:15px 32px;border-radius:12px;background:#b8ff57;color:#070808;font-size:15px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 40px rgba(184,255,87,.25)}
-.btn-hero-primary:hover{background:#ccff6b;box-shadow:0 0 60px rgba(184,255,87,.35);transform:translateY(-1px)}
-.btn-hero-secondary{display:inline-flex;align-items:center;gap:7px;padding:15px 24px;border-radius:12px;border:1px solid rgba(255,255,255,.1);color:#5a5d5d;font-size:14px;font-weight:600;transition:all .14s}
-.btn-hero-secondary:hover{border-color:rgba(255,255,255,.2);color:#efefed}
-.hero-trust{margin-top:28px;font-size:12px;color:#2e3030;animation:fadeUp .5s .32s ease both}
-.hero-trust b{color:#5a5d5d}
+/* ── ANIMATIONS ─────────────────────────────────────── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes float    { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@keyframes glow     { 0%,100% { opacity:.6; } 50% { opacity:1; } }
+@keyframes scan     { 0% { transform:translateY(-100%); } 100% { transform:translateY(400%); } }
+@keyframes countUp  { from { opacity:0; } to { opacity:1; } }
+@keyframes blink    { 0%,100% { opacity:1; } 50% { opacity:.2; } }
 
-/* MOCK DASHBOARD */
-.hero-mock{margin-top:60px;animation:fadeUp .6s .4s ease both;width:100%;max-width:640px;position:relative}
-.mock-card{background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5)}
-.mock-bar{padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
-.mock-dots{display:flex;gap:6px}
-.mock-dot{width:10px;height:10px;border-radius:50%}
-.mock-title-bar{flex:1;height:10px;background:#161818;border-radius:5px}
-.mock-body{padding:22px 20px}
-.mock-hero-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:8px;text-align:center}
-.mock-hero-num{font-family:"DM Mono",monospace;font-size:52px;font-weight:500;color:#ff4444;text-align:center;margin-bottom:4px;line-height:1}
-.mock-hero-sub{font-size:12px;color:#5a5d5d;text-align:center;margin-bottom:20px}
-.mock-leaks{display:flex;flex-direction:column;gap:8px}
-.mock-leak{background:#161818;border-radius:10px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;border-left:3px solid}
-.mock-leak-name{font-family:"Syne",sans-serif;font-size:12px;font-weight:700;margin-bottom:2px}
-.mock-leak-desc{font-size:11px;color:#5a5d5d}
-.mock-leak-amt{font-family:"DM Mono",monospace;font-size:16px;font-weight:500}
-.mock-fix{margin-top:8px;display:flex;justify-content:flex-end}
-.mock-fix-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;font-size:10px;font-weight:700;font-family:"Syne",sans-serif;background:rgba(255,68,68,.1);color:#ff4444;border:1px solid rgba(255,68,68,.2)}
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
 
-/* SOCIAL PROOF */
-.proof-bar{padding:20px 24px;text-align:center;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);background:#0a0b0b}
-.proof-text{font-size:12px;color:#2e3030;letter-spacing:.04em}
-.proof-text b{color:#5a5d5d}
+/* ── NAV ─────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(8,9,10,.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--bdr);
+  animation: fadeIn .4s ease;
+}
+.nav-logo { display: flex; align-items: center; gap: 9px; }
+.nav-gem {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: var(--ac);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nav-name { font-family: var(--disp); font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link { font-size: 14px; font-weight: 500; color: var(--tx2); transition: color .14s; }
+.nav-link:hover { color: var(--tx); }
+.nav-r { display: flex; align-items: center; gap: 10px; }
+.nav-login { font-size: 14px; font-weight: 500; color: var(--tx2); padding: 7px 16px; transition: color .14s; }
+.nav-login:hover { color: var(--tx); }
+.nav-cta {
+  font-family: var(--disp); font-size: 13px; font-weight: 700;
+  padding: 9px 20px; border-radius: 8px;
+  background: var(--ac); color: var(--bg);
+  transition: all .14s;
+  letter-spacing: -.01em;
+}
+.nav-cta:hover { background: #ccff6b; transform: translateY(-1px); }
 
-/* FEATURES */
-.features{padding:100px 20px;max-width:760px;margin:0 auto}
-.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#b8ff57;font-family:"Syne",sans-serif;margin-bottom:14px;text-align:center}
-.section-h{font-family:"Syne",sans-serif;font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.025em;text-align:center;margin-bottom:14px;line-height:1.15}
-.section-sub{font-size:16px;color:#5a5d5d;text-align:center;max-width:480px;margin:0 auto 60px;line-height:1.7}
-.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.feat-card{background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:26px 24px;transition:border-color .14s}
-.feat-card:hover{border-color:rgba(255,255,255,.12)}
-.feat-ico{font-size:28px;margin-bottom:14px}
-.feat-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
-.feat-desc{font-size:13px;color:#5a5d5d;line-height:1.7}
-.feat-highlight{color:#b8ff57;font-weight:600}
+/* ── HERO ────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
 
-/* HOW IT WORKS */
-.how{padding:80px 20px;max-width:700px;margin:0 auto;text-align:center}
-.steps{display:flex;flex-direction:column;gap:0;margin-top:50px;text-align:left;position:relative}
-.steps::before{content:"";position:absolute;left:19px;top:24px;bottom:24px;width:1px;background:rgba(255,255,255,.06)}
-.step{display:flex;gap:20px;padding:20px 0}
-.step-num{width:40px;height:40px;border-radius:10px;background:#0f1010;border:1px solid rgba(255,255,255,.1);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:14px;font-weight:800;color:#b8ff57;position:relative;z-index:1}
-.step-body{}
-.step-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:5px;margin-top:8px}
-.step-desc{font-size:13px;color:#5a5d5d;line-height:1.7}
+/* Background glow orbs */
+.hero::before {
+  content: "";
+  position: absolute; top: 10%; left: 50%;
+  transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at 50% 40%,
+    rgba(184,255,87,.06) 0%,
+    rgba(184,255,87,.02) 40%,
+    transparent 70%);
+  pointer-events: none;
+}
 
-/* INTEGRATIONS */
-.integrations{padding:80px 20px;text-align:center;background:#0a0b0b;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
-.int-title{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#2e3030;margin-bottom:28px}
-.int-logos{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
-.int-logo{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:12px;background:#0f1010;border:1px solid rgba(255,255,255,.07)}
-.int-logo-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:14px;font-weight:900;color:#fff}
-.int-logo-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:700}
-.int-sub{margin-top:20px;font-size:12px;color:#2e3030}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 30px;
+  background: var(--ac2); border: 1px solid rgba(184,255,87,.2);
+  font-family: var(--disp); font-size: 12px; font-weight: 600;
+  color: var(--ac); letter-spacing: .03em;
+  margin-bottom: 28px;
+  animation: fadeUp .5s ease both;
+}
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ac); animation: blink 2.5s infinite; }
 
-/* CTA */
-.cta-section{padding:100px 20px;text-align:center}
-.cta-box{background:#0f1010;border:1px solid rgba(184,255,87,.14);border-radius:24px;padding:60px 40px;max-width:560px;margin:0 auto;position:relative;overflow:hidden}
-.cta-box::before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(184,255,87,.08) 0%,transparent 70%);pointer-events:none}
-.cta-h{font-family:"Syne",sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.025em;margin-bottom:14px;line-height:1.15}
-.cta-sub{font-size:15px;color:#5a5d5d;margin-bottom:32px;line-height:1.65}
-.cta-note{margin-top:16px;font-size:12px;color:#2e3030}
+.hero-h1 {
+  font-family: var(--disp);
+  font-size: clamp(44px, 7.5vw, 82px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  margin-bottom: 24px;
+  max-width: 840px;
+  animation: fadeUp .5s .08s ease both;
+}
+.hero-h1 .ac { color: var(--ac); }
+.hero-h1 .dim { color: var(--tx2); }
 
-/* FOOTER */
-footer{padding:30px 24px;border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.footer-logo{display:flex;align-items:center;gap:8px}
-.footer-mark{width:22px;height:22px;border-radius:6px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
-.footer-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:800;color:#5a5d5d}
-.footer-copy{font-size:12px;color:#2e3030}
+.hero-sub {
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--tx2);
+  max-width: 500px;
+  line-height: 1.65;
+  margin-bottom: 40px;
+  animation: fadeUp .5s .16s ease both;
+}
 
-@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.hero-btns{flex-direction:column;align-items:stretch;width:100%;max-width:320px}.btn-hero-primary,.btn-hero-secondary{justify-content:center}}
+.hero-btns {
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; justify-content: center;
+  margin-bottom: 16px;
+  animation: fadeUp .5s .24s ease both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 15px 32px; border-radius: 10px;
+  background: var(--ac); color: var(--bg);
+  font-family: var(--disp); font-size: 15px; font-weight: 700;
+  letter-spacing: -.02em;
+  box-shadow: 0 0 0 0 rgba(184,255,87,0);
+  transition: all .2s;
+}
+.btn-primary:hover { background: #ccff6b; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(184,255,87,.2); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 15px 24px; border-radius: 10px;
+  border: 1px solid var(--bdr2);
+  font-size: 14px; font-weight: 500; color: var(--tx2);
+  transition: all .14s;
+}
+.btn-ghost:hover { border-color: var(--bdr2); color: var(--tx); background: var(--s1); }
+
+.hero-trust {
+  font-size: 12px; color: var(--tx3);
+  animation: fadeUp .5s .32s ease both;
+  margin-bottom: 64px;
+}
+.hero-trust b { color: var(--tx2); font-weight: 500; }
+
+/* ── PRODUCT PREVIEW ─────────────────────────────────── */
+.hero-preview {
+  width: 100%; max-width: 780px;
+  animation: fadeUp .7s .4s ease both;
+  position: relative;
+}
+.preview-glow {
+  position: absolute; inset: -1px;
+  border-radius: 19px;
+  background: linear-gradient(135deg, rgba(184,255,87,.15), transparent 60%);
+  pointer-events: none;
+}
+.preview-card {
+  background: var(--s1);
+  border: 1px solid var(--bdr2);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.04);
+  position: relative;
+}
+.preview-topbar {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(15,16,18,.8);
+}
+.preview-dots { display: flex; gap: 5px; }
+.preview-dot { width: 9px; height: 9px; border-radius: 50%; }
+.preview-url {
+  flex: 1; height: 22px; background: var(--s3);
+  border-radius: 5px; margin: 0 auto;
+  max-width: 280px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; color: var(--tx3);
+}
+.preview-body { padding: 20px; display: grid; grid-template-columns: 1fr 260px; gap: 14px; }
+.preview-main {}
+.preview-status {
+  padding: 10px 14px; border-radius: 9px;
+  background: rgba(255,80,80,.06); border: 1px solid rgba(255,80,80,.15);
+  font-size: 12px; font-weight: 600; color: var(--red);
+  display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.preview-leak-num {
+  font-family: var(--mono); font-size: 48px; font-weight: 400;
+  color: var(--red); line-height: 1; margin-bottom: 3px;
+}
+.preview-leak-sub { font-size: 11px; color: var(--tx2); margin-bottom: 14px; }
+.preview-leaks { display: flex; flex-direction: column; gap: 7px; }
+.preview-leak-row {
+  padding: 10px 12px; background: var(--s2);
+  border: 1px solid var(--bdr); border-radius: 8px;
+  border-left: 3px solid;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.plr-name { font-size: 11px; font-weight: 600; margin-bottom: 2px; font-family: var(--disp); }
+.plr-desc { font-size: 10px; color: var(--tx2); }
+.plr-amt { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+.preview-side {}
+.preview-side-card {
+  background: var(--s2); border: 1px solid var(--bdr); border-radius: 10px;
+  padding: 14px; margin-bottom: 10px;
+}
+.psc-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--tx3); font-family: var(--disp); margin-bottom: 8px; }
+.psc-val { font-family: var(--mono); font-size: 24px; font-weight: 400; line-height: 1; margin-bottom: 3px; }
+.psc-sub { font-size: 10px; color: var(--tx2); }
+/* Scan line animation on preview */
+.preview-scan {
+  position: absolute; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(184,255,87,.3), transparent);
+  animation: scan 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── TRUST BAR ───────────────────────────────────────── */
+.trust-bar {
+  padding: 20px 32px;
+  border-top: 1px solid var(--bdr);
+  border-bottom: 1px solid var(--bdr);
+  background: var(--s1);
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  overflow: hidden;
+}
+.trust-label { font-size: 11px; color: var(--tx3); letter-spacing: .06em; text-transform: uppercase; font-family: var(--disp); font-weight: 600; margin-right: 28px; white-space: nowrap; }
+.trust-items { display: flex; align-items: center; gap: 4px; }
+.trust-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 18px; border-radius: 8px;
+  background: var(--s2); border: 1px solid var(--bdr);
+  transition: border-color .14s;
+}
+.trust-item:hover { border-color: var(--bdr2); }
+.trust-ico { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-family: var(--disp); font-size: 10px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.trust-name { font-family: var(--disp); font-size: 12px; font-weight: 700; }
+.trust-sep { width: 1px; height: 24px; background: var(--bdr); margin: 0 4px; }
+
+/* ── SECTIONS COMMON ─────────────────────────────────── */
+.section { padding: 120px 32px; max-width: 1080px; margin: 0 auto; }
+.section-full { padding: 100px 32px; }
+.section-kicker {
+  font-family: var(--disp); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .14em; color: var(--ac);
+  margin-bottom: 14px;
+}
+.section-h {
+  font-family: var(--disp);
+  font-size: clamp(30px, 4.5vw, 52px);
+  font-weight: 800; line-height: 1.08;
+  letter-spacing: -.03em;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: 17px; color: var(--tx2); line-height: 1.7;
+  max-width: 520px; margin-bottom: 56px;
+}
+.centered { text-align: center; }
+.centered .section-sub { margin-left: auto; margin-right: auto; }
+
+/* ── FEATURES ────────────────────────────────────────── */
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--bdr); border: 1px solid var(--bdr); border-radius: 16px; overflow: hidden; }
+.feat-card {
+  background: var(--s1);
+  padding: 36px 36px;
+  transition: background .14s;
+  position: relative;
+}
+.feat-card:hover { background: var(--s2); }
+.feat-card::after {
+  content: "";
+  position: absolute; bottom: 0; left: 36px; right: 36px;
+  height: 1px; background: var(--bdr);
+}
+.feat-card:nth-child(3)::after, .feat-card:nth-child(4)::after { display: none; }
+.feat-ico-wrap {
+  width: 44px; height: 44px; border-radius: 11px;
+  border: 1px solid var(--bdr2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 18px;
+  background: var(--s2);
+}
+.feat-title { font-family: var(--disp); font-size: 18px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.02em; }
+.feat-desc { font-size: 14px; color: var(--tx2); line-height: 1.75; }
+.feat-desc .hl { color: var(--ac); font-weight: 600; }
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.step-card {
+  background: var(--s1); border: 1px solid var(--bdr); border-radius: 14px;
+  padding: 30px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .14s;
+}
+.step-card:hover { border-color: var(--bdr2); }
+.step-card::before {
+  content: attr(data-n);
+  position: absolute; top: 20px; right: 24px;
+  font-family: var(--mono); font-size: 52px; font-weight: 500;
+  color: rgba(255,255,255,.03);
+  line-height: 1;
+}
+.step-num {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--ac2); border: 1px solid var(--ac3);
+  color: var(--ac); font-family: var(--disp); font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.step-title { font-family: var(--disp); font-size: 17px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.02em; }
+.step-desc { font-size: 14px; color: var(--tx2); line-height: 1.7; }
+
+/* ── STAT STRIP ──────────────────────────────────────── */
+.stat-strip {
+  background: var(--s1); border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr);
+  padding: 56px 32px;
+}
+.stat-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--bdr); border: 1px solid var(--bdr); border-radius: 16px; overflow: hidden; }
+.stat-item { background: var(--s1); padding: 32px 36px; text-align: center; transition: background .14s; }
+.stat-item:hover { background: var(--s2); }
+.stat-num { font-family: var(--mono); font-size: 44px; font-weight: 500; color: var(--ac); line-height: 1; margin-bottom: 6px; letter-spacing: -.02em; }
+.stat-lbl { font-size: 14px; color: var(--tx2); line-height: 1.5; }
+
+/* ── CTA SECTION ─────────────────────────────────────── */
+.cta-wrap {
+  padding: 120px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-wrap::before {
+  content: "";
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ac3), transparent);
+}
+.cta-wrap::after {
+  content: "";
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+}
+.cta-inner {
+  max-width: 680px; margin: 0 auto;
+  background: var(--s1); border: 1px solid var(--bdr2); border-radius: 24px;
+  padding: 72px 60px;
+  position: relative;
+  box-shadow: 0 0 100px rgba(184,255,87,.04);
+}
+.cta-inner::before {
+  content: "";
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  width: 180px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ac), transparent);
+}
+.cta-h { font-family: var(--disp); font-size: clamp(28px, 4vw, 44px); font-weight: 800; line-height: 1.1; letter-spacing: -.03em; margin-bottom: 14px; }
+.cta-sub { font-size: 16px; color: var(--tx2); line-height: 1.65; margin-bottom: 36px; }
+.cta-note { margin-top: 16px; font-size: 12px; color: var(--tx3); }
+.cta-note b { color: var(--tx2); font-weight: 500; }
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer {
+  padding: 28px 32px;
+  border-top: 1px solid var(--bdr);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  background: var(--s1);
+}
+.footer-logo { display: flex; align-items: center; gap: 8px; }
+.footer-gem { width: 22px; height: 22px; border-radius: 5px; background: var(--ac); display: flex; align-items: center; justify-content: center; }
+.footer-name { font-family: var(--disp); font-size: 13px; font-weight: 700; color: var(--tx2); }
+.footer-copy { font-size: 12px; color: var(--tx3); }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { font-size: 12px; color: var(--tx3); transition: color .12s; }
+.footer-link:hover { color: var(--tx2); }
+
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero-h1 { font-size: clamp(36px, 9vw, 58px); }
+  .preview-body { grid-template-columns: 1fr; }
+  .preview-side { display: none; }
+  .feat-grid { grid-template-columns: 1fr; }
+  .how-grid { grid-template-columns: 1fr; }
+  .stat-inner { grid-template-columns: 1fr; }
+  .cta-inner { padding: 48px 28px; }
+  .section { padding: 80px 20px; }
+  .trust-bar { flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .trust-label { width: 100%; text-align: center; margin-right: 0; }
+}
+
+/* ── PRICING ─────────────────────────────────────────── */
+.pricing-wrap { padding: 120px 32px; background: var(--s1); border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr); }
+.pricing-inner { max-width: 920px; margin: 0 auto; }
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.pricing-card {
+  background: var(--bg); border: 1px solid var(--bdr2);
+  border-radius: 18px; padding: 32px 28px;
+  position: relative; transition: border-color .14s, transform .14s;
+}
+.pricing-card:hover { border-color: var(--bdr2); transform: translateY(-2px); }
+.pricing-card.featured {
+  background: var(--s1);
+  border-color: rgba(184,255,87,.3);
+  box-shadow: 0 0 0 1px rgba(184,255,87,.08), 0 24px 60px rgba(0,0,0,.4);
+}
+.pricing-card.featured::before {
+  content: "";
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ac), transparent);
+}
+.pricing-popular {
+  position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+  padding: 3px 14px; border-radius: 20px;
+  background: var(--ac); color: var(--bg);
+  font-family: var(--disp); font-size: 10px; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+.pricing-plan { font-family: var(--disp); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--tx2); margin-bottom: 16px; }
+.pricing-price { margin-bottom: 6px; display: flex; align-items: flex-end; gap: 4px; }
+.pricing-amount { font-family: var(--mono); font-size: 44px; font-weight: 400; line-height: 1; letter-spacing: -.02em; }
+.pricing-period { font-size: 13px; color: var(--tx2); margin-bottom: 6px; }
+.pricing-desc { font-size: 13px; color: var(--tx2); line-height: 1.65; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--bdr); }
+.pricing-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.pf-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--tx2); line-height: 1.5; }
+.pf-row b { color: var(--tx); font-weight: 500; }
+.pf-check { color: var(--ac); font-size: 12px; flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+.pf-x { color: var(--tx3); font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+.pricing-btn {
+  width: 100%; padding: 12px; border-radius: 9px;
+  font-family: var(--disp); font-size: 13px; font-weight: 700;
+  letter-spacing: -.01em; display: flex; align-items: center; justify-content: center;
+  gap: 7px; transition: all .14s; border: none; cursor: pointer;
+}
+.pricing-btn.primary { background: var(--ac); color: var(--bg); }
+.pricing-btn.primary:hover { background: #ccff6b; transform: translateY(-1px); }
+.pricing-btn.ghost { background: transparent; color: var(--tx2); border: 1px solid var(--bdr2); }
+.pricing-btn.ghost:hover { border-color: var(--bdr2); color: var(--tx); background: var(--s2); }
+.pricing-note { text-align: center; margin-top: 28px; font-size: 12px; color: var(--tx3); line-height: 1.7; }
+.pricing-note b { color: var(--tx2); font-weight: 500; }
+@media (max-width: 860px) {
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .pricing-wrap { padding: 80px 20px; }
+}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <div class="nav-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="nav-gem">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#08090a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
     <span class="nav-name">FlowGuard</span>
   </div>
+  <div class="nav-links">
+    <a class="nav-link" href="#features">Features</a>
+    <a class="nav-link" href="#how">How it works</a>
+    <a class="nav-link" href="#integrations">Integrations</a>
+  </div>
   <div class="nav-r">
-    <a href="/app" class="nav-login" onclick="goLogin(event)">Log in</a>
-    <a href="/app" class="nav-cta">Start free trial</a>
+    <a class="nav-login" href="/app" onclick="sessionStorage.setItem('fg_show','login');return true;">Log in</a>
+    <a class="nav-cta" href="/app">Start free trial</a>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow"><div class="hero-live"></div>AI-powered for Australian SMBs</div>
-  <h1 class="hero-h1">Find out exactly<br>where you're <span>losing money</span></h1>
-  <p class="hero-sub">Connect your Xero, MYOB or QuickBooks. In 60 seconds, FlowGuard shows you your top profit leaks and exactly what to do about them.</p>
+  <div class="hero-eyebrow">
+    <div class="eyebrow-dot"></div>
+    Your AI CFO for Australian SMBs
+  </div>
+
+  <h1 class="hero-h1">
+    Your business is<br>
+    <span class="ac">leaking money</span><br>
+    <span class="dim">right now.</span>
+  </h1>
+
+  <p class="hero-sub">
+    FlowGuard finds exactly where &mdash; and tells you what to do about it in 60 seconds.
+  </p>
+
   <div class="hero-btns">
-    <a href="/app" class="btn-hero-primary">
+    <a href="/app" class="btn-primary">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Start free trial
+      Find my profit leaks
     </a>
-    <a href="#how" class="btn-hero-secondary">See how it works &#x2193;</a>
+    <a href="#how" class="btn-ghost">See how it works ↓</a>
   </div>
-  <div class="hero-trust">Free for 14 days &nbsp;&middot;&nbsp; <b>No credit card required</b> &nbsp;&middot;&nbsp; Read-only access to your accounts</div>
 
-  <div class="hero-mock">
-    <div class="mock-card">
-      <div class="mock-bar">
-        <div class="mock-dots">
-          <div class="mock-dot" style="background:#ff5f57"></div>
-          <div class="mock-dot" style="background:#febc2e"></div>
-          <div class="mock-dot" style="background:#28c840"></div>
+  <p class="hero-trust">Free for 14 days &nbsp;·&nbsp; <b>No credit card required</b> &nbsp;·&nbsp; Read-only access &nbsp;·&nbsp; Setup in 60 seconds</p>
+
+  <!-- PRODUCT PREVIEW -->
+  <div class="hero-preview">
+    <div class="preview-glow"></div>
+    <div class="preview-card">
+      <div class="preview-scan"></div>
+      <div class="preview-topbar">
+        <div class="preview-dots">
+          <div class="preview-dot" style="background:#ff5f57"></div>
+          <div class="preview-dot" style="background:#febc2e"></div>
+          <div class="preview-dot" style="background:#28c840"></div>
         </div>
-        <div class="mock-title-bar"></div>
+        <div class="preview-url">flowguard.app/dashboard</div>
       </div>
-      <div class="mock-body">
-        <div class="mock-hero-label">Monthly profit leaking</div>
-        <div class="mock-hero-num">$28,948</div>
-        <div class="mock-hero-sub">leaking out of your business every month &#x2014; <strong style="color:#efefed">here's where it's going</strong></div>
-        <div class="mock-leaks">
-          <div class="mock-leak" style="border-color:#ff4444">
-            <div><div class="mock-leak-name">#1 Labour cost blowout</div><div class="mock-leak-desc">Running 52.3% of revenue &#x2014; benchmark is 38&#x2013;42%</div></div>
-            <div style="text-align:right"><div class="mock-leak-amt" style="color:#ff4444">$9,333</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
+      <div class="preview-body">
+        <div class="preview-main">
+          <div class="preview-status">
+            <span>⚠</span>
+            Falling behind — $184K overdue exceeds your cash balance. Fix this now.
           </div>
-          <div class="mock-leak" style="border-color:#ff4444">
-            <div><div class="mock-leak-name">#2 Overdue invoices unpaid</div><div class="mock-leak-desc">9 clients owe you $184K &#x2014; sitting uncollected</div></div>
-            <div style="text-align:right"><div class="mock-leak-amt" style="color:#ff4444">$15,333</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
-          </div>
-          <div class="mock-leak" style="border-color:#f59e0b">
-            <div><div class="mock-leak-name">#3 Prices behind rising costs</div><div class="mock-leak-desc">Net margin 5.1% &#x2014; trades minimum is 8%</div></div>
-            <div style="text-align:right"><div class="mock-leak-amt" style="color:#f59e0b">$4,282</div><div style="font-size:10px;color:#5a5d5d">/month</div></div>
+          <div class="preview-leak-num" id="hero-count">$0</div>
+          <div class="preview-leak-sub">leaking out of your business every month</div>
+          <div class="preview-leaks">
+            <div class="preview-leak-row" style="border-left-color:#ff5050">
+              <div><div class="plr-name" style="color:#ff5050">#1 — Labour cost blowout</div><div class="plr-desc">Running 52.3% of revenue — benchmark 38–42%</div></div>
+              <div class="plr-amt" style="color:#ff5050">$9,333<div style="font-size:9px;color:var(--tx3)">/mo</div></div>
+            </div>
+            <div class="preview-leak-row" style="border-left-color:#ff5050">
+              <div><div class="plr-name" style="color:#ff5050">#2 — Overdue invoices unpaid</div><div class="plr-desc">9 clients owe you $184K right now</div></div>
+              <div class="plr-amt" style="color:#ff5050">$184K<div style="font-size:9px;color:var(--tx3)">total</div></div>
+            </div>
+            <div class="preview-leak-row" style="border-left-color:#fbbf24">
+              <div><div class="plr-name" style="color:#fbbf24">#3 — Prices below benchmark</div><div class="plr-desc">Margin 5.1% — industry minimum is 8%</div></div>
+              <div class="plr-amt" style="color:#fbbf24">$4,282<div style="font-size:9px;color:var(--tx3)">/mo</div></div>
+            </div>
           </div>
         </div>
-        <div class="mock-fix">
-          <div class="mock-fix-btn">&#x26A1; Fix This For Me</div>
+        <div class="preview-side">
+          <div class="preview-side-card">
+            <div class="psc-lbl">Cash Runway</div>
+            <div class="psc-val" style="color:#ff5050">2w</div>
+            <div class="psc-sub">🔴 Critical — act now</div>
+          </div>
+          <div class="preview-side-card">
+            <div class="psc-lbl">Safe Owner Pay</div>
+            <div class="psc-val" style="color:#b8ff57">$0</div>
+            <div class="psc-sub">Collect invoices first</div>
+          </div>
+          <div class="preview-side-card" style="background:rgba(184,255,87,.04);border-color:rgba(184,255,87,.15)">
+            <div class="psc-lbl" style="color:rgba(184,255,87,.5)">⚡ Fix This For Me</div>
+            <div style="font-size:11px;color:var(--tx2);line-height:1.6;margin-top:4px">AI-generated email ready to send to your overdue clients right now</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="proof-bar">
-  <div class="proof-text">Works with &nbsp;<b>Xero</b>&nbsp; &middot; &nbsp;<b>MYOB</b>&nbsp; &middot; &nbsp;<b>QuickBooks</b>&nbsp; &nbsp;&#x2014;&nbsp; &nbsp;Read-only. Bank-level encryption. Never modify your data.</div>
+<!-- TRUST BAR -->
+<div class="trust-bar" id="integrations">
+  <div class="trust-label">Works with</div>
+  <div class="trust-items">
+    <div class="trust-item">
+      <div class="trust-ico" style="background:#13b5ea">X</div>
+      <span class="trust-name">Xero</span>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-ico" style="background:#6c47ff">M</div>
+      <span class="trust-name">MYOB</span>
+    </div>
+    <div class="trust-sep"></div>
+    <div class="trust-item">
+      <div class="trust-ico" style="background:#2ca01c">Q</div>
+      <span class="trust-name">QuickBooks</span>
+    </div>
+  </div>
+  <div style="margin-left:28px;font-size:11px;color:var(--tx3)">Read-only access &nbsp;·&nbsp; Encrypted &nbsp;·&nbsp; Never modified</div>
 </div>
 
-<section class="features">
-  <div class="section-label">What FlowGuard does</div>
-  <h2 class="section-h">Four things. That's it.</h2>
-  <p class="section-sub">Most accounting tools show you data. FlowGuard tells you what to <em>do</em> about it.</p>
+<!-- FEATURES -->
+<div id="features">
+<div class="section">
+  <div class="section-kicker reveal">What FlowGuard does</div>
+  <h2 class="section-h reveal reveal-delay-1">Four things.<br>Done better than anyone.</h2>
+  <p class="section-sub reveal reveal-delay-2">Most tools give you reports. FlowGuard gives you answers — with the exact action to take next.</p>
+
   <div class="feat-grid">
-    <div class="feat-card">
-      <div class="feat-ico">&#x1F4B8;</div>
+    <div class="feat-card reveal">
+      <div class="feat-ico-wrap">💸</div>
       <div class="feat-title">Profit Leak Detection</div>
-      <div class="feat-desc">Connects to your accounts and finds the <span class="feat-highlight">top 3 places you're losing money</span> &#x2014; with exact dollar amounts. Not 20 charts. Three numbers.</div>
+      <p class="feat-desc">Connects to your accounts and finds your <span class="hl">top 3 profit leaks with exact dollar amounts.</span> Not 20 charts. Three numbers and what they mean.</p>
     </div>
-    <div class="feat-card">
-      <div class="feat-ico">&#x26A1;</div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-ico-wrap">⚡</div>
       <div class="feat-title">Fix This For Me</div>
-      <div class="feat-desc">One click generates a <span class="feat-highlight">ready-to-send email or message</span> to fix each leak &#x2014; whether that's chasing an invoice, negotiating a supplier, or raising prices.</div>
+      <p class="feat-desc">One tap generates a <span class="hl">ready-to-send email or message</span> to fix each leak — chase an invoice, negotiate a supplier, or raise prices. Done in seconds.</p>
     </div>
-    <div class="feat-card">
-      <div class="feat-ico">&#x1F52E;</div>
+    <div class="feat-card reveal">
+      <div class="feat-ico-wrap">🔮</div>
       <div class="feat-title">Cash Forecast</div>
-      <div class="feat-desc">Not a graph. Just one line: <span class="feat-highlight">"At this rate, your cash drops below safe levels in 52 days."</span> That hits hard and creates urgency.</div>
+      <p class="feat-desc">No graphs. Just one line: <span class="hl">"At this rate, your cash drops below safe levels in 52 days."</span> That urgency creates action. Instantly.</p>
     </div>
-    <div class="feat-card">
-      <div class="feat-ico">&#x1F6A8;</div>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-ico-wrap">🚨</div>
       <div class="feat-title">Smart Alerts</div>
-      <div class="feat-desc">Only alerts when it actually matters. <span class="feat-highlight">"Unusual expense detected +45%"</span> or <span class="feat-highlight">"Profit dropped this week."</span> No noise.</div>
+      <p class="feat-desc">Only notifies you when it actually matters. <span class="hl">Unusual expense up 45%. Profit dropped this week.</span> No noise — just the things that need your attention.</p>
     </div>
   </div>
-</section>
-
-<section class="how" id="how">
-  <div class="section-label">How it works</div>
-  <h2 class="section-h">Up and running in 3 steps</h2>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">Create your free account</div>
-        <div class="step-desc">Takes 30 seconds. No credit card required. Free for 14 days.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">Connect your accounting software</div>
-        <div class="step-desc">One click to connect Xero, MYOB or QuickBooks. Read-only access &#x2014; we never touch your data.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">See your top 3 profit leaks</div>
-        <div class="step-desc">In under 60 seconds, FlowGuard shows exactly where your money is going &#x2014; and what to do about it today.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="integrations">
-  <div class="int-title">Works with your accounting software</div>
-  <div class="int-logos">
-    <div class="int-logo"><div class="int-logo-ico" style="background:#13b5ea">X</div><div class="int-logo-name">Xero</div></div>
-    <div class="int-logo"><div class="int-logo-ico" style="background:#6c47ff">M</div><div class="int-logo-name">MYOB</div></div>
-    <div class="int-logo"><div class="int-logo-ico" style="background:#2ca01c">Q</div><div class="int-logo-name">QuickBooks</div></div>
-  </div>
-  <div class="int-sub">Read-only access &nbsp;&middot;&nbsp; Bank-level encryption &nbsp;&middot;&nbsp; We never modify your data</div>
+</div>
 </div>
 
-<section class="cta-section">
-  <div class="cta-box">
-    <h2 class="cta-h">Stop guessing.<br>Find the leaks today.</h2>
-    <p class="cta-sub">Most FlowGuard users find more than $2,000/month in profit leaks within their first 60 seconds.</p>
-    <a href="/app" class="btn-hero-primary" style="display:inline-flex">
+<!-- STATS -->
+<div class="stat-strip">
+  <div class="stat-inner">
+    <div class="stat-item reveal">
+      <div class="stat-num">60s</div>
+      <div class="stat-lbl">Average time to find your first profit leak after connecting</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num">$2.3K</div>
+      <div class="stat-lbl">Average monthly profit leaks found in a first analysis</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num">3</div>
+      <div class="stat-lbl">Things you get: the leak, the dollar amount, and exactly what to do next</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="how">
+<div class="section">
+  <div class="centered">
+    <div class="section-kicker reveal">How it works</div>
+    <h2 class="section-h reveal reveal-delay-1">Up and running<br>in three steps.</h2>
+    <p class="section-sub reveal reveal-delay-2">No setup. No accountant needed. No complicated onboarding. Just connect and go.</p>
+  </div>
+
+  <div class="how-grid">
+    <div class="step-card reveal" data-n="01">
+      <div class="step-num">1</div>
+      <div class="step-title">Create your free account</div>
+      <p class="step-desc">30 seconds. Name, email, password. No credit card. Free for 14 days — then $49/month if you want to keep going.</p>
+    </div>
+    <div class="step-card reveal reveal-delay-1" data-n="02">
+      <div class="step-num">2</div>
+      <div class="step-title">Connect your accounting software</div>
+      <p class="step-desc">One click to connect Xero, MYOB or QuickBooks. Read-only access — we can see your data but we can never touch it.</p>
+    </div>
+    <div class="step-card reveal reveal-delay-2" data-n="03">
+      <div class="step-num">3</div>
+      <div class="step-title">See where your money is going</div>
+      <p class="step-desc">In under 60 seconds, FlowGuard shows your top leaks with exact dollar amounts — and a clear action to fix each one today.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- PRICING -->
+<div class="pricing-wrap" id="pricing">
+  <div class="pricing-inner">
+    <div class="centered" style="margin-bottom:56px">
+      <div class="section-kicker reveal">Pricing</div>
+      <h2 class="section-h reveal reveal-delay-1">Simple, transparent pricing.</h2>
+      <p class="section-sub reveal reveal-delay-2">Start free. Pay only when you're seeing value. No lock-in contracts.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- FREE TRIAL -->
+      <div class="pricing-card reveal">
+        <div class="pricing-plan">Free Trial</div>
+        <div class="pricing-price">
+          <div class="pricing-amount">$0</div>
+        </div>
+        <div class="pricing-period">for 14 days</div>
+        <div class="pricing-desc">Full access to everything. No credit card. No commitment. Just connect your accounts and go.</div>
+        <div class="pricing-features">
+          <div class="pf-row"><span class="pf-check">✓</span><span>Profit leak detection</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>AI CFO analysis</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Cash runway calculator</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Fix This For Me actions</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>All 3 integrations</span></div>
+          <div class="pf-row"><span class="pf-x">✗</span><span style="color:var(--tx3)">No credit card required</span></div>
+        </div>
+        <a href="/app" class="pricing-btn ghost">Start free trial →</a>
+      </div>
+
+      <!-- PRO - FEATURED -->
+      <div class="pricing-card featured reveal reveal-delay-1">
+        <div class="pricing-popular">Most popular</div>
+        <div class="pricing-plan">Pro</div>
+        <div class="pricing-price">
+          <div class="pricing-amount" style="color:var(--ac)">$79</div>
+        </div>
+        <div class="pricing-period">per month, billed monthly</div>
+        <div class="pricing-desc">Everything you need to stop profit leaks and stay on top of your cash. Pays for itself the first time you use it.</div>
+        <div class="pricing-features">
+          <div class="pf-row"><span class="pf-check">✓</span><span><b>Unlimited analyses</b></span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>All AI CFO tools</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Smart alerts</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>What If simulator</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span><b>Fix This For Me</b> — ready-to-send actions</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Priority support</span></div>
+        </div>
+        <a href="/app" class="pricing-btn primary">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Start 14-day free trial
+        </a>
+      </div>
+
+      <!-- GROWTH -->
+      <div class="pricing-card reveal reveal-delay-2">
+        <div class="pricing-plan">Growth</div>
+        <div class="pricing-price">
+          <div class="pricing-amount">$149</div>
+        </div>
+        <div class="pricing-period">per month, billed monthly</div>
+        <div class="pricing-desc">For businesses scaling fast. Everything in Pro, plus deeper analysis and dedicated onboarding.</div>
+        <div class="pricing-features">
+          <div class="pf-row"><span class="pf-check">✓</span><span>Everything in Pro</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span><b>Multi-entity support</b></span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Custom benchmarks</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Export reports (PDF/CSV)</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>1-on-1 onboarding call</span></div>
+          <div class="pf-row"><span class="pf-check">✓</span><span>Dedicated account support</span></div>
+        </div>
+        <a href="/app" class="pricing-btn ghost">Start 14-day free trial →</a>
+      </div>
+
+    </div>
+    <p class="pricing-note reveal">All plans include a <b>14-day free trial</b> with full access. Cancel anytime — no lock-in contracts.<br>Prices in AUD. GST may apply.</p>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="cta-inner reveal">
+    <h2 class="cta-h">Stop guessing.<br>Start knowing.</h2>
+    <p class="cta-sub">Most FlowGuard users find more than $2,000 in monthly profit leaks within their first 60 seconds. What's yours hiding?</p>
+    <a href="/app" class="btn-primary" style="display:inline-flex">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Start free trial
     </a>
-    <div class="cta-note">14 days free &nbsp;&middot;&nbsp; No credit card &nbsp;&middot;&nbsp; Cancel anytime</div>
+    <p class="cta-note">14 days free &nbsp;·&nbsp; <b>No credit card</b> &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; Setup in 60 seconds</p>
   </div>
-</section>
+</div>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-logo">
-    <div class="footer-mark"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="footer-gem">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#08090a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
     <span class="footer-name">FlowGuard</span>
+  </div>
+  <div class="footer-links">
+    <a class="footer-link" href="#">Privacy</a>
+    <a class="footer-link" href="#">Terms</a>
+    <a class="footer-link" href="#">Contact</a>
   </div>
   <div class="footer-copy">&copy; 2025 FlowGuard. All rights reserved.</div>
 </footer>
 
 <script>
-function goLogin(e) {
-  e.preventDefault();
-  sessionStorage.setItem('fg_show', 'login');
-  window.location.href = '/app';
+// Scroll reveal
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+
+// Animated counter in hero
+function animateCount(el, target, duration) {
+  var start = 0, startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var current = Math.round(eased * target);
+    var formatted = current >= 1000 ? '$' + (current/1000).toFixed(0) + 'K' : '$' + current;
+    el.textContent = formatted + '/mo';
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = '$28K/mo';
+  }
+  requestAnimationFrame(step);
 }
+
+// Trigger counter when hero enters view
+var heroNum = document.getElementById('hero-count');
+var counted = false;
+var heroObs = new IntersectionObserver(function(entries) {
+  if (entries[0].isIntersecting && !counted) {
+    counted = true;
+    setTimeout(function() { animateCount(heroNum, 28948, 1800); }, 600);
+  }
+});
+heroObs.observe(heroNum);
 </script>
 </body>
 </html>
