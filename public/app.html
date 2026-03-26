@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlowGuard</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#070809;--s1:#0d0e10;--s2:#141518;--s3:#1a1c1f;--s4:#212427;
@@ -15,7 +15,7 @@
   --grn:#4ade80;--grn2:rgba(74,222,128,.08);--grn3:rgba(74,222,128,.18);
   --blue:#60a5fa;--blu2:rgba(96,165,250,.08);
   --tx:#f0f0ee;--tx2:#626568;--tx3:#323537;
-  --sans:"Barlow",sans-serif;--disp:"Barlow Condensed",sans-serif;--mono:"DM Mono",monospace;
+  --sans:"Plus Jakarta Sans",sans-serif;--disp:"Plus Jakarta Sans",sans-serif;--mono:"DM Mono",monospace;
   --r:12px;--r2:16px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -304,22 +304,38 @@ a{color:inherit;text-decoration:none}
 .m-loading{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tx2);padding:20px 0}
 
 /* CONNECT OVERLAY */
-.conn-ov{position:fixed;inset:0;z-index:70;background:rgba(7,8,9,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
-.conn-ov.on{display:flex;animation:fadeIn .18s ease}
-.conn-box{background:var(--s1);border:1px solid var(--bdr2);border-radius:22px;padding:40px 36px;width:100%;max-width:440px;animation:fadeUp .25s ease}
-.conn-h{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
-.conn-sub{font-size:13px;color:var(--tx2);margin-bottom:28px;line-height:1.65}
-.conn-opt{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--bdr2);background:var(--s2);cursor:pointer;text-decoration:none;color:var(--tx);margin-bottom:9px;transition:all .12s}
-.conn-opt:hover{border-color:rgba(184,255,87,.28);transform:translateX(3px)}
-.conn-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
-.conn-opt-name{font-family:var(--disp);font-size:13px;font-weight:700;margin-bottom:1px}
-.conn-opt-desc{font-size:11px;color:var(--tx2)}
-.conn-arr{margin-left:auto;color:var(--tx3);font-size:14px;transition:transform .12s}
-.conn-opt:hover .conn-arr{transform:translateX(3px);color:var(--tx2)}
-.conn-trust{font-size:11px;color:var(--tx3);text-align:center;margin-top:16px}
-.conn-skip{text-align:center;margin-top:8px}
-.conn-skip a{font-size:12px;color:var(--tx2);cursor:pointer}
-.conn-skip a:hover{color:var(--tx)}
+.conn-ov{position:fixed;inset:0;z-index:70;background:var(--bg);display:none;overflow-y:auto}
+.conn-ov.on{display:block;animation:fadeIn .2s ease}
+.conn-full{min-height:100vh;display:grid;grid-template-columns:400px 1fr}
+.conn-left{background:var(--s1);border-right:1px solid var(--bdr);padding:56px 48px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.conn-left-top{margin-bottom:auto;padding-bottom:40px}
+.conn-left-body{padding-bottom:20px}
+.conn-step-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ac);margin-bottom:22px}
+.conn-left-h{font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:16px}
+.conn-left-sub{font-size:15px;color:var(--tx2);line-height:1.7;margin-bottom:40px}
+.conn-trust-list{display:flex;flex-direction:column;gap:16px}
+.conn-trust-item{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--tx2);line-height:1.4}
+.conn-trust-ico{font-size:15px;flex-shrink:0;width:22px;text-align:center}
+.conn-right{padding:56px 72px;display:flex;align-items:center;justify-content:center}
+.conn-right-inner{width:100%;max-width:480px}
+.conn-progress-wrap{margin-bottom:44px}
+.conn-progress-bar{height:3px;background:var(--s3);border-radius:3px;margin-bottom:9px;overflow:hidden}
+.conn-progress-fill{height:100%;background:var(--ac);border-radius:3px}
+.conn-progress-lbl{font-size:11px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.conn-right-h{font-size:32px;font-weight:800;letter-spacing:-.025em;margin-bottom:9px}
+.conn-right-sub{font-size:15px;color:var(--tx2);margin-bottom:36px;line-height:1.6}
+.conn-opts-lg{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.conn-opt-lg{display:flex;align-items:center;gap:20px;padding:22px 24px;border-radius:16px;border:1px solid var(--bdr2);background:var(--s1);cursor:pointer;text-decoration:none;color:var(--tx);transition:all .15s}
+.conn-opt-lg:hover{border-color:rgba(184,255,87,.32);background:rgba(184,255,87,.025);transform:translateX(5px)}
+.conn-opt-lg-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.conn-opt-lg-name{font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:3px}
+.conn-opt-lg-desc{font-size:13px;color:var(--tx2)}
+.conn-opt-lg-arrow{color:var(--tx3);transition:all .14s;margin-left:auto;flex-shrink:0}
+.conn-opt-lg:hover .conn-opt-lg-arrow{color:var(--ac);transform:translateX(4px)}
+.conn-skip-row{font-size:13px;color:var(--tx3);text-align:center;line-height:1.6}
+.conn-skip-row a{color:var(--tx2);cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-left:4px;transition:color .12s}
+.conn-skip-row a:hover{color:var(--tx)}
+@media(max-width:860px){.conn-full{grid-template-columns:1fr}.conn-left{display:none}.conn-right{padding:36px 24px}}
 
 /* EMPTY */
 .empty{text-align:center;padding:40px 20px}
@@ -682,18 +698,54 @@ a{color:inherit;text-decoration:none}
 
 <!-- CONNECT OVERLAY -->
 <div class="conn-ov" id="conn-ov">
-  <div class="conn-box">
-    <div class="auth-logo" style="margin-bottom:18px">
-      <div class="a-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="a-name">FlowGuard</span>
+  <div class="conn-full">
+    <div class="conn-left">
+      <div class="conn-left-top">
+        <div class="auth-logo">
+          <div class="a-mark" style="width:34px;height:34px;border-radius:9px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <span class="a-name" style="font-size:17px">FlowGuard</span>
+        </div>
+      </div>
+      <div class="conn-left-body">
+        <div class="conn-step-tag">Final step</div>
+        <div class="conn-left-h">One last step.</div>
+        <div class="conn-left-sub">Connect your accounting software and FlowGuard will scan your financials and find your profit leaks in under 60 seconds.</div>
+        <div class="conn-trust-list">
+          <div class="conn-trust-item"><span class="conn-trust-ico">&#x1F512;</span>Read-only — we can never modify your data</div>
+          <div class="conn-trust-item"><span class="conn-trust-ico">&#x1F6E1;&#xFE0F;</span>Bank-level encryption on all connections</div>
+          <div class="conn-trust-item"><span class="conn-trust-ico">&#x274C;</span>Your data is never sold or shared</div>
+          <div class="conn-trust-item"><span class="conn-trust-ico">&#x26A1;</span>Results in under 60 seconds</div>
+        </div>
+      </div>
     </div>
-    <div class="conn-h">Connect your accounts</div>
-    <div class="conn-sub">Read-only access. We never modify your data.</div>
-    <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia&#x27;s most popular platform</div></div><div class="conn-arr">&#x2192;</div></a>
-    <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">AccountRight &amp; Essentials</div></div><div class="conn-arr">&#x2192;</div></a>
-    <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">&#x2192;</div></a>
-    <div class="conn-trust">&#x1F512; Read-only &#xB7; Encrypted &#xB7; Never sold</div>
-    <div class="conn-skip"><a onclick="skipConn()">Skip &#x2014; use demo data</a></div>
+    <div class="conn-right">
+      <div class="conn-right-inner">
+        <div class="conn-progress-wrap">
+          <div class="conn-progress-bar"><div class="conn-progress-fill" style="width:100%"></div></div>
+          <div class="conn-progress-lbl">Step 3 of 3 — Connect your accounts</div>
+        </div>
+        <div class="conn-right-h">Connect your accounting software</div>
+        <div class="conn-right-sub">Choose your platform. We'll read your data and surface every profit leak.</div>
+        <div class="conn-opts-lg">
+          <a class="conn-opt-lg" href="/auth/xero">
+            <div class="conn-opt-lg-ico" style="background:linear-gradient(135deg,#17d4ff,#0fa3c7)"><span style="font-size:22px;font-weight:800;color:#fff">X</span></div>
+            <div><div class="conn-opt-lg-name">Xero</div><div class="conn-opt-lg-desc">Australia's most popular cloud accounting platform</div></div>
+            <div class="conn-opt-lg-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </a>
+          <a class="conn-opt-lg" href="/auth/myob">
+            <div class="conn-opt-lg-ico" style="background:linear-gradient(135deg,#8b6cff,#5b3ee0)"><span style="font-size:22px;font-weight:800;color:#fff">M</span></div>
+            <div><div class="conn-opt-lg-name">MYOB</div><div class="conn-opt-lg-desc">AccountRight and Essentials — both supported</div></div>
+            <div class="conn-opt-lg-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </a>
+          <a class="conn-opt-lg" href="/auth/quickbooks">
+            <div class="conn-opt-lg-ico" style="background:linear-gradient(135deg,#3ecb22,#1e7a10)"><span style="font-size:22px;font-weight:800;color:#fff">Q</span></div>
+            <div><div class="conn-opt-lg-name">QuickBooks</div><div class="conn-opt-lg-desc">Intuit QuickBooks Online</div></div>
+            <div class="conn-opt-lg-arrow"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </a>
+        </div>
+        <div class="conn-skip-row">Don't have one connected yet? <a onclick="skipConn()">Skip and use demo data</a></div>
+      </div>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
