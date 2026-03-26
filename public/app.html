@@ -3,787 +3,1091 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlowGuard</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>FlowGuard — Find Your Profit Leaks</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#060707;--s1:#0e0f0f;--s2:#151616;--s3:#1c1e1e;--s4:#232525;
-  --bdr:rgba(255,255,255,.06);--bdr2:rgba(255,255,255,.10);
-  --ac:#b8ff57;--ac2:rgba(184,255,87,.12);--ac3:rgba(184,255,87,.22);
-  --red:#ff4444;--red2:rgba(255,68,68,.08);--red3:rgba(255,68,68,.18);
-  --amber:#f59e0b;--amb2:rgba(245,158,11,.08);--amb3:rgba(245,158,11,.18);
-  --green:#34d399;--grn2:rgba(52,211,153,.08);--grn3:rgba(52,211,153,.18);
-  --blue:#60a5fa;--blu2:rgba(96,165,250,.08);
-  --tx:#efefed;--tx2:#5a5d5d;--tx3:#2e3030;
-  --mono:"DM Mono",monospace;--sans:"DM Sans",sans-serif;--disp:"Syne",sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
-button{cursor:pointer;font-family:inherit;border:none;background:none;transition:all .14s;}
-input,select,textarea{font-family:inherit;}
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-thumb{background:var(--s4);border-radius:3px;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#070808;color:#efefed;font-family:"DM Sans",sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:inherit;border:none;background:none;transition:all .15s}
+input,select{font-family:inherit}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:#252525;border-radius:3px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,.3)}50%{box-shadow:0 0 0 8px rgba(255,68,68,0)}}
-@keyframes slidein{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-/* ── SHELL ── */
-#shell{display:none;min-height:100vh;max-width:760px;margin:0 auto;padding:0 20px 80px;}
+/* AUTH SCREEN */
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#070808}
+.auth-box{width:100%;max-width:420px;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
+.auth-logo{display:flex;align-items:center;gap:9px;margin-bottom:28px}
+.auth-mark{width:30px;height:30px;border-radius:8px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
+.auth-brand{font-family:"Syne",sans-serif;font-size:16px;font-weight:800}
+.auth-h{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+.auth-sub{font-size:13px;color:#5a5d5d;margin-bottom:24px;line-height:1.6}
+.err-box{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.2);border-radius:9px;padding:11px 14px;font-size:12px;color:#ff5555;margin-bottom:14px;display:none;line-height:1.5}
+.err-box.on{display:block}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:9px;font-weight:700;color:#5a5d5d;text-transform:uppercase;letter-spacing:.12em;font-family:"Syne",sans-serif;margin-bottom:5px}
+.f input,.f select{width:100%;padding:11px 13px;background:#161818;border:1px solid rgba(255,255,255,.08);border-radius:9px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
+.f input:focus,.f select:focus{border-color:rgba(184,255,87,.35)}
+.f select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='none' stroke='%235a5d5d' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auth-btn{width:100%;padding:13px;border-radius:10px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:9px}
+.auth-btn:hover{background:#ccff6b}
+.auth-btn:disabled{opacity:.45;cursor:not-allowed}
+.auth-sw{text-align:center;margin-top:16px;font-size:12px;color:#5a5d5d}
+.auth-sw a{color:#b8ff57;cursor:pointer;font-weight:600}
+.auth-sw a:hover{text-decoration:underline}
 
-/* ── TOP BAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0 16px;border-bottom:1px solid var(--bdr);}
-.logo{display:flex;align-items:center;gap:9px;}
-.logo-mark{width:26px;height:26px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;}
-.logo-name{font-family:var(--disp);font-size:15px;font-weight:800;letter-spacing:-.01em;}
-.topbar-r{display:flex;align-items:center;gap:10px;}
-.conn-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid var(--bdr2);font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .14s;}
-.conn-pill:hover{border-color:rgba(184,255,87,.3);color:var(--ac);}
-.conn-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;animation:blink 3s infinite;}
-.conn-dot.off{background:var(--tx3);animation:none;}
-.user-btn{width:30px;height:30px;border-radius:8px;background:var(--ac2);border:1px solid var(--ac3);color:var(--ac);font-family:var(--disp);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+/* APP SHELL */
+#app{display:none;min-height:100vh;background:#070808}
+.topbar{max-width:720px;margin:0 auto;padding:18px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
+.logo-name{font-family:"Syne",sans-serif;font-size:15px;font-weight:800}
+.topbar-r{display:flex;align-items:center;gap:10px}
+.conn-btn{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:500;color:#5a5d5d;cursor:pointer;transition:all .14s}
+.conn-btn:hover{border-color:rgba(184,255,87,.3);color:#b8ff57}
+.conn-dot{width:5px;height:5px;border-radius:50%;background:#34d399;flex-shrink:0}
+.conn-dot.off{background:#2e3030}
+.user-av{width:28px;height:28px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);color:#b8ff57;font-family:"Syne",sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.out-btn{color:#2e3030;font-size:13px;padding:5px;border-radius:5px}
+.out-btn:hover{color:#ff5555;background:rgba(255,60,60,.08)}
 
-/* ── ALERT BANNER ── */
-.alert-banner{display:none;margin:16px 0 0;padding:13px 16px;border-radius:12px;background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.2);animation:fadeUp .2s ease;}
-.alert-banner.show{display:flex;align-items:center;gap:12px;}
-.ab-ico{font-size:16px;flex-shrink:0;}
-.ab-text{flex:1;font-size:13px;line-height:1.55;}
-.ab-text strong{color:var(--tx);font-weight:600;}
-.ab-close{color:var(--tx2);font-size:16px;padding:4px;flex-shrink:0;}
-.ab-close:hover{color:var(--tx);}
+/* MAIN CONTENT */
+.main{max-width:720px;margin:0 auto;padding:0 20px 80px}
 
-/* ── HERO LEAK NUMBER ── */
-.hero{padding:32px 0 24px;text-align:center;}
-.hero-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--tx2);font-family:var(--disp);margin-bottom:14px;}
-.hero-number{font-family:var(--mono);font-size:68px;font-weight:500;line-height:1;letter-spacing:-.02em;margin-bottom:10px;}
-.hero-number.red{color:var(--red);}
-.hero-number.amber{color:var(--amber);}
-.hero-number.green{color:var(--green);}
-.hero-number.muted{color:var(--tx3);}
-.hero-sub{font-size:16px;color:var(--tx2);margin-bottom:6px;}
-.hero-sub strong{color:var(--tx);font-weight:600;}
-.hero-loading{font-size:13px;color:var(--tx2);display:flex;align-items:center;justify-content:center;gap:10px;padding:24px 0;}
+/* DEMO BAR */
+.demo-bar{margin:16px 0;padding:10px 16px;background:rgba(184,255,87,.05);border:1px solid rgba(184,255,87,.12);border-radius:10px;display:none;align-items:center;justify-content:space-between;gap:12px}
+.demo-bar.on{display:flex}
+.demo-bar-t{font-size:12px;color:rgba(184,255,87,.6)}
+.demo-bar-btn{font-size:11px;font-weight:700;color:#b8ff57;font-family:"Syne",sans-serif;padding:5px 12px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2)}
+.demo-bar-btn:hover{background:rgba(184,255,87,.18)}
 
-/* ── FORECAST LINE ── */
-.forecast-bar{margin:0 0 24px;padding:14px 18px;border-radius:12px;border:1px solid;font-size:13px;line-height:1.6;display:flex;align-items:center;gap:12px;}
-.forecast-bar.urgent{background:rgba(255,68,68,.05);border-color:rgba(255,68,68,.2);}
-.forecast-bar.warn{background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.18);}
-.forecast-bar.ok{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.18);}
-.forecast-bar.neutral{background:var(--s2);border-color:var(--bdr);}
-.fc-ico{font-size:18px;flex-shrink:0;}
-.fc-text strong{font-weight:700;}
-.fc-text.urgent strong{color:var(--red);}
-.fc-text.warn strong{color:var(--amber);}
-.fc-text.ok strong{color:var(--green);}
+/* HERO */
+.hero{padding:36px 0 28px;text-align:center}
+.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:12px}
+.hero-num{font-family:"DM Mono",monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;margin-bottom:10px;color:#2e3030}
+.hero-num.red{color:#ff4444}
+.hero-num.green{color:#34d399}
+.hero-msg{font-size:15px;color:#5a5d5d;line-height:1.6}
+.hero-msg b{color:#efefed;font-weight:600}
 
-/* ── SECTION HEADER ── */
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.sec-title{font-family:var(--disp);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2);}
-.sec-badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--disp);text-transform:uppercase;letter-spacing:.08em;}
-.badge-red{background:var(--red2);color:var(--red);border:1px solid var(--red3);}
-.badge-amber{background:var(--amb2);color:var(--amber);border:1px solid var(--amb3);}
-.badge-green{background:var(--grn2);color:var(--green);border:1px solid var(--grn3);}
-.badge-muted{background:var(--s3);color:var(--tx2);border:1px solid var(--bdr);}
+/* FORECAST */
+.forecast{margin:0 0 24px;padding:14px 18px;border-radius:12px;display:none;align-items:center;gap:13px;font-size:13px;line-height:1.6}
+.forecast.on{display:flex}
+.forecast.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.18)}
+.forecast.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.16)}
+.forecast.ok{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.16)}
+.forecast b.red{color:#ff4444}
+.forecast b.amber{color:#f59e0b}
+.forecast b.green{color:#34d399}
 
-/* ── LEAK CARDS ── */
-.leak-stack{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
-.leak-card{border-radius:14px;border:1px solid var(--bdr);background:var(--s1);overflow:hidden;animation:fadeUp .2s ease both;}
-.leak-card:nth-child(2){animation-delay:.05s;}
-.leak-card:nth-child(3){animation-delay:.1s;}
-.lc-main{padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-.lc-left{flex:1;min-width:0;}
-.lc-rank{font-size:9px;font-weight:700;font-family:var(--disp);text-transform:uppercase;letter-spacing:.14em;margin-bottom:7px;}
-.lc-name{font-family:var(--disp);font-size:16px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em;}
-.lc-desc{font-size:12px;color:var(--tx2);line-height:1.6;}
-.lc-right{text-align:right;flex-shrink:0;}
-.lc-amt{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;}
-.lc-period{font-size:10px;color:var(--tx2);margin-top:3px;}
-.lc-actions{border-top:1px solid var(--bdr);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--s2);}
-.lc-action-text{font-size:12px;color:var(--tx2);line-height:1.55;flex:1;}
-.lc-action-text strong{color:var(--tx);font-weight:600;}
-.fix-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:700;font-family:var(--disp);flex-shrink:0;white-space:nowrap;}
-.fix-btn.red{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.2);}
-.fix-btn.red:hover{background:rgba(255,68,68,.18);}
-.fix-btn.amber{background:var(--amb2);color:var(--amber);border:1px solid var(--amb3);}
-.fix-btn.amber:hover{background:rgba(245,158,11,.16);}
-.fix-btn.green{background:var(--grn2);color:var(--green);border:1px solid var(--grn3);}
-.fix-btn.green:hover{background:rgba(52,211,153,.16);}
+/* RUN BTN */
+.run-wrap{text-align:center;margin:0 0 28px}
+.run-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:12px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 28px rgba(184,255,87,.22)}
+.run-btn:hover{background:#ccff6b;box-shadow:0 0 40px rgba(184,255,87,.3)}
+.run-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
 
-/* ── EMPTY / PLACEHOLDER STATES ── */
-.leak-placeholder{text-align:center;padding:52px 24px;}
-.lp-ico{font-size:36px;margin-bottom:16px;}
-.lp-title{font-family:var(--disp);font-size:16px;font-weight:700;margin-bottom:8px;}
-.lp-sub{font-size:13px;color:var(--tx2);line-height:1.65;max-width:320px;margin:0 auto 24px;}
-.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:11px;background:var(--ac);color:#060707;font-size:14px;font-weight:800;font-family:var(--disp);box-shadow:0 0 28px var(--ac3);}
-.btn-primary:hover{background:#ccff6b;box-shadow:0 0 40px var(--ac3);}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+/* SECTION */
+.sec{margin-bottom:28px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif}
+.badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:"Syne",sans-serif;text-transform:uppercase;letter-spacing:.07em}
+.b-red{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid rgba(255,68,68,.16)}
+.b-green{background:rgba(52,211,153,.08);color:#34d399;border:1px solid rgba(52,211,153,.16)}
+.b-muted{background:#1c1e1e;color:#5a5d5d;border:1px solid rgba(255,255,255,.06)}
 
-/* ── RUN ANALYSIS ── */
-.run-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px;}
-.run-btn-main{display:flex;align-items:center;gap:8px;padding:11px 24px;border-radius:11px;background:var(--ac);color:#060707;font-size:13px;font-weight:800;font-family:var(--disp);box-shadow:0 0 24px var(--ac3);}
-.run-btn-main:hover{background:#ccff6b;}
-.run-btn-main:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
-.run-sub{font-size:11px;color:var(--tx2);}
+/* LEAK CARDS */
+.leak-card{background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:10px;animation:fadeUp .2s ease both}
+.leak-card:nth-child(2){animation-delay:.06s}
+.leak-card:nth-child(3){animation-delay:.12s}
+.lc-top{padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.lc-rank{font-size:9px;font-weight:700;font-family:"Syne",sans-serif;text-transform:uppercase;letter-spacing:.14em;margin-bottom:6px}
+.lc-name{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
+.lc-desc{font-size:12px;color:#5a5d5d;line-height:1.6}
+.lc-amt{font-family:"DM Mono",monospace;font-size:28px;font-weight:500;line-height:1;text-align:right}
+.lc-mo{font-size:10px;color:#5a5d5d;margin-top:3px;text-align:right}
+.lc-bot{padding:12px 20px;border-top:1px solid rgba(255,255,255,.05);background:#0c0d0d;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lc-action{font-size:12px;color:#5a5d5d;line-height:1.6;flex:1}
+.lc-action b{color:#efefed;font-weight:600}
+.fix-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;white-space:nowrap;border:1px solid}
+.fix-red{background:rgba(255,68,68,.08);color:#ff4444;border-color:rgba(255,68,68,.18)}
+.fix-red:hover{background:rgba(255,68,68,.15)}
+.fix-amber{background:rgba(245,158,11,.08);color:#f59e0b;border-color:rgba(245,158,11,.18)}
+.fix-amber:hover{background:rgba(245,158,11,.15)}
 
-/* ── ALERTS ── */
-.alerts-list{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;}
-.alert-card{display:flex;align-items:center;gap:13px;padding:13px 16px;border-radius:12px;border:1px solid;animation:fadeUp .2s ease;}
-.alert-card.urgent{background:rgba(255,68,68,.05);border-color:rgba(255,68,68,.15);}
-.alert-card.warn{background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.15);}
-.alert-card.info{background:var(--s2);border-color:var(--bdr);}
-.ac-ico{font-size:16px;flex-shrink:0;}
-.ac-text{flex:1;font-size:13px;line-height:1.5;}
-.ac-text strong{font-weight:600;}
-.ac-time{font-size:10px;color:var(--tx2);flex-shrink:0;}
+/* EMPTY STATE */
+.empty-card{text-align:center;padding:52px 24px;background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px}
+.empty-ico{font-size:34px;margin-bottom:14px}
+.empty-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:7px}
+.empty-sub{font-size:13px;color:#5a5d5d;line-height:1.7;max-width:300px;margin:0 auto}
 
-/* ── FIX MODAL ── */
-.modal-overlay{position:fixed;inset:0;z-index:60;background:rgba(6,7,7,.92);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:20px;animation:fadeIn .18s ease;}
-.modal-overlay.open{display:flex;}
-.fix-modal{background:var(--s1);border:1px solid var(--bdr2);border-radius:20px 20px 16px 16px;width:100%;max-width:620px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s ease;box-shadow:0 -32px 80px rgba(0,0,0,.8);}
-.fm-handle{width:36px;height:3px;background:var(--s4);border-radius:3px;margin:14px auto 0;}
-.fm-head{padding:20px 22px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-.fm-title{font-family:var(--disp);font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px;}
-.fm-sub{font-size:12px;color:var(--tx2);}
-.fm-close{color:var(--tx2);font-size:20px;padding:4px;flex-shrink:0;line-height:1;}
-.fm-close:hover{color:var(--tx);}
-.fm-body{padding:18px 22px;}
-.fm-section{margin-bottom:20px;}
-.fm-sec-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--tx2);font-family:var(--disp);margin-bottom:10px;}
-.fm-draft{background:var(--s2);border:1px solid var(--bdr2);border-radius:12px;padding:16px;font-size:13px;line-height:1.75;color:var(--tx2);white-space:pre-wrap;min-height:80px;}
-.fm-draft strong{color:var(--tx);font-weight:600;}
-.fm-loading{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2);padding:20px 0;}
-.fm-actions{display:flex;gap:9px;flex-wrap:wrap;}
-.fm-copy-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:9px;background:var(--ac);color:#060707;font-size:12px;font-weight:700;font-family:var(--disp);}
-.fm-copy-btn:hover{background:#ccff6b;}
-.fm-alt-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:9px;background:var(--s3);color:var(--tx2);font-size:12px;font-weight:600;border:1px solid var(--bdr2);}
-.fm-alt-btn:hover{background:var(--s4);color:var(--tx);}
+/* ALERTS */
+.alert-card{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:8px;animation:fadeUp .2s ease}
+.alert-card.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.14)}
+.alert-card.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.14)}
+.al-ico{font-size:15px;flex-shrink:0;margin-top:1px}
+.al-text{font-size:13px;line-height:1.55;flex:1}
+.al-text b{font-weight:600;color:#efefed}
 
-/* ── ASK AI ── */
-.ask-section{margin-bottom:28px;}
-.ask-wrap{display:flex;gap:9px;align-items:center;}
-.ask-field{flex:1;background:var(--s2);border:1px solid var(--bdr2);border-radius:11px;padding:12px 16px;color:var(--tx);font-size:13px;outline:none;transition:border-color .14s;}
-.ask-field:focus{border-color:rgba(184,255,87,.3);}
-.ask-field::placeholder{color:var(--tx3);}
-.ask-send{padding:12px 18px;border-radius:11px;background:var(--ac);color:#060707;font-size:13px;font-weight:700;font-family:var(--disp);flex-shrink:0;}
-.ask-send:hover{background:#ccff6b;}
-.ask-send:disabled{opacity:.4;cursor:not-allowed;}
-.ask-response{margin-top:12px;padding:16px;background:var(--s2);border:1px solid var(--bdr);border-radius:12px;font-size:13px;line-height:1.8;color:var(--tx2);display:none;}
-.ask-response.show{display:block;animation:fadeUp .2s ease;}
-.ask-response strong{color:var(--tx);}
+/* ASK AI */
+.ask-row{display:flex;gap:9px}
+.ask-inp{flex:1;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 16px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
+.ask-inp:focus{border-color:rgba(184,255,87,.3)}
+.ask-inp::placeholder{color:#2e3030}
+.ask-go{padding:12px 20px;border-radius:11px;background:#b8ff57;color:#070808;font-size:13px;font-weight:700;font-family:"Syne",sans-serif;flex-shrink:0}
+.ask-go:hover{background:#ccff6b}
+.ask-go:disabled{opacity:.4;cursor:not-allowed}
+.ask-ans{margin-top:12px;padding:16px;background:#0f1010;border:1px solid rgba(255,255,255,.07);border-radius:12px;font-size:13px;line-height:1.8;color:#5a5d5d;display:none;animation:fadeUp .2s ease}
+.ask-ans.on{display:block}
+.ask-ans b{color:#efefed;font-weight:600}
 
-/* ── AUTH ── */
-.auth-overlay{position:fixed;inset:0;z-index:70;background:rgba(6,7,7,.95);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px;}
-.auth-card{background:var(--s1);border:1px solid var(--bdr2);border-radius:20px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 48px 96px rgba(0,0,0,.8);animation:fadeUp .25s ease;}
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:30px;}
-.auth-logo-mark{width:32px;height:32px;border-radius:8px;background:var(--ac);display:flex;align-items:center;justify-content:center;}
-.auth-logo-name{font-family:var(--disp);font-size:15px;font-weight:800;}
-.auth-h{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px;}
-.auth-sub{font-size:13px;color:var(--tx2);margin-bottom:26px;line-height:1.6;}
-.auth-err{background:rgba(255,68,68,.07);border:1px solid rgba(255,68,68,.17);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:14px;display:none;}
-.auth-err.show{display:block;}
-.field{margin-bottom:13px;}
-.field label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:6px;}
-.field input,.field select{width:100%;padding:11px 13px;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;color:var(--tx);font-size:13px;outline:none;transition:border-color .14s;}
-.field input:focus,.field select:focus{border-color:rgba(184,255,87,.3);}
-.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%235a5d5d' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-.field-2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
-.auth-btn{width:100%;padding:13px;border-radius:10px;background:var(--ac);color:#060707;font-size:14px;font-weight:800;font-family:var(--disp);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.auth-btn:hover{background:#ccff6b;}
-.auth-btn:disabled{opacity:.5;cursor:not-allowed;}
-.auth-sw{text-align:center;margin-top:18px;font-size:12px;color:var(--tx2);}
-.auth-sw a{color:var(--ac);cursor:pointer;font-weight:600;}
+/* FIX MODAL */
+.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(7,8,8,.93);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px;animation:fadeIn .18s ease}
+.modal-bg.on{display:flex}
+.modal-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s ease}
+.modal-pill{width:34px;height:3px;background:#252525;border-radius:3px;margin:14px auto 0}
+.modal-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
+.modal-sub{font-size:12px;color:#5a5d5d}
+.modal-close{color:#5a5d5d;font-size:20px;line-height:1;padding:2px;flex-shrink:0}
+.modal-close:hover{color:#efefed}
+.modal-body{padding:18px 22px}
+.modal-sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:9px}
+.modal-draft{background:#161818;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:16px;font-size:13px;line-height:1.8;color:#5a5d5d;white-space:pre-wrap;margin-bottom:16px}
+.modal-draft b{color:#efefed;font-weight:600}
+.modal-btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
+.modal-copy{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:9px;background:#b8ff57;color:#070808;font-size:12px;font-weight:700;font-family:"Syne",sans-serif}
+.modal-copy:hover{background:#ccff6b}
+.modal-sec-btn{padding:10px 16px;border-radius:9px;background:#161818;color:#5a5d5d;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.07)}
+.modal-sec-btn:hover{background:#1c1e1e;color:#efefed}
+.modal-loading{display:flex;align-items:center;gap:12px;font-size:13px;color:#5a5d5d;padding:24px 0}
 
-/* ── CONNECT OVERLAY ── */
-.conn-overlay{position:fixed;inset:0;z-index:65;background:rgba(6,7,7,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;}
-.conn-overlay.open{display:flex;}
-.conn-card{background:var(--s1);border:1px solid var(--bdr2);border-radius:22px;padding:44px 40px;width:100%;max-width:480px;animation:fadeUp .25s ease;}
-.conn-h{font-family:var(--disp);font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px;}
-.conn-sub{font-size:13px;color:var(--tx2);margin-bottom:32px;line-height:1.65;}
-.conn-opts{display:flex;flex-direction:column;gap:10px;}
-.conn-opt{display:flex;align-items:center;gap:16px;padding:15px 18px;border-radius:13px;border:1px solid var(--bdr2);background:var(--s2);cursor:pointer;transition:all .14s;text-decoration:none;color:var(--tx);}
-.conn-opt:hover{border-color:rgba(184,255,87,.28);background:rgba(184,255,87,.025);transform:translateX(3px);}
-.conn-ico{width:42px;height:42px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:17px;font-weight:900;color:#fff;}
-.conn-info-name{font-family:var(--disp);font-size:14px;font-weight:700;margin-bottom:2px;}
-.conn-info-desc{font-size:11px;color:var(--tx2);}
-.conn-arr{color:var(--tx3);margin-left:auto;font-size:16px;transition:transform .14s;}
-.conn-opt:hover .conn-arr{transform:translateX(3px);color:var(--tx2);}
-.conn-trust{font-size:11px;color:var(--tx2);text-align:center;margin-top:20px;}
-.conn-skip{text-align:center;margin-top:8px;}
-.conn-skip a{font-size:12px;color:var(--tx2);cursor:pointer;}
-.conn-skip a:hover{color:var(--tx);}
+/* CONNECT OVERLAY */
+.conn-overlay{position:fixed;inset:0;z-index:70;background:rgba(7,8,8,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .18s ease}
+.conn-overlay.on{display:flex}
+.conn-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:40px 36px;width:100%;max-width:460px;animation:fadeUp .25s ease}
+.conn-h{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
+.conn-sub{font-size:13px;color:#5a5d5d;margin-bottom:28px;line-height:1.65}
+.conn-opt{display:flex;align-items:center;gap:15px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#161818;cursor:pointer;text-decoration:none;color:#efefed;margin-bottom:9px;transition:all .14s}
+.conn-opt:hover{border-color:rgba(184,255,87,.28);transform:translateX(3px)}
+.conn-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:16px;font-weight:900;color:#fff;flex-shrink:0}
+.conn-opt-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.conn-opt-desc{font-size:11px;color:#5a5d5d}
+.conn-arr{margin-left:auto;color:#2e3030;font-size:15px;transition:transform .14s}
+.conn-opt:hover .conn-arr{transform:translateX(3px);color:#5a5d5d}
+.conn-trust{font-size:11px;color:#5a5d5d;text-align:center;margin-top:18px}
+.conn-skip{text-align:center;margin-top:8px}
+.conn-skip a{font-size:12px;color:#5a5d5d;cursor:pointer}
+.conn-skip a:hover{color:#efefed}
 
-/* ── DEMO TAG ── */
-.demo-notice{display:none;align-items:center;gap:8px;padding:8px 14px;border-radius:9px;background:rgba(184,255,87,.06);border:1px solid rgba(184,255,87,.14);font-size:11px;color:rgba(184,255,87,.6);margin-bottom:20px;}
-.demo-notice.show{display:flex;}
-
-/* ── UTILS ── */
-.spinner{width:15px;height:15px;border:2px solid var(--bdr2);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0;}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;backdrop-filter:blur(16px);z-index:999;pointer-events:none;animation:fadeUp .2s ease;white-space:nowrap;font-family:var(--disp);display:none;}
-.toast.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.22);color:var(--green);}
-.toast.err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.22);color:var(--red);}
-.toast.info{background:rgba(184,255,87,.07);border:1px solid rgba(184,255,87,.16);color:var(--ac);}
+/* UTILS */
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.08);border-top-color:#b8ff57;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;font-family:"Syne",sans-serif;display:none;animation:fadeUp .2s ease}
+.toast.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.22);color:#34d399}
+.toast.err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.22);color:#ff5555}
+.toast.info{background:rgba(184,255,87,.07);border:1px solid rgba(184,255,87,.16);color:#b8ff57}
 </style>
 </head>
 <body>
 
-<!-- ── MAIN SHELL ── -->
-<div id="shell">
-  <div class="topbar">
-    <div class="logo">
-      <div class="logo-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#060707" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="logo-name">FlowGuard</span>
+<!-- ═══════════════════════ AUTH ═══════════════════════ -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="auth-brand">FlowGuard</span>
     </div>
-    <div class="topbar-r">
-      <div class="conn-pill" id="conn-pill" onclick="openConn()">
-        <div class="conn-dot off" id="conn-dot"></div>
-        <span id="conn-label">Connect software</span>
-      </div>
-      <div class="user-btn" id="user-btn" title="Account">?</div>
-    </div>
-  </div>
 
-  <!-- alert banner -->
-  <div class="alert-banner" id="alert-banner">
-    <div class="ab-ico">🚨</div>
-    <div class="ab-text" id="ab-text"></div>
-    <button class="ab-close" onclick="document.getElementById('alert-banner').classList.remove('show')">✕</button>
-  </div>
-
-  <!-- demo notice -->
-  <div class="demo-notice" id="demo-notice">
-    <span>⚡</span><span>Demo mode — connect your accounting software to see your real numbers</span>
-    <button style="margin-left:auto;color:rgba(184,255,87,.8);font-size:11px;font-weight:700;font-family:var(--disp)" onclick="openConn()">Connect →</button>
-  </div>
-
-  <!-- ── HERO NUMBER ── -->
-  <div class="hero" id="hero">
-    <div class="hero-eyebrow">Monthly profit leaking</div>
-    <div class="hero-number muted" id="hero-num">—</div>
-    <div class="hero-sub" id="hero-sub">Connect your accounting software to get started</div>
-  </div>
-
-  <!-- ── FORECAST LINE ── -->
-  <div id="forecast-wrap"></div>
-
-  <!-- ── RUN ANALYSIS ── -->
-  <div class="run-row" id="run-row">
-    <button class="run-btn-main" id="run-btn" onclick="runAnalysis()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      Find My Profit Leaks
-    </button>
-  </div>
-
-  <!-- ── TOP 3 LEAKS ── -->
-  <div class="sec-hdr">
-    <div class="sec-title">Top profit leaks</div>
-    <div class="sec-badge badge-muted" id="leaks-badge">—</div>
-  </div>
-  <div class="leak-stack" id="leaks-stack">
-    <div class="leak-placeholder">
-      <div class="lp-ico">🔍</div>
-      <div class="lp-title">No analysis yet</div>
-      <div class="lp-sub">Connect your Xero, MYOB or QuickBooks account and run your first analysis. We'll find exactly where your money is going.</div>
-    </div>
-  </div>
-
-  <!-- ── SMART ALERTS ── -->
-  <div id="alerts-section" style="display:none">
-    <div class="sec-hdr"><div class="sec-title">Smart alerts</div><div class="sec-badge badge-muted" id="alerts-badge">0</div></div>
-    <div class="alerts-list" id="alerts-list"></div>
-  </div>
-
-  <!-- ── ASK AI ── -->
-  <div class="sec-hdr" style="margin-top:4px"><div class="sec-title">Ask FlowGuard anything</div></div>
-  <div class="ask-section">
-    <div class="ask-wrap">
-      <input type="text" class="ask-field" id="ask-field" placeholder='"Which client is killing my margins?" or "Should I hire someone?"'/>
-      <button class="ask-send" id="ask-send" onclick="askAI()">Ask →</button>
-    </div>
-    <div class="ask-response" id="ask-response"></div>
-  </div>
-</div>
-
-<!-- ── FIX THIS MODAL ── -->
-<div class="modal-overlay" id="fix-modal">
-  <div class="fix-modal">
-    <div class="fm-handle"></div>
-    <div class="fm-head">
-      <div><div class="fm-title" id="fm-title">Fix This For Me</div><div class="fm-sub" id="fm-sub">AI-generated actions ready to use</div></div>
-      <button class="fm-close" onclick="closeFixModal()">✕</button>
-    </div>
-    <div class="fm-body" id="fm-body">
-      <div class="fm-loading"><div class="spinner"></div> Generating your action plan…</div>
-    </div>
-  </div>
-</div>
-
-<!-- ── AUTH ── -->
-<div class="auth-overlay" id="auth-overlay">
-  <div class="auth-card">
-    <div class="auth-logo"><div class="auth-logo-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#060707" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="auth-logo-name">FlowGuard</span></div>
-    <div id="v-su">
+    <!-- SIGNUP -->
+    <div id="v-signup">
       <div class="auth-h">Find your profit leaks</div>
       <div class="auth-sub">Free 14-day trial. No credit card required.</div>
-      <div class="auth-err" id="su-err"></div>
-      <div class="field"><label>Full name</label><input type="text" id="su-name" placeholder="Jamie Smith" autocomplete="name"/></div>
-      <div class="field-2">
-        <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@biz.com" autocomplete="email"/></div>
-        <div class="field"><label>Password</label><input type="password" id="su-pass" placeholder="8+ chars" autocomplete="new-password"/></div>
+      <div class="err-box" id="su-err"></div>
+      <div class="f"><label>Your name</label><input id="su-name" type="text" placeholder="Jamie Smith" autocomplete="name"></div>
+      <div class="f2">
+        <div class="f"><label>Email</label><input id="su-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
+        <div class="f"><label>Password</label><input id="su-pass" type="password" placeholder="8+ characters" autocomplete="new-password"></div>
       </div>
-      <div class="field-2">
-        <div class="field"><label>Company</label><input type="text" id="su-co" placeholder="Acme Pty Ltd"/></div>
-        <div class="field"><label>Industry</label>
+      <div class="f2">
+        <div class="f"><label>Company</label><input id="su-co" type="text" placeholder="Acme Pty Ltd"></div>
+        <div class="f"><label>Industry</label>
           <select id="su-ind">
-            <option value="trades">Trades</option><option value="retail">Retail</option>
-            <option value="hospitality">Hospitality</option><option value="professional">Professional</option>
-            <option value="health">Health</option><option value="ecommerce">eCommerce</option>
-            <option value="manufacturing">Manufacturing</option><option value="other">Other</option>
+            <option value="trades">Trades</option>
+            <option value="retail">Retail</option>
+            <option value="hospitality">Hospitality</option>
+            <option value="professional">Professional Services</option>
+            <option value="health">Health</option>
+            <option value="ecommerce">eCommerce</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="other">Other</option>
           </select>
         </div>
       </div>
       <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial →</button>
-      <div class="auth-sw">Have an account? <a onclick="showLogin()">Log in</a></div>
+      <div class="auth-sw">Already have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
-    <div id="v-li" style="display:none">
+
+    <!-- LOGIN -->
+    <div id="v-login" style="display:none">
       <div class="auth-h">Welcome back</div>
       <div class="auth-sub">Log in to your FlowGuard account.</div>
-      <div class="auth-err" id="li-err"></div>
-      <div class="field"><label>Email</label><input type="email" id="li-email" placeholder="you@biz.com" autocomplete="email"/></div>
-      <div class="field"><label>Password</label><input type="password" id="li-pass" placeholder="Password" autocomplete="current-password"/></div>
+      <div class="err-box" id="li-err"></div>
+      <div class="f"><label>Email</label><input id="li-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
+      <div class="f"><label>Password</label><input id="li-pass" type="password" placeholder="Password" autocomplete="current-password"></div>
       <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in →</button>
       <div class="auth-sw">No account? <a onclick="showSignup()">Start free trial</a></div>
     </div>
   </div>
 </div>
 
-<!-- ── CONNECT OVERLAY ── -->
-<div class="conn-overlay" id="conn-overlay">
-  <div class="conn-card">
-    <div class="auth-logo" style="margin-bottom:22px"><div class="auth-logo-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#060707" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="auth-logo-name">FlowGuard</span></div>
-    <div class="conn-h">Connect your accounts</div>
-    <div class="conn-sub">Read-only access. We never modify your data or make any changes to your accounts.</div>
-    <div class="conn-opts">
-      <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-info-name">Xero</div><div class="conn-info-desc">Australia's most popular accounting platform</div></div><div class="conn-arr">→</div></a>
-      <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-info-name">MYOB</div><div class="conn-info-desc">Connect your MYOB AccountRight file</div></div><div class="conn-arr">→</div></a>
-      <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-info-name">QuickBooks</div><div class="conn-info-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">→</div></a>
+<!-- ═══════════════════════ APP ═══════════════════════ -->
+<div id="app">
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="logo-name">FlowGuard</span>
     </div>
-    <div class="conn-trust">🔒 Read-only · Bank-level encryption · Never sold</div>
-    <div class="conn-skip"><a onclick="closeConn()">Skip — use demo data instead</a></div>
+    <div class="topbar-r">
+      <div class="conn-btn" onclick="openConn()">
+        <div class="conn-dot off" id="conn-dot"></div>
+        <span id="conn-label">Connect software</span>
+      </div>
+      <div class="user-av" id="user-av" title="Account">?</div>
+      <button class="out-btn" onclick="doLogout()" title="Log out">⏏</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="demo-bar" id="demo-bar">
+      <span class="demo-bar-t">⚡ Demo mode — connect Xero, MYOB or QuickBooks for real numbers</span>
+      <button class="demo-bar-btn" onclick="openConn()">Connect now →</button>
+    </div>
+
+    <!-- HERO NUMBER -->
+    <div class="hero">
+      <div class="hero-label">Monthly profit leaking</div>
+      <div class="hero-num" id="hero-num">—</div>
+      <div class="hero-msg" id="hero-msg">Connect your accounting software to see where your money is going</div>
+    </div>
+
+    <!-- FORECAST -->
+    <div class="forecast" id="forecast"></div>
+
+    <!-- RUN BUTTON -->
+    <div class="run-wrap">
+      <button class="run-btn" id="run-btn" onclick="runAnalysis()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Find My Profit Leaks
+      </button>
+    </div>
+
+    <!-- LEAKS -->
+    <div class="sec">
+      <div class="sec-hdr">
+        <div class="sec-title">Top profit leaks</div>
+        <div class="badge b-muted" id="leaks-badge">—</div>
+      </div>
+      <div id="leaks-list">
+        <div class="empty-card">
+          <div class="empty-ico">🔍</div>
+          <div class="empty-title">No analysis yet</div>
+          <div class="empty-sub">Connect Xero, MYOB or QuickBooks and click "Find My Profit Leaks" — we'll show you exactly where your money is going.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="sec" id="alerts-sec" style="display:none">
+      <div class="sec-hdr">
+        <div class="sec-title">Smart alerts</div>
+        <div class="badge b-red" id="alerts-badge">0</div>
+      </div>
+      <div id="alerts-list"></div>
+    </div>
+
+    <!-- ASK AI -->
+    <div class="sec">
+      <div class="sec-hdr"><div class="sec-title">Ask anything</div></div>
+      <div class="ask-row">
+        <input class="ask-inp" id="ask-inp" type="text" placeholder='"Which client is hurting my margins?" or "Should I hire someone?"'>
+        <button class="ask-go" id="ask-go" onclick="askAI()">Ask →</button>
+      </div>
+      <div class="ask-ans" id="ask-ans"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FIX MODAL ═══════════════════════ -->
+<div class="modal-bg" id="fix-modal">
+  <div class="modal-box">
+    <div class="modal-pill"></div>
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="modal-title">Fix This For Me</div>
+        <div class="modal-sub" id="modal-sub">Generating your action plan…</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="modal-loading"><div class="spinner"></div> Generating your action plan…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CONNECT ═══════════════════════ -->
+<div class="conn-overlay" id="conn-overlay">
+  <div class="conn-box">
+    <div class="auth-logo" style="margin-bottom:20px">
+      <div class="auth-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="auth-brand">FlowGuard</span>
+    </div>
+    <div class="conn-h">Connect your accounts</div>
+    <div class="conn-sub">Read-only access only. We never modify your data or make any changes to your accounts.</div>
+    <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia's most popular accounting platform</div></div><div class="conn-arr">→</div></a>
+    <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">MYOB AccountRight &amp; Essentials</div></div><div class="conn-arr">→</div></a>
+    <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">→</div></a>
+    <div class="conn-trust">🔒 Read-only · Encrypted · Never sold</div>
+    <div class="conn-skip"><a onclick="skipConn()">Skip — use demo data instead</a></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── STATE ────────────────────────────────────────────────────────────────
-const S={user:null,conn:null,data:null,analysis:null,parsed:null,loading:false,score:null};
-
-const BENCH={
-  trades:{netMargin:[8,14],labour:[38,42],debtorDays:[30,45]},
-  retail:{netMargin:[5,10],labour:[12,18],debtorDays:[14,30]},
-  hospitality:{netMargin:[6,9],labour:[30,35],debtorDays:[7,21]},
-  professional:{netMargin:[15,25],labour:[45,55],debtorDays:[30,45]},
-  health:{netMargin:[12,20],labour:[50,60],debtorDays:[14,30]},
-  ecommerce:{netMargin:[8,15],labour:[10,18],debtorDays:[1,7]},
-  manufacturing:{netMargin:[8,15],labour:[25,35],debtorDays:[30,60]},
-  other:{netMargin:[8,15],labour:[30,45],debtorDays:[30,45]}
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const S = { user: null, conn: null, data: null, parsed: null, loading: false };
+const BENCH = {
+  trades:       { net:[8,14],  labour:[38,42], debtor:[30,45] },
+  retail:       { net:[5,10],  labour:[12,18], debtor:[14,30] },
+  hospitality:  { net:[6,9],   labour:[30,35], debtor:[7,21]  },
+  professional: { net:[15,25], labour:[45,55], debtor:[30,45] },
+  health:       { net:[12,20], labour:[50,60], debtor:[14,30] },
+  ecommerce:    { net:[8,15],  labour:[10,18], debtor:[1,7]   },
+  manufacturing:{ net:[8,15],  labour:[25,35], debtor:[30,60] },
+  other:        { net:[8,15],  labour:[30,45], debtor:[30,45] }
 };
 
-// ── BOOT ─────────────────────────────────────────────────────────────────
-window.addEventListener('load',async()=>{
-  const p=new URLSearchParams(location.search);
-  const connected=p.get('connected'),error=p.get('error');
-  history.replaceState({},'','/app');
-  await checkAuth();
-  if(connected){toast('Connected to '+cap(connected)+' ✓','ok');await refreshMe();if(S.conn)autoLoad();}
-  if(error)toast('Connection failed: '+error.replace(/_/g,' '),'err');
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = n => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : Math.round(n).toLocaleString();
+const md  = t => t ? t
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+  .replace(/^#{1,3} (.+)$/gm,'<b>$1</b>')
+  .replace(/
+
+/g,'<br><br>').replace(/
+/g,'<br>') : '';
+
+let toastTimer;
+function toast(msg, type='info') {
+  const el = $('toast');
+  el.textContent = msg; el.className = 'toast ' + type; el.style.display = 'block';
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.style.display='none', 4000);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('load', async () => {
+  const p = new URLSearchParams(location.search);
+  const connected = p.get('connected'), error = p.get('error');
+  history.replaceState({}, '', '/app');
+
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (r.ok) {
+      const d = await r.json();
+      S.user = d.user; S.conn = d.connection;
+      showApp();
+      if (connected) { toast('Connected to ' + cap(connected) + ' ✓', 'ok'); }
+      if (error) toast('Connection failed — ' + error.replace(/_/g,' '), 'err');
+      if (S.conn) loadData(); else openConn();
+    } else {
+      showAuth();
+    }
+  } catch(e) {
+    showAuth();
+  }
 });
 
-const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'K':Math.round(n).toLocaleString();
-
-// ── AUTH ─────────────────────────────────────────────────────────────────
-async function checkAuth(){
-  try{
-    const r=await fetch('/api/auth/me',{credentials:'include'});
-    if(r.ok){const d=await r.json();S.user=d.user;S.conn=d.connection;showShell();repaintMeta();if(S.conn)autoLoad();else{openConn();}}
-    else showAuth();
-  }catch{showAuth();}
-}
-async function refreshMe(){try{const r=await fetch('/api/auth/me',{credentials:'include'});if(r.ok){const d=await r.json();S.user=d.user;S.conn=d.connection;repaintMeta();}}catch{}}
-function showShell(){document.getElementById('auth-overlay').style.display='none';document.getElementById('shell').style.display='block';}
-function showAuth(v){document.getElementById('auth-overlay').style.display='flex';document.getElementById('shell').style.display='none';v==='login'?showLogin():showSignup();}
-function showSignup(){document.getElementById('v-su').style.display='';document.getElementById('v-li').style.display='none';}
-function showLogin(){document.getElementById('v-su').style.display='none';document.getElementById('v-li').style.display='';}
-
-function repaintMeta(){
-  const u=S.user;if(!u)return;
-  document.getElementById('user-btn').textContent=(u.name||u.email)[0].toUpperCase();
-  if(S.conn){
-    document.getElementById('conn-dot').className='conn-dot';
-    document.getElementById('conn-label').textContent=S.conn.tenant_name||cap(S.conn.provider);
-  }else{
-    document.getElementById('conn-dot').className='conn-dot off';
-    document.getElementById('conn-label').textContent='Connect software';
-    document.getElementById('demo-notice').classList.add('show');
+// ─── AUTH SHOW/HIDE ───────────────────────────────────────────────────────────
+function showApp() {
+  $('auth-screen').style.display = 'none';
+  $('app').style.display = 'block';
+  if (S.user) {
+    $('user-av').textContent = (S.user.name || S.user.email)[0].toUpperCase();
+  }
+  if (S.conn) {
+    $('conn-dot').className = 'conn-dot';
+    $('conn-label').textContent = S.conn.tenant_name || cap(S.conn.provider);
+    $('demo-bar').classList.remove('on');
+  } else {
+    $('demo-bar').classList.add('on');
   }
 }
 
-async function doSignup(){
-  const btn=document.getElementById('su-btn'),err=document.getElementById('su-err');
-  const email=document.getElementById('su-email').value.trim(),pass=document.getElementById('su-pass').value;
-  const name=document.getElementById('su-name').value.trim(),co=document.getElementById('su-co').value.trim(),ind=document.getElementById('su-ind').value;
-  err.classList.remove('show');
-  if(!email||!pass){err.textContent='Email and password required';err.classList.add('show');return;}
-  if(pass.length<8){err.textContent='Password must be at least 8 characters';err.classList.add('show');return;}
-  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Creating account…';
-  try{
-    const r=await fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass,name,company:co,industry:ind})});
-    const d=await r.json();if(!r.ok){err.textContent=d.error||'Signup failed';err.classList.add('show');return;}
-    S.user=d.user;showShell();repaintMeta();openConn();toast('Account created! 🎉','info');
-  }catch{err.textContent='Network error — try again';err.classList.add('show');}
-  finally{btn.disabled=false;btn.innerHTML='Start free trial →';}
+function showAuth() {
+  $('auth-screen').style.display = 'flex';
+  $('app').style.display = 'none';
 }
 
-async function doLogin(){
-  const btn=document.getElementById('li-btn'),err=document.getElementById('li-err');
-  const email=document.getElementById('li-email').value.trim(),pass=document.getElementById('li-pass').value;
-  err.classList.remove('show');
-  if(!email||!pass){err.textContent='Email and password required';err.classList.add('show');return;}
-  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Logging in…';
-  try{
-    const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
-    const d=await r.json();if(!r.ok){err.textContent=d.error||'Login failed';err.classList.add('show');return;}
-    S.user=d.user;await refreshMe();showShell();repaintMeta();if(S.conn)autoLoad();else openConn();
-  }catch{err.textContent='Network error — try again';err.classList.add('show');}
-  finally{btn.disabled=false;btn.innerHTML='Log in →';}
+function showLogin() {
+  $('v-signup').style.display = 'none';
+  $('v-login').style.display = '';
+  $('li-err').classList.remove('on');
 }
 
-function openConn(){document.getElementById('conn-overlay').classList.add('open');}
-function closeConn(){document.getElementById('conn-overlay').classList.remove('open');loadDemo();}
-
-// ── AUTO LOAD ─────────────────────────────────────────────────────────────
-async function autoLoad(){
-  setHeroLoading();
-  try{
-    const r=await fetch('/api/data',{credentials:'include'});
-    if(r.ok){const d=await r.json();S.data=d.data;S.parsed=parseFinancials(d.data,d.provider);paintFromData();}
-    else setHeroError();
-  }catch{setHeroError();}
+function showSignup() {
+  $('v-login').style.display = 'none';
+  $('v-signup').style.display = '';
+  $('su-err').classList.remove('on');
 }
 
-// ── RUN ANALYSIS ─────────────────────────────────────────────────────────
-async function runAnalysis(){
-  if(S.loading)return;
-  if(!S.conn){toast('Connect your accounting software first','err');openConn();return;}
-  if(!S.data){
-    try{const r=await fetch('/api/data',{credentials:'include'});if(!r.ok){toast('Failed to load data','err');return;}const d=await r.json();S.data=d.data;S.parsed=parseFinancials(d.data,d.provider);}
-    catch{toast('Could not load data','err');return;}
+// ─── SIGNUP ───────────────────────────────────────────────────────────────────
+async function doSignup() {
+  const btn = $('su-btn'), err = $('su-err');
+  const email    = $('su-email').value.trim();
+  const password = $('su-pass').value;
+  const name     = $('su-name').value.trim();
+  const company  = $('su-co').value.trim();
+  const industry = $('su-ind').value;
+
+  err.classList.remove('on');
+
+  if (!email || !password) {
+    err.textContent = 'Email and password are required.';
+    err.classList.add('on'); return;
   }
-  S.loading=true;
-  const btn=document.getElementById('run-btn');
-  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Scanning…';
-  try{
-    const r=await fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data})});
-    const d=await r.json();if(!r.ok){toast(d.error||'Analysis failed','err');return;}
-    S.analysis=d.analysis;
-    renderLeaksFromAnalysis(d.analysis);
-    paintForecast();
-    paintAlerts();
-    toast('Done — here are your top leaks','ok');
-  }catch{toast('Analysis failed','err');}
-  finally{S.loading=false;btn.disabled=false;btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Run Again';}
-}
+  if (password.length < 8) {
+    err.textContent = 'Password must be at least 8 characters.';
+    err.classList.add('on'); return;
+  }
 
-// ── PARSE FINANCIALS ─────────────────────────────────────────────────────
-function parseFinancials(data,provider){
-  const o={rev:0,profit:0,cash:0,ovdAmt:0,ovdCount:0,totalBills:0,netMargin:0,labourPct:0,avgDebtorDays:0,provider:provider||'unknown'};
-  if(!data)return o;
-  if(provider==='xero'&&data.profitLoss?.Reports?.[0]){
-    let labour=0;
-    (data.profitLoss.Reports[0].Rows||[]).forEach(row=>{
-      const lbl=(row.Cells?.[0]?.Value||'').toLowerCase(),val=parseFloat(row.Cells?.[1]?.Value||row.Cells?.[2]?.Value||0)||0;
-      if(row.RowType==='SummaryRow'){if(/total income|total revenue/.test(lbl))o.rev=Math.abs(val)||o.rev;if(/net profit|net loss/.test(lbl))o.profit=val||o.profit;}
-      (row.Rows||[]).forEach(r2=>{const l2=(r2.Cells?.[0]?.Value||'').toLowerCase(),v2=parseFloat(r2.Cells?.[1]?.Value||r2.Cells?.[2]?.Value||0)||0;if(/total income|total trading income/.test(l2))o.rev=Math.abs(v2)||o.rev;if(/wages|salaries|labour|payroll/.test(l2))labour+=Math.abs(v2);});
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Creating your account…';
+
+  try {
+    const r = await fetch('/api/auth/signup', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name, company, industry })
     });
-    if(o.rev>0){o.labourPct=(labour/o.rev)*100;o.netMargin=(o.profit/o.rev)*100;}
-    if(data.balanceSheet?.Reports?.[0]){(data.balanceSheet.Reports[0].Rows||[]).forEach(row=>{(row.Rows||[]).forEach(r2=>{(r2.Rows||[]).forEach(r3=>{const l=(r3.Cells?.[0]?.Value||'').toLowerCase(),v=parseFloat(r3.Cells?.[1]?.Value||0)||0;if(o.cash===0&&/cash|bank/.test(l)&&v!==0)o.cash=v;});});});}
+
+    const d = await r.json();
+
+    if (!r.ok) {
+      err.textContent = d.error || 'Signup failed. Please try again.';
+      err.classList.add('on');
+      return;
+    }
+
+    S.user = d.user;
+    S.conn = null;
+    showApp();
+    openConn();
+    toast('Account created! Welcome to FlowGuard 🎉', 'info');
+
+  } catch(e) {
+    err.textContent = 'Network error. Check your connection and try again.';
+    err.classList.add('on');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Start free trial →';
   }
-  if(data.invoices?.length){const now=new Date();let td=0,c=0;data.invoices.forEach(i=>{if(i.DueDate){const due=new Date(i.DueDate);if(due<now){o.ovdAmt+=(i.AmountDue||0);o.ovdCount++;}td+=Math.max(0,Math.floor((now-due)/86400000));c++;}});if(c>0)o.avgDebtorDays=td/c;}
-  if(data.bills?.length)data.bills.forEach(b=>{o.totalBills+=(b.AmountDue||0);});
+}
+
+// ─── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const btn = $('li-btn'), err = $('li-err');
+  const email    = $('li-email').value.trim();
+  const password = $('li-pass').value;
+
+  err.classList.remove('on');
+
+  if (!email || !password) {
+    err.textContent = 'Email and password are required.';
+    err.classList.add('on'); return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Logging in…';
+
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const d = await r.json();
+
+    if (!r.ok) {
+      err.textContent = d.error || 'Login failed. Check your email and password.';
+      err.classList.add('on');
+      return;
+    }
+
+    S.user = d.user;
+
+    // Get connection info
+    try {
+      const me = await fetch('/api/auth/me', { credentials: 'include' });
+      if (me.ok) { const md2 = await me.json(); S.conn = md2.connection; }
+    } catch(e) {}
+
+    showApp();
+    if (S.conn) loadData(); else openConn();
+
+  } catch(e) {
+    err.textContent = 'Network error. Check your connection and try again.';
+    err.classList.add('on');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Log in →';
+  }
+}
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+  S.user = null; S.conn = null; S.data = null; S.parsed = null;
+  showAuth();
+}
+
+// ─── CONNECT OVERLAY ─────────────────────────────────────────────────────────
+function openConn()  { $('conn-overlay').classList.add('on'); }
+function closeConn() { $('conn-overlay').classList.remove('on'); }
+function skipConn()  { closeConn(); loadDemo(); }
+
+// ─── LOAD REAL DATA ───────────────────────────────────────────────────────────
+async function loadData() {
+  $('hero-num').innerHTML = '<div class="spinner" style="width:20px;height:20px;margin:0 auto"></div>';
+  $('hero-msg').textContent = 'Reading your accounts…';
+  try {
+    const r = await fetch('/api/data', { credentials: 'include' });
+    if (r.ok) {
+      const d = await r.json();
+      S.data = d.data;
+      S.parsed = parseFinancials(d.data, d.provider);
+      paintFromData();
+    }
+  } catch(e) {
+    $('hero-num').textContent = '—';
+    $('hero-msg').textContent = 'Could not load financial data';
+  }
+}
+
+// ─── RUN ANALYSIS ─────────────────────────────────────────────────────────────
+async function runAnalysis() {
+  if (S.loading) return;
+  if (!S.conn) { toast('Connect your accounting software first', 'err'); openConn(); return; }
+
+  if (!S.data) { await loadData(); }
+  if (!S.data) return;
+
+  S.loading = true;
+  const btn = $('run-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Scanning your accounts…';
+
+  try {
+    const r = await fetch('/api/analyse', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ financialData: S.data })
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Analysis failed', 'err'); return; }
+    parseAndRenderLeaks(d.analysis);
+    toast('Done — here are your top leaks', 'ok');
+  } catch(e) {
+    toast('Analysis failed — try again', 'err');
+  } finally {
+    S.loading = false;
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Run Again';
+  }
+}
+
+// ─── PARSE FINANCIALS ─────────────────────────────────────────────────────────
+function parseFinancials(data, provider) {
+  const o = { rev:0, profit:0, cash:0, ovdAmt:0, ovdCount:0, bills:0, netMargin:0, labourPct:0, debtorDays:0, provider: provider||'unknown' };
+  if (!data) return o;
+
+  if (provider === 'xero' && data.profitLoss?.Reports?.[0]) {
+    let labour = 0;
+    (data.profitLoss.Reports[0].Rows || []).forEach(row => {
+      const lbl = (row.Cells?.[0]?.Value || '').toLowerCase();
+      const val = parseFloat(row.Cells?.[1]?.Value || row.Cells?.[2]?.Value || 0) || 0;
+      if (row.RowType === 'SummaryRow') {
+        if (/total income|total revenue/.test(lbl)) o.rev = Math.abs(val) || o.rev;
+        if (/net profit|net loss/.test(lbl)) o.profit = val || o.profit;
+      }
+      (row.Rows || []).forEach(r2 => {
+        const l2 = (r2.Cells?.[0]?.Value || '').toLowerCase();
+        const v2 = parseFloat(r2.Cells?.[1]?.Value || r2.Cells?.[2]?.Value || 0) || 0;
+        if (/total income|total trading income/.test(l2)) o.rev = Math.abs(v2) || o.rev;
+        if (/wages|salaries|labour|payroll/.test(l2)) labour += Math.abs(v2);
+      });
+    });
+    if (o.rev > 0) { o.labourPct = (labour/o.rev)*100; o.netMargin = (o.profit/o.rev)*100; }
+
+    if (data.balanceSheet?.Reports?.[0]) {
+      (data.balanceSheet.Reports[0].Rows || []).forEach(row => {
+        (row.Rows || []).forEach(r2 => {
+          (r2.Rows || []).forEach(r3 => {
+            const l = (r3.Cells?.[0]?.Value || '').toLowerCase();
+            const v = parseFloat(r3.Cells?.[1]?.Value || 0) || 0;
+            if (o.cash === 0 && /cash|bank/.test(l) && v !== 0) o.cash = v;
+          });
+        });
+      });
+    }
+  }
+
+  if (data.invoices?.length) {
+    const now = new Date();
+    let td = 0, c = 0;
+    data.invoices.forEach(i => {
+      if (i.DueDate) {
+        const due = new Date(i.DueDate);
+        if (due < now) { o.ovdAmt += (i.AmountDue || 0); o.ovdCount++; }
+        td += Math.max(0, Math.floor((now - due) / 86400000));
+        c++;
+      }
+    });
+    if (c > 0) o.debtorDays = td / c;
+  }
+  if (data.bills?.length) data.bills.forEach(b => { o.bills += (b.AmountDue || 0); });
   return o;
 }
 
-// ── PAINT FROM DATA ───────────────────────────────────────────────────────
-function paintFromData(){
-  const p=S.parsed;if(!p)return;
-  // Estimate leaks from data before AI runs
-  const leaks=[];
-  const b=BENCH[S.user?.industry||'other']||BENCH.other;
-  if(p.labourPct>0&&p.labourPct>b.labour[1]){const excess=Math.round(((p.labourPct-b.labour[1])/100)*p.rev);if(excess>0)leaks.push({name:'Labour cost blowout',desc:'Running '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% industry benchmark',monthly:Math.round(excess/12),color:'red',action:'Review your roster and shift allocation. Benchmark says you need '+(b.labour[1])+'% or less.',fix:'roster_review'});}
-  if(p.ovdAmt>2000)leaks.push({name:'Overdue invoices sitting unpaid',desc:p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' owe you money — every day they wait costs you',monthly:Math.round(p.ovdAmt/2),color:'red',action:'Call (not email) your '+p.ovdCount+' overdue client'+(p.ovdCount>1?'s':'')+' today. Start with the largest.',fix:'invoice_chase'});
-  if(p.netMargin>0&&p.netMargin<b.netMargin[0]){const gap=Math.round(((b.netMargin[0]-p.netMargin)/100)*p.rev/12);if(gap>0)leaks.push({name:'Margin below industry minimum',desc:'Your margin is '+p.netMargin.toFixed(1)+'% — industry minimum is '+b.netMargin[0]+'%',monthly:gap,color:'amber',action:'Prices likely haven't kept up with rising costs. A 5% increase adds $'+fmt(Math.round(p.rev*0.05/12))+'/month.',fix:'price_increase'});}
+// ─── PAINT FROM DATA ──────────────────────────────────────────────────────────
+function paintFromData() {
+  const p = S.parsed;
+  if (!p || p.rev === 0) return;
+  const b = BENCH[S.user?.industry || 'other'] || BENCH.other;
+  const leaks = buildLeaks(p, b);
+  const total = leaks.reduce((s,l) => s + l.monthly, 0);
+  setHero(total > 0 ? total : 0, leaks.length > 0);
+  paintForecast(p);
+  renderLeaks(leaks);
+  renderAlerts(p, b);
+}
 
-  if(leaks.length){
-    const totalMonthly=leaks.reduce((s,l)=>s+l.monthly,0);
-    setHeroNumber(totalMonthly,'red');
-    renderLeakCards(leaks);
-    paintForecast();
-    paintAlerts();
-  }else if(p.rev>0){
-    setHeroNumber(0,'green');
-    document.getElementById('hero-sub').innerHTML='<strong>No major leaks detected</strong> — run the full AI analysis for a deeper scan';
-    renderLeakCards([]);
+function buildLeaks(p, b) {
+  const leaks = [];
+  if (p.labourPct > 0 && p.labourPct > b.labour[1]) {
+    const ex = Math.round(((p.labourPct - b.labour[1]) / 100) * p.rev / 12);
+    if (ex > 100) leaks.push({ name:'Labour cost blowout', desc:'Running at ' + p.labourPct.toFixed(1) + '% of revenue — benchmark is ' + b.labour[1] + '%. That's the single biggest drain on your profit.', monthly:ex, color:'red', action:'<b>This week:</b> Pull your labour cost by shift or role. Identify your 3 highest-cost, lowest-revenue periods. Restructure roster around those first.', fix:'roster' });
+  }
+  if (p.ovdAmt > 2000) {
+    leaks.push({ name:'Overdue invoices unpaid', desc:p.ovdCount + ' client' + (p.ovdCount>1?'s':'') + ' owe you $' + fmt(p.ovdAmt) + ' — it's sitting there waiting to be collected.', monthly:Math.round(p.ovdAmt / 3), color:'red', action:'<b>Today:</b> Call (not email) your largest overdue client first. A 2-minute phone call recovers 3× more than a follow-up email.', fix:'invoices' });
+  }
+  if (p.netMargin > 0 && p.netMargin < b.net[0]) {
+    const gap = Math.round(((b.net[0] - p.netMargin) / 100) * p.rev / 12);
+    if (gap > 100) leaks.push({ name:'Prices below industry minimum', desc:'Net margin ' + p.netMargin.toFixed(1) + '% — the industry minimum is ' + b.net[0] + '%. Your costs have risen but your prices haven't.', monthly:gap, color:'amber', action:'<b>This month:</b> A 5% price increase adds $' + fmt(Math.round(p.rev * 0.05 / 12)) + '/month to profit with zero extra work or cost.', fix:'pricing' });
+  }
+  return leaks;
+}
+
+// ─── HERO ─────────────────────────────────────────────────────────────────────
+function setHero(monthly, hasLeaks) {
+  const num = $('hero-num'), msg = $('hero-msg');
+  if (monthly > 0) {
+    num.textContent = '$' + fmt(monthly) + '/mo';
+    num.className = 'hero-num red';
+    msg.innerHTML = 'leaking out of your business every month — <b>here's where it's going</b>';
+  } else {
+    num.textContent = '$0';
+    num.className = 'hero-num green';
+    msg.innerHTML = '<b>No major leaks detected</b> — run the full AI analysis for a deeper scan';
   }
 }
 
-// ── HERO ─────────────────────────────────────────────────────────────────
-function setHeroNumber(monthly,color){
-  const el=document.getElementById('hero-num'),sub=document.getElementById('hero-sub');
-  el.textContent=monthly>0?'$'+fmt(monthly)+'/mo':'$0 leaking';
-  el.className='hero-number '+(color||'muted');
-  if(monthly>0)sub.innerHTML='leaking out of your business every month — <strong>here\'s where it\'s going</strong>';
-  else sub.innerHTML='<strong>Your financials look healthy</strong> — no major leaks detected right now';
+// ─── FORECAST ─────────────────────────────────────────────────────────────────
+function paintForecast(p) {
+  if (!p || p.rev === 0) return;
+  const wBurn = (p.rev / 52) * (1 - (p.netMargin / 100));
+  const weeks = p.cash > 0 ? Math.round(p.cash / Math.max(wBurn, 1)) : 0;
+  const days = weeks * 7;
+  const el = $('forecast');
+  let cls, ico, html;
+  if (days < 28) {
+    cls='urgent'; ico='🚨';
+    html='<b class="red">At this rate, your cash will drop below safe levels in ' + days + ' days.</b> Collect overdue invoices immediately.';
+  } else if (days < 84) {
+    cls='warn'; ico='⚠️';
+    html='Cash runway is <b class="amber">' + weeks + ' weeks</b> — below the 12-week safe buffer. Start building your reserve now.';
+  } else {
+    cls='ok'; ico='✅';
+    html='Cash runway is <b class="green">' + weeks + ' weeks</b> — healthy buffer. Keep it above 12 weeks.';
+  }
+  el.className = 'forecast ' + cls + ' on';
+  el.innerHTML = '<span style="font-size:18px;flex-shrink:0">' + ico + '</span><span style="font-size:13px;line-height:1.6">' + html + '</span>';
 }
-function setHeroLoading(){document.getElementById('hero-num').innerHTML='<div class="spinner" style="width:20px;height:20px;margin:0 auto"></div>';document.getElementById('hero-sub').textContent='Reading your accounts…';}
-function setHeroError(){document.getElementById('hero-num').textContent='—';document.getElementById('hero-sub').textContent='Could not load financial data';}
 
-// ── LEAK CARDS ────────────────────────────────────────────────────────────
-const COLORS={red:{rank:'#ff4444',amt:'var(--red)'},amber:{rank:'var(--amber)',amt:'var(--amber)'},green:{rank:'var(--green)',amt:'var(--green)'}};
-
-function renderLeakCards(leaks){
-  const stack=document.getElementById('leaks-stack'),badge=document.getElementById('leaks-badge');
-  if(!leaks.length){stack.innerHTML='<div class="leak-placeholder"><div class="lp-ico">✅</div><div class="lp-title">No leaks found</div><div class="lp-sub">Your top-line numbers look healthy. Run a full AI analysis for a deeper scan of subscriptions, supplier pricing and client margins.</div></div>';badge.textContent='0';badge.className='sec-badge badge-green';return;}
-  const labels=['#1 Leak','#2 Leak','#3 Leak'];
-  badge.textContent=leaks.length+' found';badge.className='sec-badge badge-red';
-  stack.innerHTML=leaks.slice(0,3).map((l,i)=>{
-    const c=COLORS[l.color||'amber']||COLORS.amber;
-    return`<div class="leak-card">
-      <div class="lc-main">
-        <div class="lc-left">
-          <div class="lc-rank" style="color:${c.rank}">${labels[i]}</div>
-          <div class="lc-name">${esc(l.name)}</div>
-          <div class="lc-desc">${esc(l.desc)}</div>
+// ─── RENDER LEAKS ─────────────────────────────────────────────────────────────
+function renderLeaks(leaks) {
+  const list = $('leaks-list'), badge = $('leaks-badge');
+  if (!leaks.length) {
+    badge.textContent = '0'; badge.className = 'badge b-muted';
+    list.innerHTML = '<div class="empty-card"><div class="empty-ico">✅</div><div class="empty-title">No leaks found</div><div class="empty-sub">Your numbers look healthy. Run the full AI analysis for a deeper scan of subscriptions, supplier pricing and client margins.</div></div>';
+    return;
+  }
+  badge.textContent = leaks.length + ' found'; badge.className = 'badge b-red';
+  const labels = ['#1 Leak', '#2 Leak', '#3 Leak'];
+  const rankColors = { red:'#ff4444', amber:'#f59e0b' };
+  list.innerHTML = leaks.slice(0,3).map((l, i) => {
+    const rc = rankColors[l.color] || rankColors.amber;
+    const btnCls = l.color === 'red' ? 'fix-red' : 'fix-amber';
+    return \`<div class="leak-card">
+      <div class="lc-top">
+        <div>
+          <div class="lc-rank" style="color:\${rc}">\${labels[i]}</div>
+          <div class="lc-name">\${esc(l.name)}</div>
+          <div class="lc-desc">\${esc(l.desc)}</div>
         </div>
-        <div class="lc-right">
-          <div class="lc-amt" style="color:${c.amt}">$${fmt(l.monthly)}</div>
-          <div class="lc-period">/month</div>
+        <div>
+          <div class="lc-amt" style="color:\${rc}">$\${fmt(l.monthly)}</div>
+          <div class="lc-mo">/month</div>
         </div>
       </div>
-      <div class="lc-actions">
-        <div class="lc-action-text">${esc(l.action)}</div>
-        <button class="fix-btn ${l.color||'amber'}" onclick="openFix(${i})">⚡ Fix This For Me</button>
+      <div class="lc-bot">
+        <div class="lc-action">\${l.action}</div>
+        <button class="fix-btn \${btnCls}" onclick="openFix(\${i})">⚡ Fix This For Me</button>
       </div>
-    </div>`;
+    </div>\`;
   }).join('');
-  // Store leaks on window for fix modal
-  window._leaks=leaks;
+  window._leaks = leaks;
 }
 
-// ── PARSE LEAKS FROM AI ────────────────────────────────────────────────
-function renderLeaksFromAnalysis(text){
-  const p=S.parsed;if(!p)return;
-  const lines=text.split('\n');
-  const leaks=[];
-  const patterns=[
-    {rx:/subscri|saas|software\s+cost/i,name:'Wasted subscriptions & SaaS',fix:'subscription_cancel',color:'red'},
-    {rx:/supplier|vendor|cost\s+of\s+goods|cogs/i,name:'Supplier overpricing',fix:'supplier_negotiate',color:'amber'},
-    {rx:/margin|low.margin|unprofitable\s+client/i,name:'Low-margin clients',fix:'price_increase',color:'amber'},
-    {rx:/overd|invoice|collection|debtor/i,name:'Overdue invoices unpaid',fix:'invoice_chase',color:'red'},
-    {rx:/labour|wages|payroll|staffing/i,name:'Labour cost blowout',fix:'roster_review',color:'red'},
-    {rx:/overhead|rent|util/i,name:'Overhead creep',fix:'overhead_review',color:'amber'},
+// ─── PARSE AI LEAKS ───────────────────────────────────────────────────────────
+function parseAndRenderLeaks(text) {
+  const p = S.parsed;
+  if (!p || p.rev === 0) return;
+  const b = BENCH[S.user?.industry || 'other'] || BENCH.other;
+
+  // Try to extract structured leaks from AI text
+  const aiLeaks = [];
+  const lines = text.split('\n');
+  const defs = [
+    { rx:/subscri|saas|software\.?cost/i, name:'Wasted subscriptions & SaaS', fix:'subscriptions', color:'red' },
+    { rx:/supplier|vendor|cost.of.goods/i,  name:'Supplier overpricing',         fix:'supplier',     color:'amber' },
+    { rx:/low.margin|unprofitable.client/i, name:'Low-margin clients',           fix:'pricing',      color:'amber' },
+    { rx:/overd|unpaid.invoice|debtor/i,    name:'Overdue invoices',             fix:'invoices',     color:'red' },
+    { rx:/labour|wages|payroll/i,           name:'Labour cost blowout',          fix:'roster',       color:'red' },
+    { rx:/overhead|rent|utility/i,          name:'Overhead creep',               fix:'overheads',    color:'amber' },
   ];
-  lines.forEach(line=>{
-    const amt=line.match(/\$[\d,]+(?:\.\d+)?[kKmM]?/);
-    if(!amt||line.trim().length<10)return;
-    const amtNum=parseAmt(amt[0]);if(amtNum<50)return;
-    for(const pat of patterns){
-      if(pat.rx.test(line)&&leaks.findIndex(l=>l.name===pat.name)<0){
-        leaks.push({name:pat.name,desc:line.replace(/^[•\-\*\d\.\s]+/,'').trim().slice(0,120),monthly:Math.round(amtNum/12<amtNum?amtNum:amtNum/12),color:pat.color,action:getAction(pat.fix,amtNum,p),fix:pat.fix});
+
+  lines.forEach(line => {
+    const amtMatch = line.match(/\$([\d,]+(?:\.\d+)?)[kKmM]?/);
+    if (!amtMatch || line.trim().length < 12) return;
+    let amtNum = parseFloat(amtMatch[1].replace(/,/g,''));
+    if (/[kK]/.test(amtMatch[0])) amtNum *= 1000;
+    if (/[mM]/.test(amtMatch[0])) amtNum *= 1000000;
+    if (amtNum < 100) return;
+    for (const def of defs) {
+      if (def.rx.test(line) && !aiLeaks.find(x => x.name === def.name)) {
+        const monthly = amtNum > p.rev / 2 ? Math.round(amtNum / 12) : Math.round(amtNum);
+        aiLeaks.push({ name:def.name, desc:line.replace(/^[•\-\*\d\.\s]+/,'').trim().slice(0,140), monthly, color:def.color, action:fixAction(def.fix, monthly, p), fix:def.fix });
         break;
       }
     }
   });
-  // If AI didn't yield enough, fall back to data
-  if(leaks.length<2&&p.rev>0){const dl=getDataLeaks(p);dl.forEach(l=>{if(leaks.findIndex(x=>x.name===l.name)<0)leaks.push(l);});}
-  if(leaks.length===0){paintFromData();return;}
-  const total=leaks.slice(0,3).reduce((s,l)=>s+l.monthly,0);
-  setHeroNumber(total,'red');
-  renderLeakCards(leaks);
+
+  // Merge with data-based leaks
+  const dataLeaks = buildLeaks(p, b);
+  const final = [...aiLeaks];
+  dataLeaks.forEach(dl => { if (!final.find(x => x.name === dl.name)) final.push(dl); });
+  if (!final.length) { paintFromData(); return; }
+
+  const total = final.slice(0,3).reduce((s,l) => s + l.monthly, 0);
+  setHero(total, true);
+  paintForecast(p);
+  renderLeaks(final);
+  renderAlerts(p, b);
 }
 
-function parseAmt(s){const n=parseFloat(s.replace(/[$,]/,''));if(/[kK]$/.test(s))return n*1000;if(/[mM]$/.test(s))return n*1000000;return n;}
-
-function getDataLeaks(p){
-  const leaks=[],b=BENCH[S.user?.industry||'other']||BENCH.other;
-  if(p.labourPct>b.labour[1]){const ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev/12);leaks.push({name:'Labour cost blowout',desc:'Running '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% benchmark',monthly:ex,color:'red',action:getAction('roster_review',ex*12,p),fix:'roster_review'});}
-  if(p.ovdAmt>2000)leaks.push({name:'Overdue invoices unpaid',desc:p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' have not paid — money owed to you',monthly:Math.round(p.ovdAmt/2),color:'red',action:getAction('invoice_chase',p.ovdAmt,p),fix:'invoice_chase'});
-  if(p.netMargin>0&&p.netMargin<b.netMargin[0]){const gap=Math.round(((b.netMargin[0]-p.netMargin)/100)*p.rev/12);leaks.push({name:'Prices below industry benchmark',desc:'Net margin '+p.netMargin.toFixed(1)+'% vs '+b.netMargin[0]+'% industry minimum',monthly:gap,color:'amber',action:getAction('price_increase',gap*12,p),fix:'price_increase'});}
-  return leaks;
-}
-
-function getAction(fix,amt,p){
-  const acts={
-    subscription_cancel:'Audit your subscriptions in the next 7 days. Cancel anything not used weekly. Target: save $'+fmt(Math.round(amt/12))+'/month.',
-    supplier_negotiate:'Get 3 quotes from competing suppliers this week. The data suggests you can save up to 18% by switching or negotiating.',
-    price_increase:'Increase prices by 5–8% across the board. Most clients won\'t leave. The revenue gain goes straight to profit.',
-    invoice_chase:'Call (not email) your '+( p.ovdCount||'overdue')+' overdue client'+(p.ovdCount>1?'s':'')+' today. Start with the largest amount.',
-    roster_review:'Review which shifts are generating the most waste. Focus on your highest-cost days first.',
-    overhead_review:'List every recurring cost over $200/month. Cut or negotiate any that don\'t directly generate revenue.',
+function fixAction(fix, monthly, p) {
+  const m = { monthly };
+  const acts = {
+    subscriptions: '<b>This week:</b> Audit every recurring charge in your bank. Cancel anything not used weekly. Target: eliminate $' + fmt(monthly) + '/month.',
+    supplier:      '<b>This week:</b> Get 3 competing quotes. Even a 10% reduction on your biggest supplier is significant at scale.',
+    pricing:       '<b>This month:</b> A 5% price increase adds $' + fmt(Math.round((S.parsed?.rev||0)*0.05/12)) + '/month straight to profit. Most clients won't leave.',
+    invoices:      '<b>Today:</b> Call (not email) your ' + (p.ovdCount||'overdue') + ' overdue client' + (p.ovdCount>1?'s':'') + '. Start with the largest amount.',
+    roster:        '<b>This week:</b> Pull labour cost by shift. Identify 3 highest-cost, lowest-output periods. Restructure those first.',
+    overheads:     '<b>This week:</b> List every recurring cost over $200/month. Cut or negotiate anything that doesn't directly generate revenue.',
   };
-  return acts[fix]||'Review this area carefully — it\'s costing you $'+fmt(Math.round(amt/12))+' every month.';
+  return acts[fix] || '<b>Priority:</b> This is costing you $' + fmt(monthly) + '/month — investigate and cut it this week.';
 }
 
-// ── FORECAST ───────────────────────────────────────────────────────────
-function paintForecast(){
-  const p=S.parsed;if(!p||p.rev===0){document.getElementById('forecast-wrap').innerHTML='';return;}
-  const wBurn=(p.rev/52)*(1-(p.netMargin/100));const cw=p.cash>0?Math.round(p.cash/Math.max(wBurn,1)):0;const days=cw*7;
-  let cls,ico,text;
-  if(days<28){cls='urgent';ico='🚨';text=`<strong>At this rate, your cash will drop below safe levels in ${days} days.</strong> Collect overdue invoices immediately.`;}
-  else if(days<84){cls='warn';ico='⚠️';text=`Cash runway is <strong>${cw} weeks</strong> — below the recommended 12-week buffer. Start building your reserve.`;}
-  else{cls='ok';ico='✅';text=`Cash runway is <strong>${cw} weeks</strong> — you have a healthy buffer. Keep it above 12 weeks.`;}
-  document.getElementById('forecast-wrap').innerHTML=`<div class="forecast-bar ${cls}"><div class="fc-ico">${ico}</div><div class="fc-text ${cls}">${text}</div></div>`;
+// ─── ALERTS ───────────────────────────────────────────────────────────────────
+function renderAlerts(p, b) {
+  const alerts = [];
+  if (p.labourPct > b.labour[1] * 1.15) alerts.push({ type:'urgent', ico:'🔴', text:'<b>Labour at ' + p.labourPct.toFixed(0) + '% of revenue</b> — ' + (p.labourPct - b.labour[1]).toFixed(0) + '% above benchmark. Review your roster this week.' });
+  if (p.ovdAmt > p.cash * 0.5 && p.ovdAmt > 5000) alerts.push({ type:'urgent', ico:'🔴', text:'<b>$' + fmt(p.ovdAmt) + ' overdue is larger than your cash buffer.</b> Chase these invoices before paying bills.' });
+  if (p.netMargin > 0 && p.netMargin < b.net[0]) alerts.push({ type:'warn', ico:'🟡', text:'<b>Margin below industry minimum</b> — you're at ' + p.netMargin.toFixed(1) + '%, benchmark is ' + b.net[0] + '%. Prices need a review.' });
+  if (p.debtorDays > b.debtor[1]) alerts.push({ type:'warn', ico:'🟡', text:'<b>Clients taking ' + Math.round(p.debtorDays) + ' days to pay</b> — benchmark is ' + b.debtor[1] + ' days. Tighten your payment terms.' });
+  if (!alerts.length) return;
+  $('alerts-sec').style.display = '';
+  $('alerts-badge').textContent = alerts.length;
+  $('alerts-badge').className = 'badge ' + (alerts.some(a => a.type==='urgent') ? 'b-red' : 'b-muted');
+  $('alerts-list').innerHTML = alerts.map(a => \`<div class="alert-card \${a.type}"><div class="al-ico">\${a.ico}</div><div class="al-text">\${a.text}</div></div>\`).join('');
 }
 
-// ── SMART ALERTS ────────────────────────────────────────────────────────
-function paintAlerts(){
-  const p=S.parsed;if(!p||p.rev===0)return;
-  const alerts=[];const b=BENCH[S.user?.industry||'other']||BENCH.other;
-  if(p.labourPct>b.labour[1]*1.15)alerts.push({type:'urgent',ico:'🔴',text:`<strong>Labour running ${p.labourPct.toFixed(0)}% of revenue</strong> — ${(p.labourPct-b.labour[1]).toFixed(0)}% above benchmark. Review this week.`,time:'Now'});
-  if(p.ovdAmt>p.cash*0.5&&p.ovdAmt>5000)alerts.push({type:'urgent',ico:'🔴',text:`<strong>$${fmt(p.ovdAmt)} in overdue invoices</strong> — larger than your current cash buffer. Chase immediately.`,time:'Now'});
-  if(p.netMargin<b.netMargin[0]&&p.netMargin>0)alerts.push({type:'warn',ico:'🟡',text:`<strong>Profit margin below industry minimum</strong> — you're at ${p.netMargin.toFixed(1)}%, benchmark is ${b.netMargin[0]}%. Prices need a review.`,time:'This week'});
-  if(p.avgDebtorDays>b.debtorDays[1])alerts.push({type:'warn',ico:'🟡',text:`<strong>Clients taking ${Math.round(p.avgDebtorDays)} days to pay</strong> — benchmark is ${b.debtorDays[1]} days. Tighten payment terms.`,time:'This week'});
-  if(!alerts.length)return;
-  const sec=document.getElementById('alerts-section');sec.style.display='block';
-  document.getElementById('alerts-badge').textContent=alerts.length;
-  document.getElementById('alerts-badge').className='sec-badge '+(alerts.some(a=>a.type==='urgent')?'badge-red':'badge-amber');
-  document.getElementById('alerts-list').innerHTML=alerts.map(a=>`<div class="alert-card ${a.type}"><div class="ac-ico">${a.ico}</div><div class="ac-text">${a.text}</div><div class="ac-time">${esc(a.time)}</div></div>`).join('');
-  // Show top alert in banner if urgent
-  const top=alerts.find(a=>a.type==='urgent');
-  if(top){document.getElementById('ab-text').innerHTML=top.text;document.getElementById('alert-banner').classList.add('show');}
+// ─── FIX THIS FOR ME ──────────────────────────────────────────────────────────
+const FIX_TEMPLATES = {
+  invoices: `## Message to send today
+
+Hi [Client Name],
+
+Following up on invoice [Invoice Number] for $[Amount], which was due on [Due Date].
+
+Could you please confirm when payment will be processed? We'd appreciate settlement by [3 days from now].
+
+Happy to resolve any issues with the invoice immediately if needed.
+
+Thanks,
+[Your Name]
+
+## Your 3 steps this week
+
+**Day 1:** Call every client with an overdue invoice over $1,000. Don't email — call.
+**Day 3:** Send written follow-up with invoice attached to anyone who didn't answer.
+**Day 7:** For anything still unpaid, issue formal overdue notice and offer a payment plan.`,
+
+  roster: `## Message to your manager or bookkeeper
+
+Hi [Name],
+
+I'd like to review our labour cost breakdown for the last 3 months. Can you pull together:
+
+1. Labour as % of revenue by week
+2. Cost by role or shift
+3. Any recurring overtime or penalty rates
+
+I'd like this by [3 days from now] please.
+
+Thanks
+
+## Your 3 steps this week
+
+**Day 1:** Get the labour cost report and identify your 3 most expensive shifts vs revenue generated.
+**Day 3:** Compare output (jobs done, revenue per shift) against cost. Look for the obvious mismatches.
+**Day 7:** Redesign your roster around your highest-revenue periods. Trial it for 2 weeks and measure.`,
+
+  pricing: `## Price increase notice to clients
+
+Hi [Client Name],
+
+From [Date 30 days from now], our pricing will increase by [X]% to reflect rising costs.
+
+Your new rate will be [New Amount].
+
+We genuinely value working with you and are committed to delivering the same high standard of service.
+
+[Your Name]
+
+## Your 3 steps this week
+
+**Day 1:** Identify your 20% of clients with the lowest margins. Raise their prices first.
+**Day 3:** Send the notice to all clients with 30 days lead time. The vast majority won't leave.
+**Day 7:** For any clients who push back — if they're already low-margin, let them go.`,
+
+  subscriptions: `## Message to your bookkeeper
+
+Hi [Name],
+
+Can you pull every recurring subscription charge from the last 3 months? I want to review anything over $50/month.
+
+Please categorise by: still in use / not used in 30+ days / unsure.
+
+I'd like this by [3 days from now].
+
+Thanks
+
+## Your 3 steps this week
+
+**Day 1:** Get the list and mark everything you haven't used in the last 30 days.
+**Day 3:** Cancel or pause every unused subscription. Most have instant cancellation.
+**Day 7:** Review the "unsure" pile with your team. Default to cancelling if no one champions it.`,
+
+  supplier: `## Email to your supplier
+
+Hi [Supplier Contact],
+
+I've been reviewing our costs and want to discuss our current pricing arrangement.
+
+I've received alternative quotes that are coming in lower than our current rate. Before making any changes I wanted to give you the opportunity to review our pricing first.
+
+Could we speak this week?
+
+Thanks,
+[Your Name]
+
+## Your 3 steps this week
+
+**Day 1:** Get 2-3 quotes from competing suppliers online. You need leverage before negotiating.
+**Day 3:** Send this email to your top 2 suppliers by spend. Even a 10% reduction is significant.
+**Day 7:** If no offer to match — switch at least one supplier as a clear signal.`,
+
+  overheads: `## Overhead review checklist
+
+Pull every recurring expense over $200/month and ask:
+
+1. Does this directly generate revenue or protect it?
+2. If we cancelled it tomorrow, would it hurt a client?
+3. Can we get the same thing cheaper elsewhere?
+
+## Your 3 steps this week
+
+**Day 1:** Get your full overhead list from your bookkeeper or accounting software.
+**Day 3:** Mark each line as: Keep / Cancel / Negotiate / Review.
+**Day 7:** Action everything in the Cancel column immediately. Schedule negotiations for the rest.`,
+};
+
+async function openFix(i) {
+  const leaks = window._leaks;
+  if (!leaks || !leaks[i]) return;
+  const leak = leaks[i];
+
+  $('modal-title').textContent = '⚡ Fix This For Me';
+  $('modal-sub').textContent = leak.name;
+  $('modal-body').innerHTML = '<div class="modal-loading"><div class="spinner"></div> Generating your action plan…</div>';
+  $('fix-modal').classList.add('on');
+  document.body.style.overflow = 'hidden';
+
+  // Try AI first, fall back to template
+  let text = '';
+  try {
+    const p = S.parsed || {};
+    const prompt = \`A small business owner has this profit leak: "\${leak.name}" costing $\${leak.monthly}/month.
+Context: Revenue ~$\${fmt(p.rev||0)}/year, Cash ~$\${fmt(p.cash||0)}, \${p.ovdCount||0} overdue invoices totalling $\${fmt(p.ovdAmt||0)}.
+
+Write 2 things:
+1. A ready-to-send email or message template they can use TODAY to fix this. Use [Placeholder] for anything they need to fill in. Keep it short and direct.
+2. Exactly 3 bullet steps: Day 1, Day 3, Day 7.
+
+Format with ## headings. Be brutally practical. No fluff.\`;
+
+    const r = await fetch('/api/analyse', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ financialData: S.data || {}, question: prompt })
+    });
+    const d = await r.json();
+    if (r.ok && d.analysis) text = d.analysis;
+  } catch(e) {}
+
+  // Use template if AI failed or returned nothing
+  if (!text) text = FIX_TEMPLATES[leak.fix] || FIX_TEMPLATES.overheads;
+
+  renderModal(leak, text);
 }
 
-// ── FIX THIS FOR ME ──────────────────────────────────────────────────────
-async function openFix(i){
-  const leaks=window._leaks;if(!leaks||!leaks[i])return;
-  const leak=leaks[i];
-  document.getElementById('fm-title').textContent='Fix This For Me';
-  document.getElementById('fm-sub').textContent=leak.name;
-  document.getElementById('fm-body').innerHTML='<div class="fm-loading"><div class="spinner"></div> Generating your action plan…</div>';
-  document.getElementById('fix-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+function renderModal(leak, text) {
+  window._fixText = text;
+  const sections = text.split(/\n## /).filter(Boolean);
+  let html = '';
+  sections.forEach((s, i) => {
+    const lines = s.split('\n');
+    const heading = lines[0].replace(/^## /, '').trim();
+    const body = lines.slice(1).join('\n').trim();
+    html += \`<div style="margin-bottom:20px">
+      <div class="modal-sec-lbl">\${esc(heading)}</div>
+      <div class="modal-draft">\${md(body)}</div>
+    </div>\`;
+  });
+  html += \`<div class="modal-btns">
+    <button class="modal-copy" onclick="copyFix()">📋 Copy to clipboard</button>
+    <button class="modal-sec-btn" onclick="closeModal()">Done</button>
+  </div>\`;
+  $('modal-body').innerHTML = html;
+}
 
-  const p=S.parsed||{};
-  const prompt=`A business owner has a profit leak: "${leak.name}" costing $${leak.monthly}/month.
-Their situation: Revenue ~$${fmt(p.rev||0)}/year, Cash ~$${fmt(p.cash||0)}, ${p.ovdCount||0} overdue invoices worth $${fmt(p.ovdAmt||0)}.
-Leak description: ${leak.desc}
+function copyFix() {
+  navigator.clipboard.writeText(window._fixText || '').then(() => toast('Copied ✓', 'ok')).catch(() => toast('Select the text and copy manually', 'err'));
+}
 
-Generate 2 ready-to-use documents they can action TODAY:
+function closeModal() {
+  $('fix-modal').classList.remove('on');
+  document.body.style.overflow = '';
+}
 
-1. EMAIL/MESSAGE TEMPLATE - A short, direct message (email or text) they can send right now to fix this. Use [Placeholder] for any info they need to fill in. Make it professional but direct.
+// ─── ASK AI ───────────────────────────────────────────────────────────────────
+async function askAI() {
+  const inp = $('ask-inp'), q = inp.value.trim();
+  if (!q) return;
+  if (!S.conn && !S.data) { toast('Connect your accounting software first', 'err'); openConn(); return; }
 
-2. STEP-BY-STEP THIS WEEK - Exactly 3 bullet points. What to do on Day 1, Day 3, and Day 7. Include specific numbers where possible.
+  const btn = $('ask-go');
+  btn.disabled = true; btn.textContent = '…';
+  inp.disabled = true;
 
-Be brutally practical. No fluff. This owner is busy.`;
+  const ans = $('ask-ans');
+  ans.classList.remove('on');
 
-  try{
-    const r=await fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data||{},question:prompt})});
-    const d=await r.json();if(!r.ok)throw new Error(d.error);
-    renderFixModal(leak,d.analysis);
-  }catch(e){
-    // Fallback — generate from templates
-    renderFixModal(leak,getFallbackFix(leak,p));
+  let fd = S.data;
+  if (!fd && S.conn) {
+    try { const r = await fetch('/api/data', { credentials:'include' }); if (r.ok) { const d = await r.json(); fd = d.data; S.data = fd; S.parsed = parseFinancials(fd, d.provider); } } catch(e) {}
+  }
+
+  try {
+    const r = await fetch('/api/analyse', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ financialData: fd || {}, question: q })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    ans.innerHTML = md(d.analysis);
+    ans.classList.add('on');
+    inp.value = '';
+  } catch(e) {
+    toast('Could not get answer — try again', 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Ask →';
+    inp.disabled = false; inp.focus();
   }
 }
 
-function getFallbackFix(leak,p){
-  const fixes={
-    invoice_chase:`## Message to Send Today\n\nHi [Client Name],\n\nI'm following up on invoice [Invoice Number] for $[Amount], which was due on [Due Date].\n\nCould you please confirm when payment will be processed? We'd appreciate settlement by [Date 3 days from now].\n\nIf there's an issue with the invoice please let me know and I'll resolve it immediately.\n\nThanks,\n[Your Name]\n\n## This Week\n\n• **Day 1:** Call (don't email) every overdue client over $1,000. A 2-minute phone call recovers 3x more than an email.\n• **Day 3:** Send written follow-up to anyone who didn't pick up. Attach the original invoice.\n• **Day 7:** For anything still unpaid, issue a formal overdue notice and consider payment plan options.`,
-    supplier_negotiate:`## Email to Send This Week\n\nHi [Supplier Contact],\n\nI've been reviewing our costs and want to have a quick conversation about our pricing arrangement.\n\nWe're committed to this relationship long-term, but I've received alternative quotes that are [X]% below our current rate. Before making any changes, I wanted to give you the opportunity to review our pricing.\n\nCould we speak for 15 minutes this week?\n\nThanks,\n[Your Name]\n\n## This Week\n\n• **Day 1:** Get quotes from 2 competing suppliers online. You need leverage before negotiating.\n• **Day 3:** Send this email to your top 2 suppliers by spend. Even a 10% reduction is significant.\n• **Day 7:** If no response or no offer to match — switch at least one supplier as a signal.`,
-    price_increase:`## Message to Send to Clients\n\nHi [Client Name],\n\nI wanted to let you know that from [Date 30 days from now], our pricing will be adjusted by [X]% to reflect the increased cost of delivering our services to the high standard you expect.\n\nYour new rate will be [New Amount]. I'm happy to answer any questions.\n\nThank you for your continued support — we genuinely value working with you.\n\n[Your Name]\n\n## This Week\n\n• **Day 1:** Identify your bottom 20% of clients by margin. Raise their prices first — they're subsidised by your best clients.\n• **Day 3:** Send price increase notice to all clients with 30 days notice. Most won't leave.\n• **Day 7:** Review any clients who push back — if they're already low-margin, let them go.`,
-    roster_review:`## Message to Your Manager/Bookkeeper\n\nI'd like to review our labour cost breakdown for the last 3 months. Specifically:\n\n1. Labour as a % of revenue by week\n2. Which roles/shifts are highest cost relative to output\n3. Any overtime or penalty rates that are recurring\n\nCan you pull this together by [Date 3 days from now]?\n\n## This Week\n\n• **Day 1:** Pull your labour cost report by employee or role. Identify your top 3 costs.\n• **Day 3:** Compare rostered hours vs actual output. Look for patterns on low-revenue days.\n• **Day 7:** Redesign your roster around your 3 highest-revenue periods. Cut or reduce shifts in the 2 lowest.`,
-  };
-  return fixes[leak.fix]||`## Action Required\n\nThis leak is costing you $${fmt(leak.monthly)}/month ($${fmt(leak.monthly*12)}/year).\n\n${leak.action}\n\n## This Week\n\n• **Day 1:** Review the specific costs contributing to this leak in your accounting software.\n• **Day 3:** Identify the top 3 line items driving the issue and get quotes or alternatives.\n• **Day 7:** Make one concrete change — even a small reduction compounds significantly over 12 months.`;
-}
+// ─── DEMO DATA ────────────────────────────────────────────────────────────────
+function loadDemo() {
+  $('demo-bar').classList.add('on');
+  S.parsed = { rev:1840000, profit:94200, cash:38400, ovdAmt:184000, ovdCount:9, bills:42000, netMargin:5.1, labourPct:52.3, debtorDays:48, provider:'demo' };
+  S.data = { invoices:[
+    { Contact:{Name:'Westfield Developments'}, AmountDue:84000, DueDate:new Date(Date.now()-74*86400000).toISOString() },
+    { Contact:{Name:'Smith & Co Builders'},    AmountDue:47000, DueDate:new Date(Date.now()-32*86400000).toISOString() },
+    { Contact:{Name:'Metro Retail Group'},     AmountDue:31000, DueDate:new Date(Date.now()-18*86400000).toISOString() },
+  ], bills:[{AmountDue:42000}] };
 
-function renderFixModal(leak,text){
-  const sections=text.split(/^## /m).filter(Boolean);
-  let html='';
-  sections.forEach(s=>{
-    const lines=s.split('\n');const heading=lines[0].trim();const body=lines.slice(1).join('\n').trim();
-    html+=`<div class="fm-section"><div class="fm-sec-label">${esc(heading)}</div><div class="fm-draft">${md(body)}</div></div>`;
-  });
-  html+=`<div class="fm-actions"><button class="fm-copy-btn" onclick="copyFix()">📋 Copy to Clipboard</button><button class="fm-alt-btn" onclick="regenerateFix(${JSON.stringify(leak.fix)})">↻ Regenerate</button><button class="fm-alt-btn" onclick="closeFixModal()">Done</button></div>`;
-  document.getElementById('fm-body').innerHTML=html;
-  window._fixText=text;
-}
-
-async function regenerateFix(fixType){
-  const leaks=window._leaks;if(!leaks)return;
-  const leak=leaks.find(l=>l.fix===fixType)||leaks[0];
-  document.getElementById('fm-body').innerHTML='<div class="fm-loading"><div class="spinner"></div> Regenerating…</div>';
-  await openFix(window._leaks.indexOf(leak));
-}
-
-function copyFix(){
-  const text=window._fixText||'';
-  navigator.clipboard.writeText(text).then(()=>toast('Copied to clipboard ✓','ok')).catch(()=>toast('Could not copy — select text manually','err'));
-}
-
-function closeFixModal(){document.getElementById('fix-modal').classList.remove('open');document.body.style.overflow='';}
-
-// ── ASK AI ────────────────────────────────────────────────────────────────
-async function askAI(){
-  const field=document.getElementById('ask-field'),q=field.value.trim();if(!q)return;
-  if(!S.data&&!S.conn){toast('Connect your accounting software first','err');openConn();return;}
-  const btn=document.getElementById('ask-send');btn.disabled=true;btn.textContent='…';field.disabled=true;
-  const resp=document.getElementById('ask-response');resp.textContent='';resp.classList.remove('show');
-  let fd=S.data;
-  if(!fd&&S.conn){try{const r=await fetch('/api/data',{credentials:'include'});if(r.ok){const d=await r.json();fd=d.data;S.data=fd;S.parsed=parseFinancials(fd,d.provider);}}catch{}}
-  try{
-    const r=await fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:fd||{},question:q})});
-    const d=await r.json();if(!r.ok)throw new Error(d.error);
-    resp.innerHTML=md(d.analysis);resp.classList.add('show');field.value='';
-  }catch{toast('Could not get answer — try again','err');}
-  finally{btn.disabled=false;btn.textContent='Ask →';field.disabled=false;field.focus();}
-}
-
-// ── DEMO ─────────────────────────────────────────────────────────────────
-function loadDemo(){
-  document.getElementById('demo-notice').classList.add('show');
-  S.parsed={rev:1840000,profit:94200,cash:38400,ovdAmt:184000,ovdCount:9,totalBills:42000,netMargin:5.1,labourPct:52.3,avgDebtorDays:48,provider:'demo'};
-  S.data={invoices:[{Contact:{Name:'Westfield Developments'},AmountDue:84000,DueDate:new Date(Date.now()-74*86400000).toISOString()},{Contact:{Name:'Smith & Co Builders'},AmountDue:47000,DueDate:new Date(Date.now()-32*86400000).toISOString()},{Contact:{Name:'Metro Retail Group'},AmountDue:31000,DueDate:new Date(Date.now()-18*86400000).toISOString()}],bills:[{AmountDue:42000}]};
-  paintFromData();
-  // Override with clean demo leaks
-  const demoLeaks=[
-    {name:'Labour cost blowout',desc:'Running 52.3% of revenue — benchmark is 38–42%. That\'s $112K/year above industry standard.',monthly:9333,color:'red',action:'Review your roster this week. Identify your 3 highest-cost shifts vs revenue generated. Restructure from there.',fix:'roster_review'},
-    {name:'$184K overdue invoices',desc:'9 clients haven\'t paid — your cash buffer is critically low while $184K sits uncollected.',monthly:15333,color:'red',action:'Call (not email) Westfield Developments and Smith & Co today. $131K of your overdue is just 2 clients.',fix:'invoice_chase'},
-    {name:'Prices not keeping up with costs',desc:'Net margin 5.1% — industry minimum is 8%. Costs have risen but prices haven\'t followed.',monthly:4282,color:'amber',action:'A 5% price increase adds $7,667/month directly to profit. Most clients won\'t push back.',fix:'price_increase'},
+  const b = BENCH.trades;
+  window._leaks = [
+    { name:'Labour cost blowout',       desc:'Running at 52.3% of revenue — trades benchmark is 38–42%. This single issue is your biggest profit drain.', monthly:9333, color:'red',   action:'<b>This week:</b> Pull your labour cost by shift. Identify your 3 most expensive shifts vs revenue generated.', fix:'roster' },
+    { name:'$184K overdue invoices',    desc:'9 clients haven't paid — your cash buffer is critically low while $184K sits uncollected.', monthly:15333, color:'red',   action:'<b>Today:</b> Call Westfield Developments and Smith & Co first. Those 2 clients owe you $131K.', fix:'invoices' },
+    { name:'Prices behind rising costs',desc:'Net margin 5.1% — trades minimum is 8%. Costs have risen 12% since your last price increase.', monthly:4282, color:'amber', action:'<b>This month:</b> A 5% price increase adds $7,667/month to profit. Most clients won't push back.', fix:'pricing' },
   ];
-  window._leaks=demoLeaks;
-  setHeroNumber(demoLeaks.reduce((s,l)=>s+l.monthly,0),'red');
-  renderLeakCards(demoLeaks);
-  paintForecast();
-  paintAlerts();
+
+  setHero(window._leaks.reduce((s,l)=>s+l.monthly,0), true);
+  paintForecast(S.parsed);
+  renderLeaks(window._leaks);
+  renderAlerts(S.parsed, b);
 }
 
-// ── MARKDOWN MINI ────────────────────────────────────────────────────────
-const md=t=>t?t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/^• (.+)$/gm,'• $1').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>'):'';
-
-// ── TOAST ─────────────────────────────────────────────────────────────────
-let _tt;
-function toast(msg,type='info'){const el=document.getElementById('toast');el.textContent=msg;el.className='toast '+type;el.style.display='block';clearTimeout(_tt);_tt=setTimeout(()=>el.style.display='none',4000);}
-
-// ── KEYBOARD ─────────────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeFixModal();document.getElementById('conn-overlay').classList.remove('open');}
-  if(e.key==='Enter'&&document.activeElement===document.getElementById('ask-field'))askAI();
-  const su=document.getElementById('v-su'),li=document.getElementById('v-li');
-  if(e.key==='Enter'&&su&&su.style.display!=='none'&&document.activeElement.closest('#v-su'))doSignup();
-  if(e.key==='Enter'&&li&&li.style.display!=='none'&&document.activeElement.closest('#v-li'))doLogin();
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); $('conn-overlay').classList.remove('on'); }
+  if (e.key === 'Enter' && document.activeElement === $('ask-inp')) askAI();
+  if (e.key === 'Enter' && document.activeElement?.closest('#v-signup')) doSignup();
+  if (e.key === 'Enter' && document.activeElement?.closest('#v-login')) doLogin();
 });
 </script>
 </body>
