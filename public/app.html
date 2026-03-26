@@ -4,178 +4,275 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlowGuard</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#070808;color:#efefed;font-family:"DM Sans",sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
-button{cursor:pointer;font-family:inherit;border:none;background:none;transition:all .15s}
-input,select{font-family:inherit}
-::-webkit-scrollbar{width:3px}
-::-webkit-scrollbar-thumb{background:#252525;border-radius:3px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:#070808}
-.auth-box{width:100%;max-width:420px;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
-.auth-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#5a5d5d;margin-bottom:22px;cursor:pointer;transition:color .14s}
-.auth-back:hover{color:#efefed}
-.auth-logo{display:flex;align-items:center;gap:9px;margin-bottom:28px}
-.auth-mark{width:30px;height:30px;border-radius:8px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
-.auth-brand{font-family:"Syne",sans-serif;font-size:16px;font-weight:800}
-.auth-h{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
-.auth-sub{font-size:13px;color:#5a5d5d;margin-bottom:24px;line-height:1.6}
-.err-box{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.25);border-radius:9px;padding:11px 14px;font-size:13px;color:#ff6666;margin-bottom:14px;display:none;line-height:1.5}
-.err-box.on{display:block}
-.f{margin-bottom:12px}
-.f label{display:block;font-size:9px;font-weight:700;color:#5a5d5d;text-transform:uppercase;letter-spacing:.12em;font-family:"Syne",sans-serif;margin-bottom:5px}
-.f input,.f select{width:100%;padding:11px 13px;background:#161818;border:1px solid rgba(255,255,255,.08);border-radius:9px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
-.f input:focus,.f select:focus{border-color:rgba(184,255,87,.4)}
-.f select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='none' stroke='%235a5d5d' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.auth-btn{width:100%;padding:14px;border-radius:10px;background:#b8ff57;color:#070808;font-size:15px;font-weight:800;font-family:"Syne",sans-serif;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:9px;border:none;cursor:pointer}
-.auth-btn:hover{background:#ccff6b}
-.auth-btn:disabled{opacity:.45;cursor:not-allowed}
-.auth-sw{text-align:center;margin-top:16px;font-size:12px;color:#5a5d5d}
-.auth-sw a{color:#b8ff57;cursor:pointer;font-weight:600}
-#app{display:none;min-height:100vh}
-.topbar{max-width:720px;margin:0 auto;padding:18px 20px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
-.logo{display:flex;align-items:center;gap:8px}
-.logo-mark{width:26px;height:26px;border-radius:7px;background:#b8ff57;display:flex;align-items:center;justify-content:center}
-.logo-name{font-family:"Syne",sans-serif;font-size:15px;font-weight:800}
-.topbar-r{display:flex;align-items:center;gap:10px}
-.conn-btn{display:flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:500;color:#5a5d5d;cursor:pointer;transition:all .14s}
-.conn-btn:hover{border-color:rgba(184,255,87,.3);color:#b8ff57}
-.conn-dot{width:5px;height:5px;border-radius:50%;background:#34d399}
-.conn-dot.off{background:#2e3030}
-.user-av{width:28px;height:28px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);color:#b8ff57;font-family:"Syne",sans-serif;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.out-btn{color:#2e3030;font-size:13px;padding:5px;border-radius:5px}
-.out-btn:hover{color:#ff5555;background:rgba(255,60,60,.08)}
-.main{max-width:720px;margin:0 auto;padding:0 20px 80px}
-.demo-bar{margin:16px 0;padding:10px 16px;background:rgba(184,255,87,.05);border:1px solid rgba(184,255,87,.12);border-radius:10px;display:none;align-items:center;justify-content:space-between;gap:12px}
-.demo-bar.on{display:flex}
-.demo-bar-t{font-size:12px;color:rgba(184,255,87,.6)}
-.demo-bar-btn{font-size:11px;font-weight:700;color:#b8ff57;padding:5px 12px;border-radius:7px;background:rgba(184,255,87,.1);border:1px solid rgba(184,255,87,.2);cursor:pointer}
-.hero{padding:36px 0 28px;text-align:center}
-.hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:12px}
-.hero-num{font-family:"DM Mono",monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-.02em;margin-bottom:10px;color:#2e3030}
-.hero-num.red{color:#ff4444}
-.hero-num.green{color:#34d399}
-.hero-msg{font-size:15px;color:#5a5d5d;line-height:1.6}
-.hero-msg b{color:#efefed;font-weight:600}
-.forecast{margin:0 0 24px;padding:14px 18px;border-radius:12px;display:none;align-items:center;gap:13px;font-size:13px;line-height:1.6}
-.forecast.on{display:flex}
-.forecast.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.18)}
-.forecast.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.16)}
-.forecast.ok{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.16)}
-.run-wrap{text-align:center;margin:0 0 28px}
-.run-btn{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:12px;background:#b8ff57;color:#070808;font-size:14px;font-weight:800;font-family:"Syne",sans-serif;box-shadow:0 0 28px rgba(184,255,87,.22);border:none;cursor:pointer}
-.run-btn:hover{background:#ccff6b}
-.run-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
-.sec{margin-bottom:28px}
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif}
-.badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:"Syne",sans-serif;text-transform:uppercase;letter-spacing:.07em}
-.b-red{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid rgba(255,68,68,.16)}
-.b-green{background:rgba(52,211,153,.08);color:#34d399;border:1px solid rgba(52,211,153,.16)}
-.b-muted{background:#1c1e1e;color:#5a5d5d;border:1px solid rgba(255,255,255,.06)}
-.leak-card{background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;margin-bottom:10px;animation:fadeUp .2s ease both}
-.leak-card:nth-child(2){animation-delay:.06s}
-.leak-card:nth-child(3){animation-delay:.12s}
-.lc-top{padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.lc-rank{font-size:9px;font-weight:700;font-family:"Syne",sans-serif;text-transform:uppercase;letter-spacing:.14em;margin-bottom:6px}
-.lc-name{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
-.lc-desc{font-size:12px;color:#5a5d5d;line-height:1.6}
-.lc-amt{font-family:"DM Mono",monospace;font-size:28px;font-weight:500;line-height:1;text-align:right}
-.lc-mo{font-size:10px;color:#5a5d5d;margin-top:3px;text-align:right}
-.lc-bot{padding:12px 20px;border-top:1px solid rgba(255,255,255,.05);background:#0c0d0d;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.lc-action{font-size:12px;color:#5a5d5d;line-height:1.6;flex:1}
-.lc-action b{color:#efefed;font-weight:600}
-.fix-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9px;font-size:11px;font-weight:700;font-family:"Syne",sans-serif;white-space:nowrap;cursor:pointer}
-.fix-red{background:rgba(255,68,68,.08);color:#ff4444;border:1px solid rgba(255,68,68,.18)}
-.fix-red:hover{background:rgba(255,68,68,.15)}
-.fix-amber{background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.18)}
-.fix-amber:hover{background:rgba(245,158,11,.15)}
-.empty-card{text-align:center;padding:52px 24px;background:#0f1010;border:1px solid rgba(255,255,255,.06);border-radius:14px}
-.empty-ico{font-size:34px;margin-bottom:14px}
-.empty-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:7px}
-.empty-sub{font-size:13px;color:#5a5d5d;line-height:1.7;max-width:300px;margin:0 auto}
-.alert-card{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:8px}
-.alert-card.urgent{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.14)}
-.alert-card.warn{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.14)}
-.al-text{font-size:13px;line-height:1.55;flex:1}
-.al-text b{font-weight:600;color:#efefed}
-.ask-row{display:flex;gap:9px}
-.ask-inp{flex:1;background:#0f1010;border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:12px 16px;color:#efefed;font-size:13px;outline:none;transition:border-color .14s}
-.ask-inp:focus{border-color:rgba(184,255,87,.3)}
-.ask-inp::placeholder{color:#2e3030}
-.ask-go{padding:12px 20px;border-radius:11px;background:#b8ff57;color:#070808;font-size:13px;font-weight:700;font-family:"Syne",sans-serif;flex-shrink:0;border:none;cursor:pointer}
-.ask-go:hover{background:#ccff6b}
-.ask-go:disabled{opacity:.4;cursor:not-allowed}
-.ask-ans{margin-top:12px;padding:16px;background:#0f1010;border:1px solid rgba(255,255,255,.07);border-radius:12px;font-size:13px;line-height:1.8;color:#5a5d5d;display:none}
-.ask-ans.on{display:block;animation:fadeUp .2s ease}
-.ask-ans b{color:#efefed}
-.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(7,8,8,.93);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px}
-.modal-bg.on{display:flex;animation:fadeIn .18s ease}
-.modal-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s ease}
-.modal-pill{width:34px;height:3px;background:#252525;border-radius:3px;margin:14px auto 0}
-.modal-head{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.modal-title{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;margin-bottom:3px}
-.modal-sub{font-size:12px;color:#5a5d5d}
-.modal-close{color:#5a5d5d;font-size:20px;line-height:1;padding:2px;background:none;border:none;cursor:pointer}
-.modal-close:hover{color:#efefed}
-.modal-body{padding:18px 22px}
-.modal-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#5a5d5d;font-family:"Syne",sans-serif;margin-bottom:9px}
-.modal-draft{background:#161818;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:16px;font-size:13px;line-height:1.8;color:#5a5d5d;white-space:pre-wrap;margin-bottom:16px}
-.modal-draft b{color:#efefed;font-weight:600}
-.modal-btns{display:flex;gap:9px;flex-wrap:wrap}
-.modal-copy{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:9px;background:#b8ff57;color:#070808;font-size:12px;font-weight:700;font-family:"Syne",sans-serif;border:none;cursor:pointer}
-.modal-copy:hover{background:#ccff6b}
-.modal-sec-btn{padding:10px 16px;border-radius:9px;background:#161818;color:#5a5d5d;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.07);cursor:pointer}
-.modal-sec-btn:hover{color:#efefed}
-.modal-loading{display:flex;align-items:center;gap:12px;font-size:13px;color:#5a5d5d;padding:24px 0}
-.conn-overlay{position:fixed;inset:0;z-index:70;background:rgba(7,8,8,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
-.conn-overlay.on{display:flex;animation:fadeIn .18s ease}
-.conn-box{background:#0f1010;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:40px 36px;width:100%;max-width:460px;animation:fadeUp .25s ease}
-.conn-h{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
-.conn-sub{font-size:13px;color:#5a5d5d;margin-bottom:28px;line-height:1.65}
-.conn-opt{display:flex;align-items:center;gap:15px;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#161818;cursor:pointer;text-decoration:none;color:#efefed;margin-bottom:9px;transition:all .14s}
-.conn-opt:hover{border-color:rgba(184,255,87,.28);transform:translateX(3px)}
-.conn-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:16px;font-weight:900;color:#fff;flex-shrink:0}
-.conn-opt-name{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
-.conn-opt-desc{font-size:11px;color:#5a5d5d}
-.conn-arr{margin-left:auto;color:#2e3030;font-size:15px}
-.conn-opt:hover .conn-arr{color:#5a5d5d}
-.conn-trust{font-size:11px;color:#5a5d5d;text-align:center;margin-top:18px}
-.conn-skip{text-align:center;margin-top:8px}
-.conn-skip a{font-size:12px;color:#5a5d5d;cursor:pointer}
-.conn-skip a:hover{color:#efefed}
-.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.08);border-top-color:#b8ff57;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;font-family:"Syne",sans-serif;display:none}
-.toast.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.22);color:#34d399}
-.toast.err{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.22);color:#ff6666}
-.toast.info{background:rgba(184,255,87,.07);border:1px solid rgba(184,255,87,.16);color:#b8ff57}
+:root {
+  --bg: #0a0a0b;
+  --surface: #111113;
+  --surface2: #18181b;
+  --surface3: #1f1f24;
+  --border: rgba(255,255,255,.06);
+  --border2: rgba(255,255,255,.1);
+  --tx: #f4f4f5;
+  --tx2: #71717a;
+  --tx3: #3f3f46;
+  --ac: #adff2f;
+  --ac2: rgba(173,255,47,.1);
+  --ac3: rgba(173,255,47,.18);
+  --red: #f87171;
+  --red2: rgba(248,113,113,.08);
+  --red3: rgba(248,113,113,.16);
+  --amber: #fbbf24;
+  --amb2: rgba(251,191,36,.08);
+  --green: #4ade80;
+  --grn2: rgba(74,222,128,.08);
+  --blue: #60a5fa;
+  --blu2: rgba(96,165,250,.08);
+  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "Geist", sans-serif;
+  --mono: "Geist Mono", monospace;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--tx); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; transition: all .15s; }
+input, select { font-family: inherit; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+@keyframes slideRight { from { width: 0; } to { width: var(--w); } }
+
+/* ── AUTH ────────────────────────────────────────────────────────── */
+.auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
+.auth-wrap::before { content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(173,255,47,.04) 0%, transparent 65%); pointer-events: none; }
+.auth-card { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; padding: 32px; box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 32px 64px rgba(0,0,0,.5); animation: fadeUp .3s ease; }
+.auth-back { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--tx3); margin-bottom: 20px; cursor: pointer; transition: color .14s; }
+.auth-back:hover { color: var(--tx2); }
+.auth-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+.logo-gem { width: 28px; height: 28px; border-radius: 7px; background: var(--ac); display: flex; align-items: center; justify-content: center; }
+.logo-name { font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
+.auth-h { font-family: var(--serif); font-size: 26px; font-style: italic; margin-bottom: 4px; letter-spacing: -.01em; }
+.auth-sub { font-size: 12px; color: var(--tx2); margin-bottom: 22px; line-height: 1.6; }
+.err { background: var(--red2); border: 1px solid var(--red3); border-radius: 8px; padding: 10px 13px; font-size: 12px; color: var(--red); margin-bottom: 13px; display: none; line-height: 1.5; }
+.err.on { display: block; }
+.fld { margin-bottom: 11px; }
+.fld label { display: block; font-size: 10px; font-weight: 600; color: var(--tx3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.fld input, .fld select { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--tx); font-size: 13px; outline: none; transition: border-color .14s; }
+.fld input:focus, .fld select:focus { border-color: rgba(173,255,47,.35); }
+.fld select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' stroke='%2352525b' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; }
+.fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.submit-btn { width: 100%; padding: 12px; border-radius: 9px; background: var(--ac); color: #0a0a0b; font-size: 13px; font-weight: 700; font-family: var(--sans); margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: -.01em; }
+.submit-btn:hover { background: #c8ff4a; }
+.submit-btn:disabled { opacity: .4; cursor: not-allowed; }
+.auth-sw { text-align: center; margin-top: 14px; font-size: 12px; color: var(--tx2); }
+.auth-sw a { color: var(--ac); cursor: pointer; font-weight: 600; }
+
+/* ── APP SHELL ───────────────────────────────────────────────────── */
+#app { display: none; min-height: 100vh; }
+.topbar { border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,11,.9); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 20; }
+.tb-logo { display: flex; align-items: center; gap: 8px; }
+.tb-logo-gem { width: 24px; height: 24px; border-radius: 6px; background: var(--ac); display: flex; align-items: center; justify-content: center; }
+.tb-logo-name { font-family: var(--sans); font-size: 14px; font-weight: 700; letter-spacing: -.02em; }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+.tb-conn { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border2); font-size: 12px; font-weight: 500; color: var(--tx2); cursor: pointer; transition: all .14s; }
+.tb-conn:hover { border-color: var(--ac3); color: var(--ac); }
+.tb-live { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 3s infinite; }
+.tb-live.off { background: var(--tx3); animation: none; }
+.tb-av { width: 26px; height: 26px; border-radius: 7px; background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; letter-spacing: .02em; }
+.tb-out { color: var(--tx3); font-size: 13px; padding: 4px; border-radius: 5px; }
+.tb-out:hover { color: var(--red); background: var(--red2); }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────── */
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px 80px; }
+.demo-strip { display: none; align-items: center; justify-content: space-between; padding: 9px 16px; background: rgba(173,255,47,.04); border: 1px solid rgba(173,255,47,.1); border-radius: 10px; margin-bottom: 20px; font-size: 12px; color: rgba(173,255,47,.5); }
+.demo-strip.on { display: flex; }
+.demo-strip-btn { font-size: 11px; font-weight: 700; color: var(--ac); padding: 4px 11px; border-radius: 6px; background: var(--ac2); border: 1px solid var(--ac3); cursor: pointer; }
+
+/* ── STATUS BAR ──────────────────────────────────────────────────── */
+.status-bar { margin-bottom: 24px; padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; gap: 14px; border: 1px solid; animation: fadeUp .2s ease; }
+.status-bar.good { background: rgba(74,222,128,.04); border-color: rgba(74,222,128,.14); }
+.status-bar.warn { background: rgba(251,191,36,.04); border-color: rgba(251,191,36,.14); }
+.status-bar.bad { background: rgba(248,113,113,.04); border-color: rgba(248,113,113,.14); }
+.status-bar.neutral { background: var(--surface); border-color: var(--border); }
+.sb-ico { font-size: 20px; flex-shrink: 0; }
+.sb-text { font-size: 15px; font-weight: 600; flex: 1; letter-spacing: -.01em; }
+.sb-text.good { color: var(--green); }
+.sb-text.warn { color: var(--amber); }
+.sb-text.bad { color: var(--red); }
+.sb-text.neutral { color: var(--tx2); }
+.sb-run { display: flex; align-items: center; gap: 7px; padding: 8px 18px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; letter-spacing: -.01em; flex-shrink: 0; }
+.sb-run:hover { background: #c8ff4a; }
+.sb-run:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── GRID ────────────────────────────────────────────────────────── */
+.grid-main { display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start; }
+.grid-left { display: flex; flex-direction: column; gap: 14px; }
+.grid-right { display: flex; flex-direction: column; gap: 14px; }
+
+/* ── CARDS ───────────────────────────────────────────────────────── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .14s; }
+.card:hover { border-color: var(--border2); }
+.card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); }
+.card-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.bd-red { background: var(--red2); color: var(--red); border: 1px solid var(--red3); }
+.bd-amb { background: var(--amb2); color: var(--amber); border: 1px solid rgba(251,191,36,.16); }
+.bd-grn { background: var(--grn2); color: var(--green); border: 1px solid rgba(74,222,128,.16); }
+.bd-muted { background: var(--surface2); color: var(--tx2); border: 1px solid var(--border); }
+.bd-ac { background: var(--ac2); color: var(--ac); border: 1px solid var(--ac3); }
+
+/* ── ONE THING ───────────────────────────────────────────────────── */
+.one-thing { padding: 20px 20px 0; }
+.ot-target { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
+.ot-num { width: 32px; height: 32px; border-radius: 8px; background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
+.ot-body { flex: 1; }
+.ot-action { font-family: var(--serif); font-size: 19px; font-style: italic; line-height: 1.3; margin-bottom: 8px; letter-spacing: -.01em; color: var(--tx); }
+.ot-why { font-size: 12px; color: var(--tx2); line-height: 1.7; margin-bottom: 10px; }
+.ot-impact { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 8px; background: var(--ac2); border: 1px solid var(--ac3); }
+.ot-impact-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--ac); }
+.ot-impact-lbl { font-size: 11px; color: var(--tx2); }
+.ot-script { margin: 0 -20px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface2); }
+.ot-script-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); margin-bottom: 7px; }
+.ot-script-text { font-size: 12px; color: var(--tx2); line-height: 1.75; font-style: italic; border-left: 2px solid var(--ac3); padding-left: 12px; }
+
+/* ── LEAKS ───────────────────────────────────────────────────────── */
+.leaks-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+.leak-row { display: flex; align-items: flex-start; gap: 13px; padding: 13px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid; transition: background .12s; cursor: pointer; }
+.leak-row:hover { background: var(--surface3); }
+.leak-text { flex: 1; min-width: 0; }
+.leak-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; letter-spacing: -.01em; }
+.leak-desc { font-size: 11px; color: var(--tx2); line-height: 1.55; }
+.leak-right { text-align: right; flex-shrink: 0; }
+.leak-amt { font-family: var(--mono); font-size: 16px; font-weight: 500; }
+.leak-mo { font-size: 9px; color: var(--tx3); margin-top: 2px; }
+.fix-pill { margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: .04em; cursor: pointer; }
+.fix-pill.red { background: var(--red2); color: var(--red); border: 1px solid var(--red3); }
+.fix-pill.red:hover { background: rgba(248,113,113,.15); }
+.fix-pill.amb { background: var(--amb2); color: var(--amber); border: 1px solid rgba(251,191,36,.16); }
+.fix-pill.amb:hover { background: rgba(251,191,36,.15); }
+
+/* ── RUNWAY CARD ─────────────────────────────────────────────────── */
+.runway-body { padding: 18px 18px 16px; }
+.runway-weeks { font-family: var(--mono); font-size: 42px; font-weight: 400; line-height: 1; margin-bottom: 4px; }
+.runway-label { font-size: 12px; color: var(--tx2); margin-bottom: 16px; }
+.runway-bar-track { height: 6px; background: var(--surface3); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+.runway-bar-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(.34,1.2,.64,1); }
+.runway-markers { display: flex; justify-content: space-between; font-size: 9px; color: var(--tx3); font-family: var(--mono); margin-bottom: 14px; }
+.runway-status { font-size: 12px; color: var(--tx2); line-height: 1.65; }
+.runway-status b { font-weight: 600; }
+
+/* ── OWNER PAY ───────────────────────────────────────────────────── */
+.pay-body { padding: 18px; }
+.pay-amount { font-family: var(--mono); font-size: 38px; font-weight: 400; line-height: 1; margin-bottom: 4px; color: var(--ac); }
+.pay-label { font-size: 12px; color: var(--tx2); margin-bottom: 16px; }
+.pay-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+.pay-row-label { font-size: 11px; color: var(--tx2); }
+.pay-row-val { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.pay-warning { margin-top: 12px; padding: 10px 13px; background: var(--red2); border: 1px solid var(--red3); border-radius: 8px; font-size: 11px; color: var(--red); line-height: 1.6; display: none; }
+.pay-warning.on { display: block; }
+
+/* ── ALERTS ──────────────────────────────────────────────────────── */
+.alerts-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
+.alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border-radius: 9px; }
+.alert-item.urgent { background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.12); }
+.alert-item.warn { background: rgba(251,191,36,.04); border: 1px solid rgba(251,191,36,.12); }
+.ai-ico { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.ai-text { font-size: 12px; line-height: 1.6; color: var(--tx2); }
+.ai-text b { color: var(--tx); font-weight: 600; }
+
+/* ── EMPTY ───────────────────────────────────────────────────────── */
+.empty-state { text-align: center; padding: 40px 20px; }
+.es-ico { font-size: 28px; margin-bottom: 12px; }
+.es-title { font-family: var(--serif); font-size: 17px; font-style: italic; margin-bottom: 6px; }
+.es-sub { font-size: 12px; color: var(--tx2); line-height: 1.65; max-width: 260px; margin: 0 auto; }
+
+/* ── ASK AI ──────────────────────────────────────────────────────── */
+.ask-wrap { padding: 12px 14px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 8px; }
+.ask-inp { flex: 1; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 13px; color: var(--tx); font-size: 12px; outline: none; transition: border-color .14s; }
+.ask-inp:focus { border-color: rgba(173,255,47,.3); }
+.ask-inp::placeholder { color: var(--tx3); }
+.ask-go { padding: 9px 16px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.ask-go:hover { background: #c8ff4a; }
+.ask-go:disabled { opacity: .4; cursor: not-allowed; }
+.ask-ans { padding: 14px 18px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.8; color: var(--tx2); display: none; }
+.ask-ans.on { display: block; animation: fadeUp .2s ease; }
+.ask-ans b { color: var(--tx); }
+
+/* ── FIX MODAL ───────────────────────────────────────────────────── */
+.modal-bg { position: fixed; inset: 0; z-index: 80; background: rgba(10,10,11,.92); backdrop-filter: blur(12px); display: none; align-items: flex-end; justify-content: center; padding: 16px; }
+.modal-bg.on { display: flex; animation: fadeIn .18s ease; }
+.modal-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; width: 100%; max-width: 580px; max-height: 88vh; overflow-y: auto; animation: fadeUp .22s ease; }
+.modal-pill { width: 32px; height: 3px; background: var(--surface3); border-radius: 3px; margin: 12px auto 0; }
+.modal-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.modal-title { font-family: var(--serif); font-size: 18px; font-style: italic; margin-bottom: 2px; }
+.modal-sub { font-size: 11px; color: var(--tx2); }
+.modal-close { color: var(--tx2); font-size: 18px; line-height: 1; padding: 2px; }
+.modal-close:hover { color: var(--tx); }
+.modal-body { padding: 18px 20px; }
+.modal-sec-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); margin-bottom: 8px; }
+.modal-draft { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 12px; line-height: 1.85; color: var(--tx2); white-space: pre-wrap; margin-bottom: 14px; }
+.modal-draft b { color: var(--tx); }
+.modal-btns { display: flex; gap: 8px; }
+.modal-copy { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; }
+.modal-copy:hover { background: #c8ff4a; }
+.modal-done { padding: 9px 14px; border-radius: 8px; background: var(--surface2); color: var(--tx2); font-size: 12px; font-weight: 600; border: 1px solid var(--border); }
+.modal-done:hover { color: var(--tx); }
+.modal-loading { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--tx2); padding: 20px 0; }
+
+/* ── CONNECT ─────────────────────────────────────────────────────── */
+.conn-overlay { position: fixed; inset: 0; z-index: 70; background: rgba(10,10,11,.97); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.conn-overlay.on { display: flex; animation: fadeIn .18s ease; }
+.conn-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 38px 34px; width: 100%; max-width: 440px; animation: fadeUp .25s ease; }
+.conn-h { font-family: var(--serif); font-size: 24px; font-style: italic; margin-bottom: 6px; }
+.conn-sub { font-size: 13px; color: var(--tx2); margin-bottom: 26px; line-height: 1.65; }
+.conn-opt { display: flex; align-items: center; gap: 14px; padding: 13px 15px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; text-decoration: none; color: var(--tx); margin-bottom: 8px; transition: all .14s; }
+.conn-opt:hover { border-color: rgba(173,255,47,.25); transform: translateX(3px); }
+.conn-ico { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 15px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.conn-opt-name { font-size: 13px; font-weight: 600; margin-bottom: 1px; letter-spacing: -.01em; }
+.conn-opt-desc { font-size: 11px; color: var(--tx2); }
+.conn-arr { margin-left: auto; color: var(--tx3); font-size: 14px; transition: transform .14s; }
+.conn-opt:hover .conn-arr { transform: translateX(3px); color: var(--tx2); }
+.conn-trust { font-size: 11px; color: var(--tx3); text-align: center; margin-top: 16px; }
+.conn-skip { text-align: center; margin-top: 8px; }
+.conn-skip a { font-size: 12px; color: var(--tx2); cursor: pointer; }
+.conn-skip a:hover { color: var(--tx); }
+
+/* ── UTILS ───────────────────────────────────────────────────────── */
+.spinner { width: 14px; height: 14px; border: 2px solid var(--border2); border-top-color: var(--ac); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; flex-shrink: 0; }
+.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 9px; font-size: 12px; font-weight: 700; z-index: 999; pointer-events: none; white-space: nowrap; display: none; }
+.toast.ok { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); color: var(--green); }
+.toast.err { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.2); color: var(--red); }
+.toast.info { background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); }
+
+@media (max-width: 860px) { .grid-main { grid-template-columns: 1fr; } .grid-right { display: grid; grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .grid-right { grid-template-columns: 1fr; } .fld-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
-<div id="auth-screen" class="auth-screen">
-  <div class="auth-box">
-    <a class="auth-back" href="/">&#x2190; Back to homepage</a>
+
+<!-- ═══ AUTH ═══ -->
+<div id="auth-screen" class="auth-wrap">
+  <div class="auth-card">
+    <a class="auth-back" href="/">&#8592; Back</a>
     <div class="auth-logo">
-      <div class="auth-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="auth-brand">FlowGuard</span>
+      <div class="logo-gem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="logo-name">FlowGuard</span>
     </div>
-    <div id="v-signup">
+    <div id="v-su">
       <div class="auth-h">Find your profit leaks</div>
-      <div class="auth-sub">Free 14-day trial. No credit card required.</div>
-      <div class="err-box" id="su-err"></div>
-      <div class="f"><label>Your name</label><input id="su-name" type="text" placeholder="Jamie Smith" autocomplete="name"></div>
-      <div class="f2">
-        <div class="f"><label>Email</label><input id="su-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
-        <div class="f"><label>Password</label><input id="su-pass" type="password" placeholder="8+ characters" autocomplete="new-password"></div>
+      <div class="auth-sub">14-day free trial. No credit card required.</div>
+      <div class="err" id="su-err"></div>
+      <div class="fld"><label>Name</label><input id="su-name" type="text" placeholder="Jamie Smith" autocomplete="name"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Email</label><input id="su-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
+        <div class="fld"><label>Password</label><input id="su-pass" type="password" placeholder="8+ characters" autocomplete="new-password"></div>
       </div>
-      <div class="f2">
-        <div class="f"><label>Company</label><input id="su-co" type="text" placeholder="Acme Pty Ltd"></div>
-        <div class="f"><label>Industry</label>
+      <div class="fld-row">
+        <div class="fld"><label>Company</label><input id="su-co" type="text" placeholder="Acme Pty Ltd"></div>
+        <div class="fld"><label>Industry</label>
           <select id="su-ind">
             <option value="trades">Trades</option><option value="retail">Retail</option>
             <option value="hospitality">Hospitality</option><option value="professional">Professional Services</option>
@@ -184,212 +281,484 @@ input,select{font-family:inherit}
           </select>
         </div>
       </div>
-      <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
-      <div class="auth-sw">Already have an account? <a onclick="showLogin()">Log in</a></div>
+      <button class="submit-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
+      <div class="auth-sw">Have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
-    <div id="v-login" style="display:none">
+    <div id="v-li" style="display:none">
       <div class="auth-h">Welcome back</div>
       <div class="auth-sub">Log in to your FlowGuard account.</div>
-      <div class="err-box" id="li-err"></div>
-      <div class="f"><label>Email</label><input id="li-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
-      <div class="f"><label>Password</label><input id="li-pass" type="password" placeholder="Password" autocomplete="current-password"></div>
-      <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
+      <div class="err" id="li-err"></div>
+      <div class="fld"><label>Email</label><input id="li-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
+      <div class="fld"><label>Password</label><input id="li-pass" type="password" placeholder="Password" autocomplete="current-password"></div>
+      <button class="submit-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
       <div class="auth-sw">No account? <a onclick="showSignup()">Start free trial</a></div>
     </div>
   </div>
 </div>
 
+<!-- ═══ APP ═══ -->
 <div id="app">
   <div class="topbar">
-    <div class="logo">
-      <div class="logo-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="logo-name">FlowGuard</span>
+    <div class="tb-logo">
+      <div class="tb-logo-gem"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="tb-logo-name">FlowGuard</span>
     </div>
-    <div class="topbar-r">
-      <div class="conn-btn" onclick="openConn()"><div class="conn-dot off" id="conn-dot"></div><span id="conn-label">Connect software</span></div>
-      <div class="user-av" id="user-av">?</div>
-      <button class="out-btn" onclick="doLogout()" title="Log out">&#x23CF;</button>
+    <div class="tb-right">
+      <div class="tb-conn" onclick="openConn()">
+        <div class="tb-live off" id="tb-live"></div>
+        <span id="tb-conn-label">Connect software</span>
+      </div>
+      <div class="tb-av" id="tb-av">?</div>
+      <button class="tb-out" onclick="doLogout()" title="Log out">&#x23CF;</button>
     </div>
   </div>
-  <div class="main">
-    <div class="demo-bar" id="demo-bar"><span class="demo-bar-t">&#x26A1; Demo mode &#x2014; connect Xero, MYOB or QuickBooks for your real numbers</span><button class="demo-bar-btn" onclick="openConn()">Connect now &#x2192;</button></div>
-    <div class="hero">
-      <div class="hero-label">Monthly profit leaking</div>
-      <div class="hero-num" id="hero-num">&#x2014;</div>
-      <div class="hero-msg" id="hero-msg">Connect your accounting software to see where your money is going</div>
+
+  <div class="page-wrap">
+    <div class="demo-strip" id="demo-strip">
+      <span>&#x26A1; Demo data &#x2014; connect Xero, MYOB or QuickBooks to see your real numbers</span>
+      <div class="demo-strip-btn" onclick="openConn()">Connect &#x2192;</div>
     </div>
-    <div class="forecast" id="forecast"></div>
-    <div class="run-wrap"><button class="run-btn" id="run-btn" onclick="runAnalysis()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Find My Profit Leaks</button></div>
-    <div class="sec">
-      <div class="sec-hdr"><div class="sec-title">Top profit leaks</div><div class="badge b-muted" id="leaks-badge">&#x2014;</div></div>
-      <div id="leaks-list"><div class="empty-card"><div class="empty-ico">&#x1F50D;</div><div class="empty-title">No analysis yet</div><div class="empty-sub">Connect Xero, MYOB or QuickBooks then click Find My Profit Leaks.</div></div></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar neutral" id="status-bar">
+      <span class="sb-ico">&#x1F4CA;</span>
+      <span class="sb-text neutral" id="status-text">Connect your accounting software to get started</span>
+      <button class="sb-run" id="run-btn" onclick="runAnalysis()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Analyse Now
+      </button>
     </div>
-    <div class="sec" id="alerts-sec" style="display:none">
-      <div class="sec-hdr"><div class="sec-title">Smart alerts</div><div class="badge b-red" id="alerts-badge">0</div></div>
-      <div id="alerts-list"></div>
-    </div>
-    <div class="sec">
-      <div class="sec-hdr"><div class="sec-title">Ask anything</div></div>
-      <div class="ask-row"><input class="ask-inp" id="ask-inp" type="text" placeholder="Which client is hurting my margins? Should I hire someone?"><button class="ask-go" id="ask-go" onclick="askAI()">Ask &#x2192;</button></div>
-      <div class="ask-ans" id="ask-ans"></div>
+
+    <!-- TWO-COL GRID -->
+    <div class="grid-main">
+
+      <!-- LEFT COLUMN -->
+      <div class="grid-left">
+
+        <!-- THE ONE THING -->
+        <div class="card" id="one-thing-card">
+          <div class="card-head">
+            <div class="card-label">&#x1F3AF; The One Thing</div>
+            <div class="card-badge bd-ac" id="ot-badge">Priority action</div>
+          </div>
+          <div class="one-thing" id="ot-body">
+            <div class="empty-state">
+              <div class="es-ico">&#x1F3AF;</div>
+              <div class="es-title">Your #1 action today</div>
+              <div class="es-sub">Run an analysis to get the single highest-impact thing you can do right now.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MONEY BEING MISSED / LEAKS -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">&#x1F4B8; Money Being Missed</div>
+            <div class="card-badge bd-muted" id="leaks-badge">&#x2014;</div>
+          </div>
+          <div class="leaks-body" id="leaks-body">
+            <div class="empty-state">
+              <div class="es-ico">&#x1F4B8;</div>
+              <div class="es-title">No leaks detected yet</div>
+              <div class="es-sub">Connect your accounting software and run an analysis.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ASK AI -->
+        <div class="card">
+          <div class="card-head"><div class="card-label">&#x1F916; Ask your AI CFO</div></div>
+          <div class="ask-wrap">
+            <input class="ask-inp" id="ask-inp" type="text" placeholder='"Which client is killing my margins?" or "Can I afford to hire?"'>
+            <button class="ask-go" id="ask-go" onclick="askAI()">Ask &#x2192;</button>
+          </div>
+          <div class="ask-ans" id="ask-ans"></div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="grid-right">
+
+        <!-- CASH RUNWAY -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">&#x1F534; Cash Runway</div>
+            <div class="card-badge bd-muted" id="runway-badge">&#x2014;</div>
+          </div>
+          <div class="runway-body" id="runway-body">
+            <div class="empty-state" style="padding:24px 16px">
+              <div class="es-sub">Run an analysis to see your runway</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OWNER PAY -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-label">&#x1F4B5; Owner Pay</div>
+            <div class="card-badge bd-muted">Safe this month</div>
+          </div>
+          <div class="pay-body" id="pay-body">
+            <div class="empty-state" style="padding:24px 16px">
+              <div class="es-sub">Run an analysis to calculate your safe draw</div>
+            </div>
+          </div>
+          <div class="pay-warning" id="pay-warn"></div>
+        </div>
+
+        <!-- SMART ALERTS -->
+        <div class="card" id="alerts-card" style="display:none">
+          <div class="card-head">
+            <div class="card-label">&#x1F6A8; Smart Alerts</div>
+            <div class="card-badge bd-red" id="alerts-badge">0</div>
+          </div>
+          <div class="alerts-body" id="alerts-body"></div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
 
+<!-- ═══ FIX MODAL ═══ -->
 <div class="modal-bg" id="fix-modal">
   <div class="modal-box">
     <div class="modal-pill"></div>
-    <div class="modal-head"><div><div class="modal-title" id="modal-title">Fix This For Me</div><div class="modal-sub" id="modal-sub"></div></div><button class="modal-close" onclick="closeModal()">&#x2715;</button></div>
+    <div class="modal-head">
+      <div><div class="modal-title" id="modal-title">Fix This For Me</div><div class="modal-sub" id="modal-sub"></div></div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
+<!-- ═══ CONNECT ═══ -->
 <div class="conn-overlay" id="conn-overlay">
   <div class="conn-box">
-    <div class="auth-logo" style="margin-bottom:20px"><div class="auth-mark"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#070808" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="auth-brand">FlowGuard</span></div>
+    <div class="auth-logo" style="margin-bottom:18px">
+      <div class="logo-gem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="logo-name">FlowGuard</span>
+    </div>
     <div class="conn-h">Connect your accounts</div>
-    <div class="conn-sub">Read-only access only. We never modify your data or make any changes.</div>
-    <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia's most popular accounting platform</div></div><div class="conn-arr">&#x2192;</div></a>
-    <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">MYOB AccountRight &amp; Essentials</div></div><div class="conn-arr">&#x2192;</div></a>
+    <div class="conn-sub">Read-only access. We never modify your data or make any changes.</div>
+    <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia&#x27;s most popular platform</div></div><div class="conn-arr">&#x2192;</div></a>
+    <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">AccountRight &amp; Essentials</div></div><div class="conn-arr">&#x2192;</div></a>
     <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">&#x2192;</div></a>
-    <div class="conn-trust">&#x1F512; Read-only &#xB7; Encrypted &#xB7; Never sold</div>
-    <div class="conn-skip"><a onclick="skipConn()">Skip &#x2014; use demo data instead</a></div>
+    <div class="conn-trust">&#x1F512; Read-only &middot; Encrypted &middot; Never sold</div>
+    <div class="conn-skip"><a onclick="skipConn()">Skip &#x2014; use demo data</a></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-var S = { user: null, conn: null, data: null, parsed: null, loading: false };
-var BENCH = { trades:{net:[8,14],labour:[38,42],debtor:[30,45]},retail:{net:[5,10],labour:[12,18],debtor:[14,30]},hospitality:{net:[6,9],labour:[30,35],debtor:[7,21]},professional:{net:[15,25],labour:[45,55],debtor:[30,45]},health:{net:[12,20],labour:[50,60],debtor:[14,30]},ecommerce:{net:[8,15],labour:[10,18],debtor:[1,7]},manufacturing:{net:[8,15],labour:[25,35],debtor:[30,60]},other:{net:[8,15],labour:[30,45],debtor:[30,45]} };
-var FIX = {
-  invoices:"MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [Invoice Number] for $[Amount], due on [Due Date].\n\nCould you please confirm when payment will be processed? We'd appreciate settlement by [3 days from now].\n\nThanks,\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Call (don't email) every overdue client over $1,000. Calls recover 3x more than emails.\nDay 3: Send written follow-up with invoice attached to anyone who didn't answer.\nDay 7: For anything still unpaid, issue a formal overdue notice and offer a payment plan.",
-  roster:"MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI'd like to review our labour cost breakdown for the last 3 months:\n1. Labour as % of revenue by week\n2. Cost by role or shift\n3. Any recurring overtime or penalty rates\n\nBy [3 days from now] please.\n\nYOUR 3 STEPS\n\nDay 1: Get the labour report. Identify your 3 most expensive shifts vs revenue.\nDay 3: Compare output against cost. Find the mismatches.\nDay 7: Redesign roster around highest-revenue periods.",
-  pricing:"PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [Date 30 days from now] our pricing increases by [X]% to reflect rising costs.\n\nYour new rate will be [New Amount].\n\nThank you for your continued support.\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Identify your 20% lowest-margin clients. Raise their prices first.\nDay 3: Send notice to all clients with 30 days lead time. Most won't leave.\nDay 7: Let go of clients who push back if they're already low-margin.",
-  subscriptions:"MESSAGE TO BOOKKEEPER\n\nHi [Name],\n\nPlease pull every recurring subscription over $50/month from the last 3 months. Categorise as: In use / Not used in 30+ days / Unsure.\n\nBy [3 days from now].\n\nYOUR 3 STEPS\n\nDay 1: Get the list. Mark everything not used in 30 days.\nDay 3: Cancel every unused subscription immediately.\nDay 7: Review 'unsure' items with your team. Default to cancel.",
-  supplier:"EMAIL TO SUPPLIER\n\nHi [Contact],\n\nI've been reviewing our costs and have received alternative quotes below our current rate. Before making changes I wanted to give you the opportunity to review our pricing.\n\nCould we speak this week?\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Get 2-3 competing quotes for leverage.\nDay 3: Send this email to your top 2 suppliers by spend.\nDay 7: If no match offered, switch at least one supplier.",
-  overheads:"OVERHEAD REVIEW\n\nFor every recurring cost over $200/month ask:\n1. Does this directly generate revenue?\n2. Can we get the same thing cheaper?\n3. What happens if we cancel it?\n\nYOUR 3 STEPS\n\nDay 1: Get your full overhead list from your bookkeeper.\nDay 3: Mark each as Keep / Cancel / Negotiate.\nDay 7: Cancel everything in the Cancel column immediately."
+var S = { user:null, conn:null, data:null, parsed:null, loading:false };
+var BENCH = { trades:{net:[8,14],labour:[38,42],debtor:[30,45]}, retail:{net:[5,10],labour:[12,18],debtor:[14,30]}, hospitality:{net:[6,9],labour:[30,35],debtor:[7,21]}, professional:{net:[15,25],labour:[45,55],debtor:[30,45]}, health:{net:[12,20],labour:[50,60],debtor:[14,30]}, ecommerce:{net:[8,15],labour:[10,18],debtor:[1,7]}, manufacturing:{net:[8,15],labour:[25,35],debtor:[30,60]}, other:{net:[8,15],labour:[30,45],debtor:[30,45]} };
+var FIX_TPL = {
+  invoices: "MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [#Number] for $[Amount], which was due on [Date].\n\nCould you please confirm when payment will be processed? We would appreciate settlement by [3 days from now].\n\nHappy to resolve any issues immediately.\n\nThanks,\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Call (don't email) your largest overdue client. Calls recover 3x more than emails.\nDay 3: Send written follow-up with invoice attached to anyone who didn't answer.\nDay 7: For anything still unpaid, issue a formal overdue notice and offer a payment plan.",
+  roster:   "MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI need a review of our labour cost breakdown for the last 3 months:\n1. Labour as % of revenue by week\n2. Cost by role and shift\n3. Recurring overtime or penalty rates\n\nPlease have this ready by [3 days from now].\n\nYOUR 3 STEPS\n\nDay 1: Pull the labour report. Find your 3 most expensive shifts vs revenue generated.\nDay 3: Compare output against cost. Identify the obvious mismatches.\nDay 7: Restructure roster around your 3 highest-revenue periods.",
+  pricing:  "PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [Date 30 days from now], our pricing will increase by [X]% to reflect rising costs.\n\nYour new rate will be [New Amount].\n\nWe value your business and are committed to the same high standard of service.\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Identify your 20% lowest-margin clients. Raise their prices first.\nDay 3: Send notice to all clients with 30 days lead time. Most won't leave.\nDay 7: For anyone who pushes back hard — if they're already low-margin, let them go.",
+  overheads:"OVERHEAD REVIEW\n\nFor every recurring cost over $200/month, ask:\n1. Does this directly generate revenue?\n2. What happens if we cancel it tomorrow?\n3. Can we get the same result cheaper?\n\nYOUR 3 STEPS\n\nDay 1: Get your full overhead list from your bookkeeper.\nDay 3: Mark each line: Keep / Cancel / Negotiate.\nDay 7: Cancel everything in the Cancel column immediately."
 };
 function $(id){return document.getElementById(id);}
 function cap(s){return s?s[0].toUpperCase()+s.slice(1):s;}
-function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+"M":n>=1000?(n/1000).toFixed(0)+"K":Math.round(n).toLocaleString();}
-function mdlight(t){if(!t)return"";return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'K':Math.round(n).toLocaleString();}
+function mdl(t){if(!t)return'';return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
+var _tt;
+function toast(m,t){var e=$('toast');e.textContent=m;e.className='toast '+(t||'info');e.style.display='block';clearTimeout(_tt);_tt=setTimeout(function(){e.style.display='none';},4000);}
 
-/g,"<br><br>").replace(/
-/g,"<br>");}
-var toastTimer;
-function showToast(msg,type){var el=$("toast");el.textContent=msg;el.className="toast "+(type||"info");el.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.style.display="none";},4000);}
-window.addEventListener("load",function(){
-  var params=new URLSearchParams(location.search);
-  var connected=params.get("connected"),error=params.get("error");
-  history.replaceState({},"","/app");
-  var showLogin=sessionStorage.getItem("fg_show")==="login";
-  sessionStorage.removeItem("fg_show");
-  fetch("/api/auth/me",{credentials:"include"})
-    .then(function(r){if(r.ok)return r.json();throw new Error("not authed");})
-    .then(function(d){S.user=d.user;S.conn=d.connection;showApp();if(connected)showToast("Connected to "+cap(connected)+" ✓","ok");if(error)showToast("Connection failed","err");if(S.conn)loadData();else openConn();})
-    .catch(function(){if(showLogin)showLoginView();else showSignupView();});
+window.addEventListener('load',function(){
+  var p=new URLSearchParams(location.search);
+  var connected=p.get('connected'),error=p.get('error');
+  history.replaceState({},'','/app');
+  var goLogin=sessionStorage.getItem('fg_show')==='login';
+  sessionStorage.removeItem('fg_show');
+  fetch('/api/auth/me',{credentials:'include'})
+    .then(function(r){if(r.ok)return r.json();throw new Error('no');})
+    .then(function(d){S.user=d.user;S.conn=d.connection;showApp();if(connected)toast('Connected to '+cap(connected)+' \u2713','ok');if(error)toast('Connection failed','err');if(S.conn)loadData();else openConn();})
+    .catch(function(){if(goLogin)showLoginV();else showSignupV();});
 });
-function showApp(){$("auth-screen").style.display="none";$("app").style.display="block";if(S.user)$("user-av").textContent=(S.user.name||S.user.email)[0].toUpperCase();if(S.conn){$("conn-dot").className="conn-dot";$("conn-label").textContent=S.conn.tenant_name||cap(S.conn.provider);}else{$("demo-bar").classList.add("on");}}
-function showSignupView(){$("auth-screen").style.display="flex";$("app").style.display="none";$("v-signup").style.display="";$("v-login").style.display="none";}
-function showLoginView(){$("auth-screen").style.display="flex";$("app").style.display="none";$("v-login").style.display="";$("v-signup").style.display="none";}
-function showLogin(){$("v-signup").style.display="none";$("v-login").style.display="";$("li-err").classList.remove("on");}
-function showSignup(){$("v-login").style.display="none";$("v-signup").style.display="";$("su-err").classList.remove("on");}
+
+function showApp(){$('auth-screen').style.display='none';$('app').style.display='block';if(S.user)$('tb-av').textContent=(S.user.name||S.user.email)[0].toUpperCase();if(S.conn){$('tb-live').className='tb-live';$('tb-conn-label').textContent=S.conn.tenant_name||cap(S.conn.provider);$('demo-strip').classList.remove('on');}else{$('demo-strip').classList.add('on');}}
+function showSignupV(){$('auth-screen').style.display='flex';$('app').style.display='none';$('v-su').style.display='';$('v-li').style.display='none';}
+function showLoginV(){$('auth-screen').style.display='flex';$('app').style.display='none';$('v-li').style.display='';$('v-su').style.display='none';}
+function showLogin(){$('v-su').style.display='none';$('v-li').style.display='';$('li-err').classList.remove('on');}
+function showSignup(){$('v-li').style.display='none';$('v-su').style.display='';$('su-err').classList.remove('on');}
+
 function doSignup(){
-  var btn=$("su-btn"),err=$("su-err");
-  var email=$("su-email").value.trim(),password=$("su-pass").value;
-  var name=$("su-name").value.trim(),company=$("su-co").value.trim(),industry=$("su-ind").value;
-  err.classList.remove("on");
-  if(!email||!password){err.textContent="Email and password are required.";err.classList.add("on");return;}
-  if(password.length<8){err.textContent="Password must be at least 8 characters.";err.classList.add("on");return;}
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Creating account…';
-  fetch("/api/auth/signup",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:password,name:name,company:company,industry:industry})})
-    .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
-    .then(function(res){
-      if(!res.ok){err.textContent=res.data.error||"Signup failed.";err.classList.add("on");btn.disabled=false;btn.innerHTML="Start free trial →";return;}
-      S.user=res.data.user;S.conn=null;showApp();openConn();showToast("Account created! Welcome &#x1F389;","info");
-    })
-    .catch(function(e){err.textContent="Network error: "+e.message;err.classList.add("on");btn.disabled=false;btn.innerHTML="Start free trial →";});
+  var btn=$('su-btn'),err=$('su-err');
+  var email=$('su-email').value.trim(),pass=$('su-pass').value;
+  var name=$('su-name').value.trim(),co=$('su-co').value.trim(),ind=$('su-ind').value;
+  err.classList.remove('on');
+  if(!email||!pass){err.textContent='Email and password are required.';err.classList.add('on');return;}
+  if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.classList.add('on');return;}
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Creating account...';
+  fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass,name:name,company:co,industry:ind})})
+    .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;showApp();openConn();toast('Account created! Welcome to FlowGuard','info');})
+    .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';});
 }
+
 function doLogin(){
-  var btn=$("li-btn"),err=$("li-err");
-  var email=$("li-email").value.trim(),password=$("li-pass").value;
-  err.classList.remove("on");
-  if(!email||!password){err.textContent="Email and password are required.";err.classList.add("on");return;}
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Logging in…';
-  fetch("/api/auth/login",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:password})})
-    .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
-    .then(function(res){
-      if(!res.ok){err.textContent=res.data.error||"Login failed.";err.classList.add("on");btn.disabled=false;btn.innerHTML="Log in →";return;}
-      S.user=res.data.user;
-      return fetch("/api/auth/me",{credentials:"include"}).then(function(r){return r.json();}).then(function(d){S.conn=d.connection;showApp();if(S.conn)loadData();else openConn();});
-    })
-    .catch(function(e){err.textContent="Network error: "+e.message;err.classList.add("on");btn.disabled=false;btn.innerHTML="Log in →";});
+  var btn=$('li-btn'),err=$('li-err');
+  var email=$('li-email').value.trim(),pass=$('li-pass').value;
+  err.classList.remove('on');
+  if(!email||!pass){err.textContent='Email and password are required.';err.classList.add('on');return;}
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Logging in...';
+  fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass})})
+    .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Login failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';return;}S.user=res.d.user;return fetch('/api/auth/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.conn=d.connection;showApp();if(S.conn)loadData();else openConn();});})
+    .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';});
 }
-function doLogout(){fetch("/api/auth/logout",{method:"POST",credentials:"include"}).then(function(){S.user=null;S.conn=null;S.data=null;S.parsed=null;showSignupView();});}
-function openConn(){$("conn-overlay").classList.add("on");}
-function closeConn(){$("conn-overlay").classList.remove("on");}
+
+function doLogout(){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).then(function(){S.user=null;S.conn=null;S.data=null;S.parsed=null;showSignupV();});}
+function openConn(){$('conn-overlay').classList.add('on');}
+function closeConn(){$('conn-overlay').classList.remove('on');}
 function skipConn(){closeConn();loadDemo();}
+
 function loadData(){
-  $("hero-num").innerHTML='<span class="spinner" style="width:20px;height:20px;margin:0 auto;display:block"></span>';
-  $("hero-msg").textContent="Reading your accounts…";
-  fetch("/api/data",{credentials:"include"}).then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d)return;S.data=d.data;S.parsed=parseF(d.data,d.provider);paintFromData();}).catch(function(){$("hero-num").textContent="—";$("hero-msg").textContent="Could not load financial data";});
+  setStatus('neutral','&#x1F4CA;','Reading your accounts...');
+  fetch('/api/data',{credentials:'include'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(d){if(!d)return;S.data=d.data;S.parsed=parseF(d.data,d.provider);paintAll();})
+    .catch(function(){setStatus('neutral','&#x26A0;','Could not load financial data');});
 }
+
 function runAnalysis(){
   if(S.loading)return;
-  if(!S.conn){showToast("Connect your accounting software first","err");openConn();return;}
+  if(!S.conn){toast('Connect your accounting software first','err');openConn();return;}
   var go=function(){
-    S.loading=true;var btn=$("run-btn");btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Scanning…';
-    fetch("/api/analyse",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({financialData:S.data})})
-      .then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});})
-      .then(function(res){S.loading=false;btn.disabled=false;btn.innerHTML="Run Again";if(!res.ok){showToast(res.data.error||"Analysis failed","err");return;}parseAndRenderLeaks(res.data.analysis);showToast("Done — here are your top leaks","ok");})
-      .catch(function(){S.loading=false;btn.disabled=false;btn.innerHTML="Run Again";showToast("Analysis failed","err");});
+    S.loading=true;var btn=$('run-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Scanning...';
+    fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data})})
+      .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+      .then(function(res){S.loading=false;btn.disabled=false;btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyse Now';if(!res.ok){toast(res.d.error||'Analysis failed','err');return;}parseAIResponse(res.d.analysis);toast('Analysis complete','ok');})
+      .catch(function(){S.loading=false;btn.disabled=false;btn.innerHTML='Analyse Now';toast('Analysis failed','err');});
   };
-  if(!S.data){fetch("/api/data",{credentials:"include"}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go();}).catch(function(){showToast("Could not load data","err");});}else{go();}
+  if(!S.data){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go();}).catch(function(){toast('Could not load data','err');});}
+  else go();
 }
+
 function parseF(data,provider){
-  var o={rev:0,profit:0,cash:0,ovdAmt:0,ovdCount:0,bills:0,netMargin:0,labourPct:0,debtorDays:0,provider:provider||"unknown"};
+  var o={rev:0,profit:0,cash:0,ovdAmt:0,ovdCount:0,bills:0,netMargin:0,labourPct:0,debtorDays:0,provider:provider||'unknown'};
   if(!data)return o;
-  if(provider==="xero"&&data.profitLoss&&data.profitLoss.Reports&&data.profitLoss.Reports[0]){
+  if(provider==='xero'&&data.profitLoss&&data.profitLoss.Reports&&data.profitLoss.Reports[0]){
     var labour=0,rows=data.profitLoss.Reports[0].Rows||[];
     rows.forEach(function(row){
-      var lbl=((row.Cells&&row.Cells[0]&&row.Cells[0].Value)||"").toLowerCase();
-      var val=parseFloat(((row.Cells&&(row.Cells[1]||row.Cells[2])&&(row.Cells[1]||row.Cells[2]).Value))||0)||0;
-      if(row.RowType==="SummaryRow"){if(/total income|total revenue/.test(lbl))o.rev=Math.abs(val)||o.rev;if(/net profit|net loss/.test(lbl))o.profit=val||o.profit;}
-      (row.Rows||[]).forEach(function(r2){var l2=((r2.Cells&&r2.Cells[0]&&r2.Cells[0].Value)||"").toLowerCase();var v2=parseFloat(((r2.Cells&&(r2.Cells[1]||r2.Cells[2])&&(r2.Cells[1]||r2.Cells[2]).Value))||0)||0;if(/total income|total trading income/.test(l2))o.rev=Math.abs(v2)||o.rev;if(/wages|salaries|labour|payroll/.test(l2))labour+=Math.abs(v2);});
+      var lbl=((row.Cells&&row.Cells[0]&&row.Cells[0].Value)||'').toLowerCase();
+      var val=parseFloat((row.Cells&&(row.Cells[1]||row.Cells[2])&&(row.Cells[1]||row.Cells[2]).Value)||0)||0;
+      if(row.RowType==='SummaryRow'){if(/total income|total revenue/.test(lbl))o.rev=Math.abs(val)||o.rev;if(/net profit|net loss/.test(lbl))o.profit=val||o.profit;}
+      (row.Rows||[]).forEach(function(r2){var l2=((r2.Cells&&r2.Cells[0]&&r2.Cells[0].Value)||'').toLowerCase();var v2=parseFloat((r2.Cells&&(r2.Cells[1]||r2.Cells[2])&&(r2.Cells[1]||r2.Cells[2]).Value)||0)||0;if(/total income|total trading income/.test(l2))o.rev=Math.abs(v2)||o.rev;if(/wages|salaries|labour|payroll/.test(l2))labour+=Math.abs(v2);});
     });
     if(o.rev>0){o.labourPct=(labour/o.rev)*100;o.netMargin=(o.profit/o.rev)*100;}
-    if(data.balanceSheet&&data.balanceSheet.Reports&&data.balanceSheet.Reports[0]){(data.balanceSheet.Reports[0].Rows||[]).forEach(function(row){(row.Rows||[]).forEach(function(r2){(r2.Rows||[]).forEach(function(r3){var l=((r3.Cells&&r3.Cells[0]&&r3.Cells[0].Value)||"").toLowerCase();var v=parseFloat((r3.Cells&&r3.Cells[1]&&r3.Cells[1].Value)||0)||0;if(o.cash===0&&/cash|bank/.test(l)&&v!==0)o.cash=v;});});});}
+    if(data.balanceSheet&&data.balanceSheet.Reports&&data.balanceSheet.Reports[0]){(data.balanceSheet.Reports[0].Rows||[]).forEach(function(row){(row.Rows||[]).forEach(function(r2){(r2.Rows||[]).forEach(function(r3){var l=((r3.Cells&&r3.Cells[0]&&r3.Cells[0].Value)||'').toLowerCase();var v=parseFloat((r3.Cells&&r3.Cells[1]&&r3.Cells[1].Value)||0)||0;if(o.cash===0&&/cash|bank/.test(l)&&v!==0)o.cash=v;});});});}
   }
   if(data.invoices&&data.invoices.length){var now=new Date(),td=0,c=0;data.invoices.forEach(function(inv){if(inv.DueDate){var due=new Date(inv.DueDate);if(due<now){o.ovdAmt+=(inv.AmountDue||0);o.ovdCount++;}td+=Math.max(0,Math.floor((now-due)/86400000));c++;}});if(c>0)o.debtorDays=td/c;}
   if(data.bills&&data.bills.length)data.bills.forEach(function(b){o.bills+=(b.AmountDue||0);});
   return o;
 }
-function buildLeaks(p,b){
-  var leaks=[];
-  if(p.labourPct>0&&p.labourPct>b.labour[1]){var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev/12);if(ex>100)leaks.push({name:"Labour cost blowout",desc:"Running at "+p.labourPct.toFixed(1)+"% of revenue — benchmark is "+b.labour[1]+"%. Your biggest profit drain.",monthly:ex,color:"red",action:"<b>This week:</b> Pull labour cost by shift. Find your 3 most expensive shifts vs revenue. Restructure those first.",fix:"roster"});}
-  if(p.ovdAmt>2000)leaks.push({name:"Overdue invoices unpaid",desc:p.ovdCount+" client"+(p.ovdCount>1?"s":"")+" owe you $"+fmt(p.ovdAmt)+" — sitting there waiting to be collected.",monthly:Math.round(p.ovdAmt/3),color:"red",action:"<b>Today:</b> Call (not email) your largest overdue client first. A 2-minute call recovers 3× more than an email.",fix:"invoices"});
-  if(p.netMargin>0&&p.netMargin<b.net[0]){var gap=Math.round(((b.net[0]-p.netMargin)/100)*p.rev/12);if(gap>100)leaks.push({name:"Prices below industry minimum",desc:"Net margin "+p.netMargin.toFixed(1)+"% — industry minimum is "+b.net[0]+"%. Costs have risen but prices haven't.",monthly:gap,color:"amber",action:"<b>This month:</b> A 5% price increase adds $"+fmt(Math.round(p.rev*0.05/12))+"/month to profit with zero extra work.",fix:"pricing"});}
-  return leaks;
+
+function paintAll(){
+  var p=S.parsed;if(!p||p.rev===0)return;
+  var b=BENCH[(S.user&&S.user.industry)||'other']||BENCH.other;
+  paintStatus(p,b);
+  paintOneThing(p,b);
+  paintLeaks(p,b);
+  paintRunway(p);
+  paintOwnerPay(p);
+  paintAlerts(p,b);
 }
-function paintFromData(){var p=S.parsed;if(!p||p.rev===0)return;var b=BENCH[(S.user&&S.user.industry)||"other"]||BENCH.other;var leaks=buildLeaks(p,b);setHero(leaks.reduce(function(s,l){return s+l.monthly;},0));paintForecast(p);renderLeaks(leaks);renderAlerts(p,b);}
-function setHero(monthly){var num=$("hero-num"),msg=$("hero-msg");if(monthly>0){num.textContent="$"+fmt(monthly)+"/mo";num.className="hero-num red";msg.innerHTML="leaking out of your business every month — <b>here's where it's going</b>";}else{num.textContent="$0";num.className="hero-num green";msg.innerHTML="<b>No major leaks detected</b> — run the full AI analysis for a deeper scan";}}
-function paintForecast(p){if(!p||p.rev===0)return;var wBurn=(p.rev/52)*(1-(p.netMargin/100));var weeks=p.cash>0?Math.round(p.cash/Math.max(wBurn,1)):0;var days=weeks*7;var el=$("forecast"),cls,ico,html;if(days<28){cls="urgent";ico="&#x1F6A8;";html="<b style="color:#ff4444">At this rate, your cash drops below safe levels in "+days+" days.</b> Collect overdue invoices immediately.";}else if(days<84){cls="warn";ico="⚠️";html="Cash runway is <b style="color:#f59e0b">"+weeks+" weeks</b> — below the 12-week safe buffer. Start building your reserve.";}else{cls="ok";ico="✅";html="Cash runway is <b style="color:#34d399">"+weeks+" weeks</b> — healthy. Keep it above 12 weeks.";}el.className="forecast "+cls+" on";el.innerHTML="<span style="font-size:18px;flex-shrink:0">"+ico+"</span><span style="font-size:13px;line-height:1.6">"+html+"</span>";}
-function renderLeaks(leaks){var list=$("leaks-list"),badge=$("leaks-badge");if(!leaks.length){badge.textContent="0";badge.className="badge b-muted";list.innerHTML="<div class="empty-card"><div class="empty-ico">✅</div><div class="empty-title">No leaks found</div><div class="empty-sub">Your numbers look healthy. Run the full AI analysis for a deeper scan.</div></div>";return;}badge.textContent=leaks.length+" found";badge.className="badge b-red";var labels=["#1 Leak","#2 Leak","#3 Leak"],html="";for(var i=0;i<Math.min(leaks.length,3);i++){var l=leaks[i],rc=l.color==="red"?"#ff4444":"#f59e0b",btnCls=l.color==="red"?"fix-red":"fix-amber";html+="<div class="leak-card"><div class="lc-top"><div><div class="lc-rank" style="color:"+rc+"">"+labels[i]+"</div><div class="lc-name">"+esc(l.name)+"</div><div class="lc-desc">"+esc(l.desc)+"</div></div><div><div class="lc-amt" style="color:"+rc+"">$"+fmt(l.monthly)+"</div><div class="lc-mo">/month</div></div></div><div class="lc-bot"><div class="lc-action">"+l.action+"</div><button class="fix-btn "+btnCls+"" onclick="openFix("+i+")">&#x26A1; Fix This For Me</button></div></div>";}list.innerHTML=html;window._leaks=leaks;}
-function parseAndRenderLeaks(text){var p=S.parsed;if(!p||p.rev===0)return;var b=BENCH[(S.user&&S.user.industry)||"other"]||BENCH.other;var dataLeaks=buildLeaks(p,b),aiLeaks=[],lines=text.split("
-");var defs=[{rx:/subscri|saas/i,name:"Wasted subscriptions",fix:"subscriptions",color:"red"},{rx:/supplier|vendor/i,name:"Supplier overpricing",fix:"supplier",color:"amber"},{rx:/low.margin|unprofitable/i,name:"Low-margin clients",fix:"pricing",color:"amber"}];lines.forEach(function(line){var am=line.match(/\$[\d,]+[kKmM]?/);if(!am||line.trim().length<12)return;var n=parseFloat(am[0].replace(/[$,]/g,""));if(/[kK]/.test(am[0]))n*=1000;if(/[mM]/.test(am[0]))n*=1000000;if(n<200)return;for(var j=0;j<defs.length;j++){if(defs[j].rx.test(line)&&!aiLeaks.find(function(x){return x.name===defs[j].name;})){aiLeaks.push({name:defs[j].name,desc:line.replace(/^[*\-\d.\s]+/,"").trim().slice(0,120),monthly:Math.round(n>p.rev/2?n/12:n),color:defs[j].color,action:"<b>This week:</b> Investigate and cut this. It's costing $"+fmt(Math.round(n>p.rev/2?n/12:n))+"/month.",fix:defs[j].fix});break;}}});var final=aiLeaks.concat(dataLeaks.filter(function(d){return!aiLeaks.find(function(a){return a.name===d.name;});}));if(!final.length){paintFromData();return;}setHero(final.slice(0,3).reduce(function(s,l){return s+l.monthly;},0));paintForecast(p);renderLeaks(final);renderAlerts(p,b);}
-function renderAlerts(p,b){var alerts=[];if(p.labourPct>b.labour[1]*1.15)alerts.push({type:"urgent",ico:"&#x1F534;",text:"<b>Labour at "+p.labourPct.toFixed(0)+"% of revenue</b> — "+(p.labourPct-b.labour[1]).toFixed(0)+"% above benchmark. Review your roster this week."});if(p.ovdAmt>p.cash*0.5&&p.ovdAmt>5000)alerts.push({type:"urgent",ico:"&#x1F534;",text:"<b>$"+fmt(p.ovdAmt)+" overdue is larger than your cash buffer.</b> Chase these invoices first."});if(p.netMargin>0&&p.netMargin<b.net[0])alerts.push({type:"warn",ico:"&#x1F7E1;",text:"<b>Margin below industry minimum</b> — you're at "+p.netMargin.toFixed(1)+"%, benchmark is "+b.net[0]+"%. Prices need a review."});if(!alerts.length)return;$("alerts-sec").style.display="";$("alerts-badge").textContent=alerts.length;$("alerts-badge").className="badge "+(alerts.some(function(a){return a.type==="urgent";})?"b-red":"b-muted");var html="";alerts.forEach(function(a){html+="<div class="alert-card "+a.type+""><span style="font-size:15px;flex-shrink:0;margin-top:1px">"+a.ico+"</span><div class="al-text">"+a.text+"</div></div>";});$("alerts-list").innerHTML=html;}
-function openFix(i){var leaks=window._leaks;if(!leaks||!leaks[i])return;var leak=leaks[i];$("modal-title").textContent="⚡ Fix This For Me";$("modal-sub").textContent=leak.name;$("modal-body").innerHTML="<div class="modal-loading"><span class="spinner"></span> Generating your action plan…</div>";$("fix-modal").classList.add("on");document.body.style.overflow="hidden";var p=S.parsed||{};var prompt="Profit leak: ""+leak.name+"" costing $"+leak.monthly+"/month. Revenue ~$"+fmt(p.rev||0)+"/year, Cash ~$"+fmt(p.cash||0)+", "+( p.ovdCount||0)+" overdue invoices totalling $"+fmt(p.ovdAmt||0)+". Write 2 sections with ## headings: 1) Ready-to-send message template. Use [Placeholder] for fill-ins. 2) Exactly 3 steps: Day 1, Day 3, Day 7. Be brutally practical.";fetch("/api/analyse",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({financialData:S.data||{},question:prompt})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});}).then(function(res){renderModal(leak,(res.ok&&res.data.analysis)?res.data.analysis:(FIX[leak.fix]||FIX.overheads));}).catch(function(){renderModal(leak,FIX[leak.fix]||FIX.overheads);});}
-function renderModal(leak,text){window._fixText=text;var sections=text.split("
-## "),html="";sections.forEach(function(s){var lines=s.split("
-");var heading=lines[0].replace(/^## /,"").trim();var body=lines.slice(1).join("
-").trim();html+="<div style="margin-bottom:20px"><div class="modal-lbl">"+esc(heading)+"</div><div class="modal-draft">"+mdlight(body)+"</div></div>";});html+="<div class="modal-btns"><button class="modal-copy" onclick="copyFix()">&#x1F4CB; Copy to clipboard</button><button class="modal-sec-btn" onclick="closeModal()">Done</button></div>";$("modal-body").innerHTML=html;}
-function copyFix(){if(navigator.clipboard){navigator.clipboard.writeText(window._fixText||"").then(function(){showToast("Copied ✓","ok");}).catch(function(){showToast("Select text and copy manually","err");});}else{showToast("Select the text above and copy manually","info");}}
-function closeModal(){$("fix-modal").classList.remove("on");document.body.style.overflow="";}
-function askAI(){var inp=$("ask-inp"),q=inp.value.trim();if(!q)return;if(!S.conn&&!S.data){showToast("Connect your accounting software first","err");openConn();return;}var btn=$("ask-go");btn.disabled=true;btn.textContent="…";inp.disabled=true;$("ask-ans").classList.remove("on");var fd=S.data;var doAsk=function(fd2){fetch("/api/analyse",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({financialData:fd2||{},question:q})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,data:d};});}).then(function(res){if(!res.ok)throw new Error(res.data.error);$("ask-ans").innerHTML=mdlight(res.data.analysis);$("ask-ans").classList.add("on");inp.value="";}).catch(function(){showToast("Could not get answer","err");}).finally(function(){btn.disabled=false;btn.textContent="Ask →";inp.disabled=false;inp.focus();});};if(!fd&&S.conn){fetch("/api/data",{credentials:"include"}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);doAsk(d.data);}).catch(function(){doAsk(null);});}else{doAsk(fd);}}
-function loadDemo(){$("demo-bar").classList.add("on");S.parsed={rev:1840000,profit:94200,cash:38400,ovdAmt:184000,ovdCount:9,bills:42000,netMargin:5.1,labourPct:52.3,debtorDays:48,provider:"demo"};S.data={invoices:[{Contact:{Name:"Westfield Developments"},AmountDue:84000,DueDate:new Date(Date.now()-74*86400000).toISOString()},{Contact:{Name:"Smith & Co Builders"},AmountDue:47000,DueDate:new Date(Date.now()-32*86400000).toISOString()},{Contact:{Name:"Metro Retail Group"},AmountDue:31000,DueDate:new Date(Date.now()-18*86400000).toISOString()}],bills:[{AmountDue:42000}]};window._leaks=[{name:"Labour cost blowout",desc:"Running at 52.3% of revenue — trades benchmark is 38–42%. Biggest profit drain.",monthly:9333,color:"red",action:"<b>This week:</b> Pull your labour cost by shift. Identify 3 most expensive shifts vs revenue.",fix:"roster"},{name:"$184K overdue invoices",desc:"9 clients haven't paid — cash is critically low while $184K sits uncollected.",monthly:15333,color:"red",action:"<b>Today:</b> Call Westfield Developments and Smith & Co first. Those 2 owe you $131K.",fix:"invoices"},{name:"Prices behind rising costs",desc:"Net margin 5.1% — trades minimum is 8%. Costs have risen 12% since last price increase.",monthly:4282,color:"amber",action:"<b>This month:</b> A 5% price increase adds $7,667/month to profit.",fix:"pricing"}];setHero(window._leaks.reduce(function(s,l){return s+l.monthly;},0));paintForecast(S.parsed);renderLeaks(window._leaks);renderAlerts(S.parsed,BENCH.trades);}
-document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeModal();$("conn-overlay").classList.remove("on");}if(e.key==="Enter"){var active=document.activeElement;if(active===$("ask-inp")){askAI();return;}if(active&&active.closest){if(active.closest("#v-signup")){doSignup();return;}if(active.closest("#v-login")){doLogin();return;}}}});
+
+function setStatus(type,ico,text){
+  var bar=$('status-bar'),txt=$('status-text');
+  bar.className='status-bar '+type;
+  bar.querySelector('.sb-ico').innerHTML=ico;
+  txt.textContent=text;txt.className='sb-text '+type;
+}
+
+function paintStatus(p,b){
+  if(p.profit>0&&p.netMargin>=b.net[0]){setStatus('good','&#x1F44D;','You\'re on track \u2014 margin at '+p.netMargin.toFixed(1)+'% and cash is healthy. Keep it up.');}
+  else if(p.ovdAmt>p.cash){setStatus('bad','&#x26A0;&#xFE0F;','You\'re falling behind \u2014 $'+fmt(p.ovdAmt)+' overdue exceeds your cash balance. Fix this now.');}
+  else if(p.netMargin<b.net[0]&&p.netMargin>0){setStatus('warn','&#x1F4C9;','Margin below benchmark \u2014 '+p.netMargin.toFixed(1)+'% vs '+b.net[0]+'% minimum. Action needed.');}
+  else{setStatus('neutral','&#x1F4CA;','Analysis complete \u2014 '+( p.rev>0?'$'+fmt(p.rev)+' revenue detected':'check details below')+'.');}
+}
+
+function paintOneThing(p,b){
+  var body=$('ot-body');
+  var action,why,impact,impactLabel,script;
+  if(p.ovdAmt>5000&&p.ovdCount>0){
+    action='Follow up your overdue invoices \u2014 $'+fmt(p.ovdAmt)+' is owed to you right now';
+    why='You have '+p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' who haven\'t paid. Every day this sits unpaid is a free loan to them at your expense. This is the fastest way to improve your cash this week.';
+    impact='$'+fmt(p.ovdAmt);impactLabel='fastest cash this week';
+    script='Hi [Name], just following up on invoice #[X] for $[Amount] from [Date]. Can you confirm when payment will come through? Happy to resolve any issues.';
+  } else if(p.cash>0&&p.rev>0&&(p.cash/(p.rev/52))<4){
+    action='Urgently review your cash position \u2014 runway is critically low';
+    why='With $'+fmt(p.cash)+' in the bank and weekly costs of ~$'+fmt(Math.round((p.rev/52)*(1-p.netMargin/100)))+', one slow week puts you in crisis. Accelerate collections or cut costs today.';
+    impact=Math.round(p.cash/(p.rev/52)*10)/10+' weeks';impactLabel='runway remaining';
+    script='';
+  } else if(p.labourPct>0&&p.labourPct>(b.labour[1]+5)){
+    var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev);
+    action='Review your labour roster \u2014 you\'re overpaying by $'+fmt(Math.round(ex/12))+'/month';
+    why='Labour is running at '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% industry benchmark. Pull your cost by shift this week and find where the excess is hiding.';
+    impact='$'+fmt(Math.round(ex/12));impactLabel='per month being wasted';
+    script='';
+  } else {
+    action='Run the full AI analysis to get your personalised action plan';
+    why='FlowGuard will scan your P&L, invoices and costs to find the single highest-impact action for your business.';
+    impact='';impactLabel='';script='';
+  }
+  var html='<div class="ot-target"><div class="ot-num">1</div><div class="ot-body">';
+  html+='<div class="ot-action">'+esc(action)+'</div>';
+  html+='<div class="ot-why">'+esc(why)+'</div>';
+  if(impact)html+='<div class="ot-impact"><div class="ot-impact-val">'+esc(impact)+'</div><div class="ot-impact-lbl">'+esc(impactLabel)+'</div></div>';
+  html+='</div></div>';
+  if(script)html+='<div class="ot-script"><div class="ot-script-lbl">Script to use</div><div class="ot-script-text">'+esc(script)+'</div></div>';
+  body.innerHTML=html;
+}
+
+function paintLeaks(p,b){
+  var body=$('leaks-body'),badge=$('leaks-badge');
+  var leaks=[];
+  var total=0;
+  if(p.labourPct>b.labour[1]){var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev/12);if(ex>0){total+=ex;leaks.push({name:'Labour cost blowout',desc:'Running '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% benchmark',monthly:ex,color:'red',fix:'roster'});}}
+  if(p.ovdAmt>1000){total+=p.ovdAmt;leaks.push({name:'Unpaid invoices',desc:p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' overdue \u2014 money owed to you now',monthly:p.ovdAmt,color:'red',fix:'invoices',isOnce:true});}
+  if(p.netMargin>0&&p.netMargin<b.net[0]){var gap=Math.round(((b.net[0]-p.netMargin)/100)*p.rev/12);if(gap>0){total+=gap;leaks.push({name:'Underpricing vs benchmark',desc:'Margin '+p.netMargin.toFixed(1)+'% \u2014 industry minimum is '+b.net[0]+'%. Prices haven\'t kept up with costs.',monthly:gap,color:'amb',fix:'pricing'});}}
+  if(!leaks.length){badge.textContent='\u2014';badge.className='card-badge bd-muted';body.innerHTML='<div class="empty-state"><div class="es-ico">&#x2705;</div><div class="es-title">No leaks found</div><div class="es-sub">Your numbers look healthy. Run a full AI analysis for a deeper scan.</div></div>';return;}
+  badge.textContent='$'+fmt(total)+' found';badge.className='card-badge bd-red';
+  var html='';
+  leaks.forEach(function(l,i){
+    var rc=l.color==='red'?'var(--red)':'var(--amber)';
+    var lbls=['#1','#2','#3'];
+    html+='<div class="leak-row" style="border-left-color:'+rc+'">';
+    html+='<div class="leak-text">';
+    html+='<div class="leak-name" style="color:'+rc+'">'+lbls[i]+' \u2014 '+esc(l.name)+'</div>';
+    html+='<div class="leak-desc">'+esc(l.desc)+'</div>';
+    html+='<button class="fix-pill '+l.color+'" onclick="openFix('+i+')">&#x26A1; Fix This For Me</button>';
+    html+='</div>';
+    html+='<div class="leak-right"><div class="leak-amt" style="color:'+rc+'">$'+fmt(l.monthly)+'</div>';
+    html+='<div class="leak-mo">'+(l.isOnce?'total':'per mo')+'</div></div>';
+    html+='</div>';
+  });
+  body.innerHTML=html;
+  window._leaks=leaks;
+}
+
+function paintRunway(p){
+  var body=$('runway-body'),badge=$('runway-badge');
+  if(!p||p.rev===0){return;}
+  var wBurn=(p.rev/52)*(1-(p.netMargin/100));
+  var weeks=p.cash>0?Math.round(p.cash/Math.max(wBurn,1)):0;
+  var pct=Math.min(100,Math.round((weeks/16)*100));
+  var color,label,status,statusClass;
+  if(weeks>=12){color='var(--green)';label='&#x1F7E2; Safe';status='You have a solid cash buffer. Keep building it above 12 weeks.';statusClass='good';}
+  else if(weeks>=6){color='var(--amber)';label='&#x1F7E1; Watch';status='Adequate but not comfortable. Build your buffer to 12+ weeks.';statusClass='warn';}
+  else if(weeks>=3){color='var(--red)';label='&#x1F7E0; Risk';status='One slow month could cause serious problems. Act now.';statusClass='bad';}
+  else{color='var(--red)';label='&#x1F534; Critical';status='Cash is dropping faster than it\'s coming in. Emergency action needed.';statusClass='bad';}
+  badge.innerHTML=label;badge.className='card-badge '+(weeks>=12?'bd-grn':weeks>=6?'bd-amb':'bd-red');
+  var html='<div class="runway-weeks" style="color:'+color+'">'+weeks+'w</div>';
+  html+='<div class="runway-label">cash runway at current burn rate</div>';
+  html+='<div class="runway-bar-track"><div class="runway-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
+  html+='<div class="runway-markers"><span>0</span><span>4w</span><span>8w</span><span>12w+</span></div>';
+  html+='<div class="runway-status '+statusClass+'">'+status+'</div>';
+  body.innerHTML=html;
+}
+
+function paintOwnerPay(p){
+  var body=$('pay-body'),warn=$('pay-warn');
+  if(!p||p.rev===0)return;
+  var wBurn=(p.rev/52)*(1-(p.netMargin/100));
+  var buffer=wBurn*6;
+  var safe=Math.max(0,p.cash-buffer-p.bills);
+  var risky=Math.max(0,p.cash-wBurn*3-p.bills);
+  var color=safe>0?'var(--ac)':'var(--red)';
+  var html='<div class="pay-amount" style="color:'+color+'">$'+fmt(Math.round(safe))+'</div>';
+  html+='<div class="pay-label">safe draw this month</div>';
+  html+='<div class="pay-row"><div class="pay-row-label">Current cash</div><div class="pay-row-val">$'+fmt(Math.round(p.cash))+'</div></div>';
+  html+='<div class="pay-row"><div class="pay-row-label">6-week reserve</div><div class="pay-row-val" style="color:var(--red)">-$'+fmt(Math.round(buffer))+'</div></div>';
+  html+='<div class="pay-row"><div class="pay-row-label">Unpaid bills</div><div class="pay-row-val" style="color:var(--amber)">-$'+fmt(Math.round(p.bills))+'</div></div>';
+  if(risky>safe)html+='<div class="pay-row"><div class="pay-row-label">Risky max</div><div class="pay-row-val" style="color:var(--amber)">$'+fmt(Math.round(risky))+'</div></div>';
+  body.innerHTML=html;
+  if(safe<3000){warn.textContent=safe<=0?'Safe draw is zero. Collect overdue invoices before paying yourself.':'Safe draw is very low. Chase invoices first to increase available cash.';warn.classList.add('on');}
+  else warn.classList.remove('on');
+}
+
+function paintAlerts(p,b){
+  var alerts=[];
+  if(p.labourPct>b.labour[1]*1.15)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>Labour at '+p.labourPct.toFixed(0)+'% of revenue</b> \u2014 '+(p.labourPct-b.labour[1]).toFixed(0)+'% above benchmark. Review your roster this week.'});
+  if(p.ovdAmt>p.cash*0.5&&p.ovdAmt>5000)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>$'+fmt(p.ovdAmt)+' overdue exceeds your cash buffer.</b> Chase these invoices before paying any bills.'});
+  if(p.netMargin>0&&p.netMargin<b.net[0])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Margin at '+p.netMargin.toFixed(1)+'%</b> \u2014 below the '+b.net[0]+'% industry minimum. A price increase is overdue.'});
+  if(p.debtorDays>b.debtor[1])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Clients averaging '+Math.round(p.debtorDays)+' days to pay</b> \u2014 benchmark is '+b.debtor[1]+' days. Tighten payment terms.'});
+  if(!alerts.length)return;
+  $('alerts-card').style.display='';$('alerts-badge').textContent=alerts.length;
+  $('alerts-badge').className='card-badge '+(alerts.some(function(a){return a.type==='urgent';})? 'bd-red':'bd-amb');
+  var html='';alerts.forEach(function(a){html+='<div class="alert-item '+a.type+'"><span class="ai-ico">'+a.ico+'</span><div class="ai-text">'+a.text+'</div></div>';});
+  $('alerts-body').innerHTML=html;
+}
+
+function parseAIResponse(text){
+  var p=S.parsed;if(!p)return;
+  var b=BENCH[(S.user&&S.user.industry)||'other']||BENCH.other;
+  paintAll();
+  // Try to parse additional leaks from AI text and merge
+  var lines=text.split('\n'),aiLeaks=[],defs=[{rx:/subscri|saas/i,name:'Wasted subscriptions',fix:'overheads',color:'red'},{rx:/supplier|vendor/i,name:'Supplier overpricing',fix:'overheads',color:'amb'}];
+  lines.forEach(function(line){var am=line.match(/\$[\d,]+[kKmM]?/);if(!am||line.trim().length<12)return;var n=parseFloat(am[0].replace(/[$,]/g,''));if(/[kK]/.test(am[0]))n*=1000;if(/[mM]/.test(am[0]))n*=1000000;if(n<200)return;for(var j=0;j<defs.length;j++){if(defs[j].rx.test(line)&&!aiLeaks.find(function(x){return x.name===defs[j].name;})){aiLeaks.push({name:defs[j].name,desc:line.replace(/^[*\-\d.\s]+/,'').trim().slice(0,100),monthly:Math.round(n>p.rev/2?n/12:n),color:defs[j].color,fix:defs[j].fix});break;}}});
+  if(aiLeaks.length){var existing=window._leaks||[];var merged=existing.concat(aiLeaks.filter(function(al){return!existing.find(function(e){return e.name===al.name;});}));window._leaks=merged;if(merged.length>existing.length)paintLeaks(p,b);}
+}
+
+function openFix(i){
+  var leaks=window._leaks;if(!leaks||!leaks[i])return;
+  var leak=leaks[i];
+  $('modal-title').textContent='Fix This For Me';$('modal-sub').textContent=leak.name;
+  $('modal-body').innerHTML='<div class="modal-loading"><span class="spinner"></span> Generating your action plan...</div>';
+  $('fix-modal').classList.add('on');document.body.style.overflow='hidden';
+  var p=S.parsed||{};
+  var prompt='Profit leak: "'+leak.name+'" costing $'+leak.monthly+'/month. Revenue $'+fmt(p.rev||0)+'/year, Cash $'+fmt(p.cash||0)+', '+( p.ovdCount||0)+' overdue invoices $'+fmt(p.ovdAmt||0)+'. Write 2 sections with ## headings: 1) Ready-to-send message template with [Placeholders]. 2) Day 1, Day 3, Day 7 action steps. Brutally practical, no fluff.';
+  fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data||{},question:prompt})})
+    .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+    .then(function(res){renderModal(leak,(res.ok&&res.d.analysis)?res.d.analysis:(FIX_TPL[leak.fix]||FIX_TPL.overheads));})
+    .catch(function(){renderModal(leak,FIX_TPL[leak.fix]||FIX_TPL.overheads);});
+}
+function renderModal(leak,text){
+  window._fixText=text;var sections=text.split('\n## '),html='';
+  sections.forEach(function(s){var lines=s.split('\n');var h=lines[0].replace(/^## /,'').trim();var body=lines.slice(1).join('\n').trim();html+='<div style="margin-bottom:16px"><div class="modal-sec-lbl">'+esc(h)+'</div><div class="modal-draft">'+mdl(body)+'</div></div>';});
+  html+='<div class="modal-btns"><button class="modal-copy" onclick="copyFix()">&#x1F4CB; Copy</button><button class="modal-done" onclick="closeModal()">Done</button></div>';
+  $('modal-body').innerHTML=html;
+}
+function copyFix(){if(navigator.clipboard)navigator.clipboard.writeText(window._fixText||'').then(function(){toast('Copied','ok');}).catch(function(){toast('Select text and copy manually','err');});else toast('Select text above and copy manually','info');}
+function closeModal(){$('fix-modal').classList.remove('on');document.body.style.overflow='';}
+
+function askAI(){
+  var inp=$('ask-inp'),q=inp.value.trim();if(!q)return;
+  if(!S.conn&&!S.data){toast('Connect your accounting software first','err');openConn();return;}
+  var btn=$('ask-go');btn.disabled=true;btn.textContent='...';inp.disabled=true;$('ask-ans').classList.remove('on');
+  var fd=S.data;
+  var go=function(fd2){
+    fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:fd2||{},question:q})})
+      .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+      .then(function(res){if(!res.ok)throw new Error(res.d.error);$('ask-ans').innerHTML=mdl(res.d.analysis);$('ask-ans').classList.add('on');inp.value='';})
+      .catch(function(){toast('Could not get answer','err');})
+      .finally(function(){btn.disabled=false;btn.textContent='Ask \u2192';inp.disabled=false;inp.focus();});
+  };
+  if(!fd&&S.conn){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go(d.data);}).catch(function(){go(null);});}
+  else go(fd);
+}
+
+function loadDemo(){
+  $('demo-strip').classList.add('on');
+  S.parsed={rev:1840000,profit:94200,cash:38400,ovdAmt:184000,ovdCount:9,bills:42000,netMargin:5.1,labourPct:52.3,debtorDays:48,provider:'demo'};
+  S.data={invoices:[{Contact:{Name:'Westfield Developments'},AmountDue:84000,DueDate:new Date(Date.now()-74*86400000).toISOString()},{Contact:{Name:'Smith & Co Builders'},AmountDue:47000,DueDate:new Date(Date.now()-32*86400000).toISOString()},{Contact:{Name:'Metro Retail Group'},AmountDue:31000,DueDate:new Date(Date.now()-18*86400000).toISOString()}],bills:[{AmountDue:42000}]};
+  paintAll();
+  window._leaks=[{name:'Labour cost blowout',desc:'Running 52.3% of revenue \u2014 trades benchmark is 38\u201342%',monthly:9333,color:'red',fix:'roster'},{name:'Unpaid invoices',desc:'9 clients overdue \u2014 $184K owed to you right now',monthly:184000,color:'red',fix:'invoices',isOnce:true},{name:'Underpricing vs benchmark',desc:'Net margin 5.1% \u2014 trades minimum is 8%. Prices haven\'t kept up.',monthly:4282,color:'amb',fix:'pricing'}];
+  $('leaks-badge').textContent='$198K found';$('leaks-badge').className='card-badge bd-red';
+  var html='';window._leaks.forEach(function(l,i){var rc=l.color==='red'?'var(--red)':'var(--amber)';var lbls=['#1','#2','#3'];html+='<div class="leak-row" style="border-left-color:'+rc+'"><div class="leak-text"><div class="leak-name" style="color:'+rc+'">'+lbls[i]+' \u2014 '+esc(l.name)+'</div><div class="leak-desc">'+esc(l.desc)+'</div><button class="fix-pill '+l.color+'" onclick="openFix('+i+')">&#x26A1; Fix This For Me</button></div><div class="leak-right"><div class="leak-amt" style="color:'+rc+'">$'+fmt(l.monthly)+'</div><div class="leak-mo">'+(l.isOnce?'total':'per mo')+'</div></div></div>';});
+  $('leaks-body').innerHTML=html;
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeModal();$('conn-overlay').classList.remove('on');}
+  if(e.key==='Enter'){var a=document.activeElement;if(a===$('ask-inp')){askAI();return;}if(a&&a.closest){if(a.closest('#v-su')){doSignup();return;}if(a.closest('#v-li')){doLogin();return;}}}
+});
 </script>
 </body>
 </html>
