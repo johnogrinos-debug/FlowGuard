@@ -1,1 +1,1466 @@
-{"type":"error","error":{"type":"api_error","message":"Internal server error"},"request_id":"req_011CZPtkx3wcB7VAW9BK5AFv"}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowGuard — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #0e0f0c;
+  --s1:    #141510;
+  --s2:    #1a1c17;
+  --s3:    #22241e;
+  --b1:    rgba(255,255,255,.07);
+  --b2:    rgba(255,255,255,.12);
+  --b3:    rgba(255,255,255,.22);
+  --ac:    #c8f060;
+  --ac2:   #a8d040;
+  --red:   #ff5c5c;
+  --amber: #ffb347;
+  --green: #5cffa0;
+  --blue:  #60c8f0;
+  --tx:    #e8e9e4;
+  --tx2:   #888980;
+  --tx3:   #484940;
+  --mono:  'JetBrains Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--tx);font-family:'Instrument Sans',sans-serif;font-size:14px;line-height:1.6;}
+button{cursor:pointer;font-family:inherit;transition:all .14s;}
+input,textarea,select{font-family:inherit;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px;}
+
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,240,96,.3)}70%{box-shadow:0 0 0 8px rgba(200,240,96,0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scoreReveal{from{stroke-dashoffset:339}to{stroke-dashoffset:var(--target)}}
+
+/* ── LAYOUT ── */
+#app { display: flex; height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px; flex-shrink: 0;
+  background: var(--s1);
+  border-right: 1px solid var(--b1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.sb-logo {
+  padding: 20px 20px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--b1);
+}
+.sb-mark {
+  width: 30px; height: 30px;
+  background: var(--ac); border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sb-brand { font-family: 'Cabinet Grotesk', sans-serif; font-size: 15px; font-weight: 800; }
+
+.sb-conn {
+  margin: 12px;
+  background: var(--s2); border: 1px solid var(--b1);
+  border-radius: 10px; padding: 12px;
+}
+.sb-conn-label { font-size: 9px; color: var(--tx3); text-transform: uppercase; letter-spacing: .12em; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; margin-bottom: 8px; }
+.sb-conn-name { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.sb-conn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2.5s infinite; flex-shrink: 0; }
+.sb-conn-none { font-size: 11px; color: var(--tx3); }
+.sb-conn-btn {
+  margin-top: 8px; width: 100%;
+  padding: 7px; border-radius: 6px;
+  border: 1px solid var(--b2); background: transparent;
+  color: var(--tx2); font-size: 11px;
+}
+.sb-conn-btn:hover { border-color: var(--b3); color: var(--tx); }
+
+.sb-nav { flex: 1; padding: 8px; }
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 13px; color: var(--tx2);
+  cursor: pointer; transition: all .12s;
+  margin-bottom: 2px;
+}
+.sb-item:hover { background: var(--b1); color: var(--tx); }
+.sb-item.active { background: rgba(200,240,96,.1); color: var(--ac); }
+.sb-item-ico { font-size: 15px; width: 20px; text-align: center; }
+
+.sb-user {
+  border-top: 1px solid var(--b1);
+  padding: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(200,240,96,.15); border: 1px solid rgba(200,240,96,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 800;
+  color: var(--ac); flex-shrink: 0;
+}
+.sb-user-info { flex: 1; min-width: 0; }
+.sb-user-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-user-plan { font-size: 10px; color: var(--tx3); }
+.sb-logout { background: transparent; border: none; color: var(--tx3); font-size: 11px; padding: 4px; border-radius: 4px; }
+.sb-logout:hover { color: var(--red); }
+
+/* ── MAIN ── */
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+/* ── TOPBAR ── */
+.topbar {
+  padding: 0 28px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--b1);
+  background: rgba(14,15,12,.8); backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 8px; }
+.topbar-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 800; }
+.topbar-sub { font-size: 11px; color: var(--tx3); }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.btn-run {
+  padding: 8px 18px; border-radius: 8px;
+  background: var(--ac); color: var(--bg);
+  font-size: 13px; font-weight: 800;
+  border: none; font-family: 'Cabinet Grotesk', sans-serif;
+  display: flex; align-items: center; gap: 7px;
+}
+.btn-run:hover { background: var(--ac2); }
+.btn-run:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── CONTENT ── */
+.content { padding: 24px 28px; flex: 1; animation: fadeIn .3s ease; }
+
+/* ── SCORE SECTION ── */
+.score-row { display: grid; grid-template-columns: auto 1fr; gap: 20px; margin-bottom: 20px; align-items: start; }
+
+.score-card {
+  background: var(--s1); border: 1px solid var(--b1);
+  border-radius: 14px; padding: 24px;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 160px;
+}
+.score-ring { position: relative; margin-bottom: 12px; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--b2); stroke-width: 10; }
+.score-ring-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s ease; }
+.score-num {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: var(--mono); font-size: 28px; font-weight: 500;
+  text-align: center;
+}
+.score-label { font-size: 10px; color: var(--tx3); text-transform: uppercase; letter-spacing: .12em; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; margin-bottom: 4px; }
+.score-grade { font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 800; }
+
+.kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.kpi {
+  background: var(--s1); border: 1px solid var(--b1);
+  border-radius: 12px; padding: 16px 18px;
+  transition: border-color .14s;
+}
+.kpi:hover { border-color: var(--b2); }
+.kpi-label { font-size: 9px; color: var(--tx3); text-transform: uppercase; letter-spacing: .12em; font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700; margin-bottom: 8px; }
+.kpi-val { font-family: var(--mono); font-size: 22px; font-weight: 500; margin-bottom: 3px; }
+.kpi-delta { font-size: 10px; }
+.kpi-delta.up { color: var(--green); }
+.kpi-delta.down { color: var(--red); }
+.kpi-delta.warn { color: var(--amber); }
+
+/* ── PANELS ── */
+.panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.panel {
+  background: var(--s1); border: 1px solid var(--b1);
+  border-radius: 14px; overflow: hidden;
+}
+.panel-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--b1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 13px; font-weight: 800; }
+.panel-badge { font-size: 9px; padding: 2px 8px; border-radius: 20px; font-weight: 700; font-family: 'Cabinet Grotesk', sans-serif; text-transform: uppercase; letter-spacing: .06em; }
+.panel-badge.red { background: rgba(255,92,92,.1); color: var(--red); border: 1px solid rgba(255,92,92,.2); }
+.panel-badge.amber { background: rgba(255,179,71,.1); color: var(--amber); border: 1px solid rgba(255,179,71,.2); }
+.panel-badge.green { background: rgba(92,255,160,.1); color: var(--green); border: 1px solid rgba(92,255,160,.2); }
+.panel-body { padding: 14px 18px; }
+
+.leak-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 12px; border-radius: 9px; margin-bottom: 8px;
+  background: var(--s2); border: 1px solid var(--b1);
+  border-left-width: 3px; transition: border-color .12s;
+}
+.leak-item:last-child { margin-bottom: 0; }
+.leak-name { font-size: 12px; font-weight: 700; font-family: 'Cabinet Grotesk', sans-serif; margin-bottom: 3px; }
+.leak-desc { font-size: 11px; color: var(--tx2); line-height: 1.5; }
+.leak-amt { font-family: var(--mono); font-size: 15px; font-weight: 500; flex-shrink: 0; margin-left: 12px; white-space: nowrap; }
+
+.inv-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--b1); font-size: 12px;
+}
+.inv-item:last-child { border: none; }
+.inv-contact { font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+.inv-days { font-size: 10px; }
+.inv-days.overdue { color: var(--red); }
+.inv-days.ok { color: var(--tx3); }
+.inv-right { text-align: right; flex-shrink: 0; }
+.inv-amt { font-family: var(--mono); font-size: 13px; }
+
+/* ── AI SECTION ── */
+.ai-panel {
+  background: var(--s1); border: 1px solid var(--b1);
+  border-radius: 14px; overflow: hidden; margin-bottom: 20px;
+}
+.ai-head {
+  padding: 14px 18px; border-bottom: 1px solid var(--b1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ai-body { padding: 0; }
+
+.ai-analysis {
+  padding: 18px;
+  font-size: 13px; line-height: 1.8; color: var(--tx2);
+  max-height: 400px; overflow-y: auto;
+}
+.ai-analysis h2 {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 13px; font-weight: 800;
+  color: var(--tx); margin: 14px 0 8px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--b1);
+}
+.ai-analysis h2:first-child { margin-top: 0; }
+.ai-analysis ul, .ai-analysis ol { padding-left: 18px; margin: 6px 0 10px; }
+.ai-analysis li { margin-bottom: 5px; }
+.ai-analysis strong { color: var(--tx); }
+
+.ai-placeholder {
+  padding: 36px 18px; text-align: center;
+}
+.ai-placeholder-ico { font-size: 32px; margin-bottom: 12px; }
+.ai-placeholder-t { font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 800; margin-bottom: 6px; }
+.ai-placeholder-s { font-size: 12px; color: var(--tx3); }
+
+.ask-row {
+  padding: 12px 18px; border-top: 1px solid var(--b1);
+  display: flex; gap: 10px; align-items: center;
+}
+.ask-input {
+  flex: 1; background: var(--s2); border: 1px solid var(--b1);
+  border-radius: 8px; padding: 10px 14px;
+  color: var(--tx); font-size: 13px; outline: none;
+  transition: border-color .14s;
+}
+.ask-input:focus { border-color: rgba(200,240,96,.3); }
+.ask-input::placeholder { color: var(--tx3); }
+.ask-btn {
+  padding: 10px 16px; border-radius: 8px;
+  background: var(--ac); color: var(--bg);
+  font-size: 12px; font-weight: 800;
+  border: none; font-family: 'Cabinet Grotesk', sans-serif;
+  flex-shrink: 0;
+}
+.ask-btn:hover { background: var(--ac2); }
+.ask-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── HISTORY TAB ── */
+.hist-item {
+  padding: 14px 18px; border-bottom: 1px solid var(--b1);
+  cursor: pointer; transition: background .12s;
+}
+.hist-item:hover { background: var(--s2); }
+.hist-item:last-child { border: none; }
+.hist-q { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.hist-date { font-size: 10px; color: var(--tx3); }
+.hist-score { font-family: var(--mono); font-size: 11px; color: var(--ac); }
+
+/* ── EMPTY / LOADING ── */
+.empty { padding: 32px 18px; text-align: center; color: var(--tx3); font-size: 12px; }
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--b2); border-top-color: var(--ac);
+  border-radius: 50%; animation: spin .7s linear infinite;
+  display: inline-block;
+}
+.loading-row { display: flex; align-items: center; gap: 10px; padding: 16px 18px; color: var(--tx3); font-size: 12px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: 10px 20px; border-radius: 9px;
+  font-size: 13px; font-weight: 600;
+  backdrop-filter: blur(12px); z-index: 999;
+  animation: rise .25s ease;
+  pointer-events: none;
+}
+.toast.success { background: rgba(92,255,160,.12); border: 1px solid rgba(92,255,160,.25); color: var(--green); }
+.toast.error   { background: rgba(255,92,92,.12);  border: 1px solid rgba(255,92,92,.25);  color: var(--red); }
+.toast.info    { background: rgba(200,240,96,.1);  border: 1px solid rgba(200,240,96,.2);  color: var(--ac); }
+
+/* ── MODAL OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(14,15,12,.95); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; animation: fadeIn .2s ease;
+}
+.modal {
+  background: var(--s1); border: 1px solid var(--b2);
+  border-radius: 18px; padding: 36px 40px;
+  width: 100%; max-width: 420px;
+  animation: rise .25s ease;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6);
+}
+.modal-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.modal-mark {
+  width: 36px; height: 36px; background: var(--ac);
+  border-radius: 9px; display: flex; align-items: center; justify-content: center;
+}
+.modal-brand { font-family: 'Cabinet Grotesk', sans-serif; font-size: 17px; font-weight: 900; }
+.modal-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--tx2); margin-bottom: 28px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; font-weight: 700; color: var(--tx2); text-transform: uppercase; letter-spacing: .08em; font-family: 'Cabinet Grotesk', sans-serif; margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; padding: 11px 14px;
+  background: var(--s2); border: 1px solid var(--b2);
+  border-radius: 9px; color: var(--tx);
+  font-size: 13px; outline: none; transition: border-color .14s;
+}
+.field input:focus, .field select:focus { border-color: rgba(200,240,96,.4); }
+.field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23888980' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+
+.fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.modal-btn {
+  width: 100%; padding: 13px;
+  background: var(--ac); color: var(--bg);
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 800;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.modal-btn:hover { background: var(--ac2); }
+.modal-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.modal-switch { text-align: center; margin-top: 18px; font-size: 12px; color: var(--tx3); }
+.modal-switch a { color: var(--ac); cursor: pointer; font-weight: 600; }
+.modal-switch a:hover { color: var(--ac2); }
+
+.modal-err {
+  background: rgba(255,92,92,.08); border: 1px solid rgba(255,92,92,.2);
+  border-radius: 8px; padding: 10px 13px;
+  font-size: 12px; color: var(--red); margin-bottom: 14px;
+  display: none;
+}
+.modal-err.show { display: block; }
+
+/* ── CONNECT OVERLAY ── */
+.connect-overlay {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(14,15,12,.97); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn .25s ease; padding: 24px;
+}
+.connect-card {
+  background: var(--s1); border: 1px solid var(--b2);
+  border-radius: 20px; padding: 40px;
+  width: 100%; max-width: 480px;
+  animation: rise .3s ease;
+}
+.connect-h { font-family: 'Cabinet Grotesk', sans-serif; font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+.connect-sub { font-size: 13px; color: var(--tx2); margin-bottom: 32px; line-height: 1.7; }
+.connect-options { display: flex; flex-direction: column; gap: 12px; }
+.connect-opt {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 20px; border-radius: 12px;
+  border: 1px solid var(--b2); background: var(--s2);
+  cursor: pointer; transition: all .14s; text-decoration: none;
+}
+.connect-opt:hover { border-color: rgba(200,240,96,.3); background: rgba(200,240,96,.04); }
+.connect-ico {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 900;
+  color: #fff; flex-shrink: 0;
+}
+.connect-info { flex: 1; }
+.connect-name { font-family: 'Cabinet Grotesk', sans-serif; font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.connect-desc { font-size: 11px; color: var(--tx3); }
+.connect-arr { color: var(--tx3); font-size: 16px; }
+.connect-note { font-size: 11px; color: var(--tx3); text-align: center; margin-top: 20px; line-height: 1.6; }
+.connect-skip { margin-top: 10px; text-align: center; }
+.connect-skip a { font-size: 12px; color: var(--tx3); cursor: pointer; }
+.connect-skip a:hover { color: var(--tx2); }
+
+/* ── DEMO BANNER ── */
+.demo-banner {
+  background: rgba(200,240,96,.06); border-bottom: 1px solid rgba(200,240,96,.12);
+  padding: 10px 28px; font-size: 12px; color: var(--ac);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── SECTION TABS ── */
+.tabs { display: flex; gap: 4px; padding: 0 28px; border-bottom: 1px solid var(--b1); background: var(--s1); flex-shrink: 0; }
+.tab { padding: 12px 16px; font-size: 13px; color: var(--tx3); cursor: pointer; border-bottom: 2px solid transparent; transition: all .14s; font-weight: 500; }
+.tab:hover { color: var(--tx2); }
+.tab.active { color: var(--tx); border-bottom-color: var(--ac); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── HISTORY PAGE ── */
+.hist-detail {
+  padding: 18px;
+  font-size: 13px; line-height: 1.8; color: var(--tx2);
+}
+.hist-detail h2 {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 13px; font-weight: 800;
+  color: var(--tx); margin: 14px 0 8px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--b1);
+}
+.hist-detail h2:first-child { margin-top: 0; }
+.hist-detail ul, .hist-detail ol { padding-left: 18px; margin: 6px 0 10px; }
+.hist-detail li { margin-bottom: 5px; }
+.hist-back { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid var(--b1); cursor: pointer; font-size: 12px; color: var(--tx3); }
+.hist-back:hover { color: var(--tx2); }
+
+/* ── TRIAL BADGE ── */
+.trial-badge {
+  display: flex; align-items: center; gap: 7px;
+  padding: 4px 10px; border-radius: 20px;
+  background: rgba(200,240,96,.08); border: 1px solid rgba(200,240,96,.18);
+  font-size: 10px; color: var(--ac); font-family: 'Cabinet Grotesk', sans-serif; font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .panels { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-mark">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+      </div>
+      <span class="sb-brand">FlowGuard</span>
+    </div>
+
+    <div class="sb-conn">
+      <div class="sb-conn-label">Connected to</div>
+      <div id="sb-conn-status" class="sb-conn-none">Not connected</div>
+      <button class="sb-conn-btn" id="sb-conn-btn" onclick="showConnect()">+ Connect software</button>
+    </div>
+
+    <div class="sb-nav">
+      <div class="sb-item active" data-tab="dashboard" onclick="switchTab('dashboard',this)">
+        <span class="sb-item-ico">📊</span> Dashboard
+      </div>
+      <div class="sb-item" data-tab="history" onclick="switchTab('history',this)">
+        <span class="sb-item-ico">📋</span> Analysis History
+      </div>
+    </div>
+
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-avatar">?</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name" id="sb-username">Loading…</div>
+        <div class="sb-user-plan" id="sb-plan">—</div>
+      </div>
+      <button class="sb-logout" onclick="doLogout()" title="Log out">⏏</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- DEMO BANNER (shown if no real connection) -->
+    <div class="demo-banner" id="demo-banner" style="display:none">
+      ⚡ Demo mode — connect your accounting software to see your real numbers
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="trial-badge" id="trial-badge" style="display:none">14-day trial</div>
+        <button class="btn-run" id="run-btn" onclick="runAnalysis()" style="display:none">
+          <span>⚡</span> Run Analysis
+        </button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="page-tabs">
+      <div class="tab active" data-page="overview" onclick="switchPage('overview',this)">Overview</div>
+      <div class="tab" data-page="ai" onclick="switchPage('ai',this)">AI Analysis</div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="page active">
+
+      <!-- OVERVIEW PAGE -->
+      <div id="page-overview" class="page active content">
+
+        <!-- SCORE + KPIS -->
+        <div class="score-row">
+          <div class="score-card">
+            <div class="score-label">FlowScore™</div>
+            <div class="score-ring">
+              <svg width="110" height="110" viewBox="0 0 120 120">
+                <circle class="score-ring-bg" cx="60" cy="60" r="54"/>
+                <circle id="score-circle" class="score-ring-fill" cx="60" cy="60" r="54"
+                  stroke="#c8f060"
+                  stroke-dasharray="339"
+                  stroke-dashoffset="339"/>
+              </svg>
+              <div class="score-num" id="score-num">—</div>
+            </div>
+            <div class="score-grade" id="score-grade" style="color:var(--tx3)">No data yet</div>
+          </div>
+
+          <div class="kpis" id="kpis">
+            <div class="kpi">
+              <div class="kpi-label">Revenue (YTD)</div>
+              <div class="kpi-val" id="kpi-rev">—</div>
+              <div class="kpi-delta" id="kpi-rev-d"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Net Profit</div>
+              <div class="kpi-val" id="kpi-profit">—</div>
+              <div class="kpi-delta" id="kpi-profit-d"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Cash Position</div>
+              <div class="kpi-val" id="kpi-cash">—</div>
+              <div class="kpi-delta" id="kpi-cash-d"></div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Overdue Invoices</div>
+              <div class="kpi-val" id="kpi-overdue">—</div>
+              <div class="kpi-delta" id="kpi-overdue-d"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEAKS + INVOICES PANELS -->
+        <div class="panels" id="panels">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Profit Leaks Detected</div>
+              <div class="panel-badge red" id="leaks-count">—</div>
+            </div>
+            <div class="panel-body" id="leaks-body">
+              <div class="empty">Run an analysis to detect profit leaks</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Overdue Invoices</div>
+              <div class="panel-badge amber" id="inv-count">—</div>
+            </div>
+            <div class="panel-body" id="inv-body">
+              <div class="empty">No data loaded yet</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- AI PAGE -->
+      <div id="page-ai" class="page content" style="padding-top:0">
+
+        <div class="ai-panel" style="margin-top:20px">
+          <div class="ai-head">
+            <div class="panel-title">AI Profit Analysis</div>
+            <div id="ai-score-badge"></div>
+          </div>
+          <div class="ai-body">
+            <div id="ai-content">
+              <div class="ai-placeholder">
+                <div class="ai-placeholder-ico">🤖</div>
+                <div class="ai-placeholder-t">No analysis yet</div>
+                <div class="ai-placeholder-s">Click "Run Analysis" to get your full AI profit breakdown</div>
+              </div>
+            </div>
+            <div class="ask-row">
+              <input type="text" class="ask-input" id="ask-input" placeholder='Ask anything — "Why is my cash low?" "Which client should I chase first?"' />
+              <button class="ask-btn" onclick="askQuestion()" id="ask-btn">Ask →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="tab-history" class="page content" style="padding:0">
+      <div class="panel" style="margin:24px 28px; border-radius:14px;">
+        <div class="panel-head">
+          <div class="panel-title">Analysis History</div>
+          <div class="panel-badge green" id="hist-count">0</div>
+        </div>
+        <div id="hist-body">
+          <div class="empty">No analyses saved yet. Run your first analysis from the Dashboard.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="auth-overlay">
+  <div class="modal">
+    <div class="modal-logo">
+      <div class="modal-mark">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+      </div>
+      <span class="modal-brand">FlowGuard</span>
+    </div>
+
+    <!-- SIGNUP VIEW -->
+    <div id="signup-view">
+      <div class="modal-h">Start your free trial</div>
+      <div class="modal-sub">14 days free. No credit card required.</div>
+      <div class="modal-err" id="signup-err"></div>
+      <div class="field"><label>Full name</label><input type="text" id="su-name" placeholder="Jamie Smith" autocomplete="name"/></div>
+      <div class="fields-row">
+        <div class="field"><label>Email</label><input type="email" id="su-email" placeholder="you@company.com" autocomplete="email"/></div>
+        <div class="field"><label>Password</label><input type="password" id="su-pass" placeholder="8+ characters" autocomplete="new-password"/></div>
+      </div>
+      <div class="fields-row">
+        <div class="field"><label>Company</label><input type="text" id="su-company" placeholder="Acme Pty Ltd"/></div>
+        <div class="field">
+          <label>Industry</label>
+          <select id="su-industry">
+            <option value="trades">Trades & Construction</option>
+            <option value="retail">Retail</option>
+            <option value="hospitality">Hospitality</option>
+            <option value="professional">Professional Services</option>
+            <option value="health">Health & Wellness</option>
+            <option value="ecommerce">eCommerce</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <button class="modal-btn" onclick="doSignup()" id="su-btn">Create free account →</button>
+      <div class="modal-switch">Already have an account? <a onclick="showLogin()">Log in</a></div>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view" style="display:none">
+      <div class="modal-h">Welcome back</div>
+      <div class="modal-sub">Log in to your FlowGuard account.</div>
+      <div class="modal-err" id="login-err"></div>
+      <div class="field"><label>Email</label><input type="email" id="li-email" placeholder="you@company.com" autocomplete="email"/></div>
+      <div class="field"><label>Password</label><input type="password" id="li-pass" placeholder="Your password" autocomplete="current-password"/></div>
+      <button class="modal-btn" onclick="doLogin()" id="li-btn">Log in →</button>
+      <div class="modal-switch">No account yet? <a onclick="showSignup()">Start free trial</a></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONNECT OVERLAY -->
+<div class="connect-overlay" id="connect-overlay" style="display:none">
+  <div class="connect-card">
+    <div class="modal-logo" style="margin-bottom:24px">
+      <div class="modal-mark">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0e0f0c" stroke-width="2.5" stroke-linecap="round"><path d="M3 17l4-8 4 6 3-4 4 6"/></svg>
+      </div>
+      <span class="modal-brand">FlowGuard</span>
+    </div>
+    <div class="connect-h">Connect your accounts</div>
+    <div class="connect-sub">Choose your accounting software. We use read-only access — we never make changes to your data.</div>
+    <div class="connect-options">
+      <a class="connect-opt" href="/auth/xero" id="xero-link">
+        <div class="connect-ico" style="background:#1ab4d7">X</div>
+        <div class="connect-info">
+          <div class="connect-name">Xero</div>
+          <div class="connect-desc">Australia's most popular accounting platform</div>
+        </div>
+        <div class="connect-arr">→</div>
+      </a>
+      <a class="connect-opt" href="/auth/myob" id="myob-link">
+        <div class="connect-ico" style="background:#6c47ff">M</div>
+        <div class="connect-info">
+          <div class="connect-name">MYOB</div>
+          <div class="connect-desc">Connect your MYOB AccountRight file</div>
+        </div>
+        <div class="connect-arr">→</div>
+      </a>
+      <a class="connect-opt" href="/auth/quickbooks" id="qb-link">
+        <div class="connect-ico" style="background:#2ca01c">Q</div>
+        <div class="connect-info">
+          <div class="connect-name">QuickBooks</div>
+          <div class="connect-desc">Intuit QuickBooks Online</div>
+        </div>
+        <div class="connect-arr">→</div>
+      </a>
+    </div>
+    <div class="connect-note">🔒 Read-only access · Bank-level encryption · Your data is never sold or shared</div>
+    <div class="connect-skip"><a onclick="hideConnect()">Skip for now — use demo data</a></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────
+let state = {
+  user: null,
+  connection: null,
+  financialData: null,
+  lastAnalysis: null,
+  lastFlowScore: null,
+  loading: false,
+};
+
+// ── INIT ───────────────────────────────────────────────────────────────
+window.addEventListener('load', async () => {
+  // Check URL params first
+  const params = new URLSearchParams(location.search);
+  const connected = params.get('connected');
+  const error     = params.get('error');
+  // Clean URL
+  history.replaceState({}, '', '/app');
+
+  await checkAuth();
+
+  if (connected) {
+    toast(`✅ Connected to ${connected.charAt(0).toUpperCase()+connected.slice(1)} successfully!`, 'success');
+    await loadUserData();
+    if (state.connection) autoLoadData();
+  }
+  if (error) {
+    toast('Connection failed: ' + error.replace(/_/g,' '), 'error');
+  }
+});
+
+// ── AUTH ───────────────────────────────────────────────────────────────
+async function checkAuth() {
+  try {
+    const r = await fetch('/api/auth/me', { credentials:'include' });
+    if (r.ok) {
+      const d = await r.json();
+      state.user = d.user;
+      state.connection = d.connection;
+      showApp();
+      updateUI();
+      if (state.connection) {
+        await autoLoadData();
+      } else {
+        showConnect();
+        loadHistory();
+      }
+    } else {
+      showAuth();
+    }
+  } catch(e) {
+    showAuth();
+  }
+}
+
+async function loadUserData() {
+  try {
+    const r = await fetch('/api/auth/me', { credentials:'include' });
+    if (r.ok) {
+      const d = await r.json();
+      state.user = d.user;
+      state.connection = d.connection;
+      updateUI();
+    }
+  } catch(e) {}
+}
+
+function showApp() {
+  document.getElementById('auth-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+}
+
+function showAuth(view) {
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  if (view === 'login') showLogin(); else showSignup();
+}
+
+function showSignup() {
+  document.getElementById('signup-view').style.display = '';
+  document.getElementById('login-view').style.display = 'none';
+}
+function showLogin() {
+  document.getElementById('signup-view').style.display = 'none';
+  document.getElementById('login-view').style.display = '';
+}
+
+function updateUI() {
+  const u = state.user;
+  if (!u) return;
+
+  // Sidebar user
+  document.getElementById('sb-username').textContent = u.name || u.email;
+  document.getElementById('sb-avatar').textContent = (u.name||u.email)[0].toUpperCase();
+  document.getElementById('sb-plan').textContent = u.plan === 'trial' ? '14-day trial' : u.plan === 'paid' ? 'Pro plan' : u.plan;
+
+  // Trial badge
+  if (u.plan === 'trial') {
+    document.getElementById('trial-badge').style.display = 'flex';
+  }
+
+  // Connection
+  if (state.connection) {
+    const c = state.connection;
+    document.getElementById('sb-conn-status').innerHTML =
+      `<span class="sb-conn-name"><span class="sb-conn-dot"></span>${c.tenant_name||c.provider}</span>`;
+    document.getElementById('sb-conn-btn').textContent = 'Change connection';
+    document.getElementById('run-btn').style.display = 'flex';
+    document.getElementById('demo-banner').style.display = 'none';
+  } else {
+    document.getElementById('sb-conn-status').textContent = 'Not connected';
+    document.getElementById('sb-conn-btn').textContent = '+ Connect software';
+    document.getElementById('run-btn').style.display = 'none';
+    document.getElementById('demo-banner').style.display = 'flex';
+  }
+}
+
+// ── SIGNUP ─────────────────────────────────────────────────────────────
+async function doSignup() {
+  const btn = document.getElementById('su-btn');
+  const err = document.getElementById('signup-err');
+  const email    = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-pass').value;
+  const name     = document.getElementById('su-name').value.trim();
+  const company  = document.getElementById('su-company').value.trim();
+  const industry = document.getElementById('su-industry').value;
+
+  err.classList.remove('show');
+  if (!email || !password) { err.textContent='Email and password required'; err.classList.add('show'); return; }
+  if (password.length < 8) { err.textContent='Password must be at least 8 characters'; err.classList.add('show'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Creating account…';
+
+  try {
+    const r = await fetch('/api/auth/signup', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password, name, company, industry })
+    });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.error||'Signup failed'; err.classList.add('show'); return; }
+    state.user = d.user;
+    state.connection = null;
+    showApp();
+    updateUI();
+    showConnect();
+    toast('Account created! 🎉 Connect your accounting software to get started.', 'info');
+  } catch(e) {
+    err.textContent = 'Network error — please try again';
+    err.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Create free account →';
+  }
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────────
+async function doLogin() {
+  const btn = document.getElementById('li-btn');
+  const err = document.getElementById('login-err');
+  const email    = document.getElementById('li-email').value.trim();
+  const password = document.getElementById('li-pass').value;
+
+  err.classList.remove('show');
+  if (!email || !password) { err.textContent='Email and password required'; err.classList.add('show'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Logging in…';
+
+  try {
+    const r = await fetch('/api/auth/login', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password })
+    });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.error||'Login failed'; err.classList.add('show'); return; }
+    state.user = d.user;
+    await loadUserData();
+    showApp();
+    updateUI();
+    if (state.connection) {
+      await autoLoadData();
+    } else {
+      showConnect();
+    }
+  } catch(e) {
+    err.textContent = 'Network error — please try again';
+    err.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Log in →';
+  }
+}
+
+// Enter key support
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const signupView = document.getElementById('signup-view');
+  const loginView  = document.getElementById('login-view');
+  if (signupView.style.display !== 'none' && !signupView.hidden) { doSignup(); return; }
+  if (loginView.style.display  !== 'none' && !loginView.hidden)  { doLogin();  return; }
+  if (document.activeElement === document.getElementById('ask-input')) askQuestion();
+});
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method:'POST', credentials:'include' });
+  state = { user:null, connection:null, financialData:null, lastAnalysis:null, lastFlowScore:null, loading:false };
+  showAuth('login');
+  toast('Logged out', 'info');
+}
+
+// ── CONNECT ────────────────────────────────────────────────────────────
+function showConnect() {
+  document.getElementById('connect-overlay').style.display = 'flex';
+}
+function hideConnect() {
+  document.getElementById('connect-overlay').style.display = 'none';
+  // Load demo data
+  loadDemoData();
+}
+
+// ── AUTO LOAD DATA ─────────────────────────────────────────────────────
+async function autoLoadData() {
+  if (!state.connection) return;
+  showKPILoading();
+  try {
+    const r = await fetch('/api/data', { credentials:'include' });
+    if (r.ok) {
+      const d = await r.json();
+      state.financialData = d.data;
+      renderKPIs(d.data, d.provider);
+      renderInvoices(d.data, d.provider);
+    } else {
+      showKPIError();
+    }
+  } catch(e) {
+    showKPIError();
+  }
+  loadHistory();
+}
+
+// ── RUN ANALYSIS ───────────────────────────────────────────────────────
+async function runAnalysis() {
+  if (state.loading) return;
+
+  // If no real connection, run on demo data
+  if (!state.connection) {
+    toast('Connect your accounting software first to run a real analysis', 'error');
+    showConnect();
+    return;
+  }
+
+  // Fetch fresh data if needed
+  if (!state.financialData) {
+    showKPILoading();
+    try {
+      const dr = await fetch('/api/data', { credentials:'include' });
+      if (!dr.ok) { toast('Failed to load financial data', 'error'); return; }
+      const dd = await dr.json();
+      state.financialData = dd.data;
+      renderKPIs(dd.data, dd.provider);
+      renderInvoices(dd.data, dd.provider);
+    } catch(e) {
+      toast('Could not load financial data', 'error');
+      return;
+    }
+  }
+
+  state.loading = true;
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:14px;height:14px;border-width:2px"></div> Analysing…';
+
+  // Switch to AI tab
+  switchPage('ai', document.querySelector('[data-page="ai"]'));
+
+  document.getElementById('ai-content').innerHTML = `
+    <div class="loading-row"><div class="spinner"></div> FlowGuard AI is reading your financials and identifying profit leaks…</div>`;
+
+  try {
+    const r = await fetch('/api/analyse', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ financialData: state.financialData })
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error||'Analysis failed', 'error'); resetAI(); return; }
+
+    state.lastAnalysis = d.analysis;
+    state.lastFlowScore = d.flowScore;
+
+    renderAnalysis(d.analysis);
+    if (d.flowScore !== null && d.flowScore !== undefined) {
+      setFlowScore(d.flowScore);
+      renderLeaksFromAnalysis(d.analysis);
+    }
+    loadHistory();
+    toast('Analysis complete ✅', 'success');
+  } catch(e) {
+    toast('Analysis failed — check your connection', 'error');
+    resetAI();
+  } finally {
+    state.loading = false;
+    btn.disabled = false;
+    btn.innerHTML = '<span>⚡</span> Run Analysis';
+  }
+}
+
+function resetAI() {
+  document.getElementById('ai-content').innerHTML = `
+    <div class="ai-placeholder">
+      <div class="ai-placeholder-ico">⚠️</div>
+      <div class="ai-placeholder-t">Analysis failed</div>
+      <div class="ai-placeholder-s">Check your connection and try again</div>
+    </div>`;
+}
+
+// ── ASK AI ─────────────────────────────────────────────────────────────
+async function askQuestion() {
+  const input = document.getElementById('ask-input');
+  const q = input.value.trim();
+  if (!q) return;
+  if (!state.financialData && !state.connection) {
+    toast('Connect your accounting software first', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true;
+  btn.textContent = '…';
+  input.disabled = true;
+
+  // Ensure we have data
+  let fd = state.financialData;
+  if (!fd && state.connection) {
+    try {
+      const dr = await fetch('/api/data', { credentials:'include' });
+      if (dr.ok) { const dd = await dr.json(); fd = dd.data; state.financialData = fd; }
+    } catch(e) {}
+  }
+
+  // Show loading in AI content
+  const prev = document.getElementById('ai-content').innerHTML;
+  const prev2 = document.getElementById('ai-content').querySelector('.ai-analysis')?.innerHTML;
+
+  const loadDiv = document.createElement('div');
+  loadDiv.className = 'loading-row';
+  loadDiv.innerHTML = `<div class="spinner"></div> Thinking about "${q}"…`;
+
+  const aiContent = document.getElementById('ai-content');
+  aiContent.appendChild(loadDiv);
+
+  try {
+    const r = await fetch('/api/analyse', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ financialData: fd || {}, question: q })
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error||'Failed', 'error'); loadDiv.remove(); return; }
+
+    loadDiv.remove();
+
+    // Append Q&A to analysis area
+    const qa = document.createElement('div');
+    qa.style.cssText = 'padding:14px 18px; border-top:1px solid var(--b1);';
+    qa.innerHTML = `
+      <div style="font-size:11px;color:var(--tx3);font-family:var(--mono);margin-bottom:6px;">YOUR QUESTION</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;">${escHtml(q)}</div>
+      <div style="font-size:11px;color:var(--tx3);font-family:var(--mono);margin-bottom:6px;">AI ANSWER</div>
+      <div style="font-size:13px;color:var(--tx2);line-height:1.8;">${formatMarkdown(d.analysis)}</div>`;
+
+    aiContent.insertBefore(qa, aiContent.querySelector('.ask-row') || null);
+    aiContent.appendChild(qa);
+
+    input.value = '';
+    loadHistory();
+  } catch(e) {
+    toast('Failed to get answer', 'error');
+    loadDiv.remove();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ask →';
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────
+function renderAnalysis(text) {
+  const el = document.createElement('div');
+  el.className = 'ai-analysis';
+  el.innerHTML = formatMarkdown(text);
+
+  const wrap = document.createElement('div');
+
+  const askRow = document.createElement('div');
+  askRow.className = 'ask-row';
+  askRow.innerHTML = `
+    <input type="text" class="ask-input" id="ask-input" placeholder='Ask anything — "Why is my cash low?" "Which client should I chase first?"' />
+    <button class="ask-btn" onclick="askQuestion()" id="ask-btn">Ask →</button>`;
+
+  wrap.appendChild(el);
+  wrap.appendChild(askRow);
+
+  document.getElementById('ai-content').innerHTML = '';
+  document.getElementById('ai-content').appendChild(wrap);
+
+  // Enter key on new input
+  document.getElementById('ask-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') askQuestion();
+  });
+}
+
+function formatMarkdown(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^### (.+)$/gm, '<h3 style="font-size:12px;font-weight:700;color:var(--tx);margin:10px 0 5px;">$3</h3>'.replace('$3','$1'))
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^(\d+)\. (.+)$/gm, (m,n,t) => `<li style="margin-bottom:8px"><strong>${n}.</strong> ${t}</li>`)
+    .replace(/^[•\-\*] (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setFlowScore(score) {
+  const circle = document.getElementById('score-circle');
+  const numEl  = document.getElementById('score-num');
+  const gradeEl = document.getElementById('score-grade');
+
+  const circumference = 339;
+  const offset = circumference - (score / 100) * circumference;
+
+  // Color based on score
+  let color, grade;
+  if (score >= 75)      { color = '#5cffa0'; grade = 'Healthy 💚'; }
+  else if (score >= 55) { color = '#c8f060'; grade = 'Good 🟡'; }
+  else if (score >= 35) { color = '#ffb347'; grade = 'At Risk 🟠'; }
+  else                  { color = '#ff5c5c'; grade = 'Critical 🔴'; }
+
+  circle.style.stroke = color;
+  circle.style.strokeDashoffset = String(offset);
+  numEl.textContent = String(score);
+  numEl.style.color = color;
+  gradeEl.textContent = grade;
+  gradeEl.style.color = color;
+
+  // Badge in AI panel
+  const badgeEl = document.getElementById('ai-score-badge');
+  badgeEl.innerHTML = `<div class="panel-badge" style="background:${color}22;color:${color};border:1px solid ${color}44">FlowScore ${score}/100</div>`;
+}
+
+function renderKPIs(data, provider) {
+  if (!data) return;
+
+  let revenue = 0, netProfit = 0, cash = 0, overdueAmt = 0, overdueCount = 0;
+  let netMargin = null;
+
+  if (provider === 'xero' && data.profitLoss?.Reports?.[0]) {
+    const rows = data.profitLoss.Reports[0].Rows || [];
+    rows.forEach(row => {
+      const label = (row.Cells?.[0]?.Value || '').toLowerCase();
+      const val   = parseFloat(row.Cells?.[1]?.Value || row.Cells?.[2]?.Value || 0);
+      if (row.RowType === 'SummaryRow') {
+        if (label.includes('income') || label.includes('revenue') || label.includes('total income')) revenue = Math.abs(val)||revenue;
+        if (label.includes('net profit') || label.includes('net loss')) netProfit = val||netProfit;
+      }
+      row.Rows?.forEach(r => {
+        const rl = (r.Cells?.[0]?.Value||'').toLowerCase();
+        const rv = parseFloat(r.Cells?.[1]?.Value||r.Cells?.[2]?.Value||0);
+        if (rl.includes('total income') || rl.includes('total trading income')) revenue = Math.abs(rv)||revenue;
+      });
+    });
+
+    if (revenue > 0) netMargin = ((netProfit / revenue) * 100).toFixed(1);
+  }
+
+  if (data.invoices?.length) {
+    const now = new Date();
+    data.invoices.forEach(inv => {
+      if (inv.DueDate && new Date(inv.DueDate) < now) {
+        overdueAmt += (inv.AmountDue || 0);
+        overdueCount++;
+      }
+    });
+  }
+
+  // Cash from balance sheet
+  if (provider === 'xero' && data.balanceSheet?.Reports?.[0]) {
+    const rows = data.balanceSheet.Reports[0].Rows || [];
+    rows.forEach(row => {
+      row.Rows?.forEach(r => {
+        r.Rows?.forEach(cr => {
+          const label = (cr.Cells?.[0]?.Value||'').toLowerCase();
+          const val   = parseFloat(cr.Cells?.[1]?.Value||0);
+          if ((label.includes('cash') || label.includes('bank')) && val !== 0 && cash === 0) cash = val;
+        });
+      });
+    });
+  }
+
+  // Update KPI cards
+  setKPI('kpi-rev',    revenue  ? '$'+fmt(revenue)  : '—', 'Revenue from Xero', null);
+  setKPI('kpi-profit', netProfit? '$'+fmt(netProfit) : '—',
+    netMargin ? `Net margin: ${netMargin}%` : 'From P&L', netProfit < 0 ? 'down' : null);
+  setKPI('kpi-cash',   cash     ? '$'+fmt(cash)      : '—', cash < 20000 && cash > 0 ? '⚠ Low cash position' : 'From balance sheet', cash < 20000 && cash > 0 ? 'down' : null);
+  setKPI('kpi-overdue', overdueAmt ? '$'+fmt(overdueAmt) : '$0',
+    overdueCount ? `${overdueCount} invoice${overdueCount>1?'s':''} overdue` : 'No overdue invoices',
+    overdueAmt > 0 ? 'warn' : null);
+}
+
+function setKPI(id, val, delta, cls) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+  const del = document.getElementById(id+'-d');
+  if (del) {
+    del.textContent = delta || '';
+    del.className = 'kpi-delta' + (cls ? ' '+cls : '');
+  }
+}
+
+function fmt(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000)    return (n/1000).toFixed(1)+'K';
+  return Math.round(n).toLocaleString();
+}
+
+function renderInvoices(data, provider) {
+  const body = document.getElementById('inv-body');
+  const countEl = document.getElementById('inv-count');
+
+  if (!data?.invoices?.length) {
+    body.innerHTML = '<div class="empty">No outstanding invoices</div>';
+    countEl.textContent = '0';
+    return;
+  }
+
+  const now = new Date();
+  const sorted = [...data.invoices].sort((a,b) => (b.AmountDue||0)-(a.AmountDue||0));
+  const top = sorted.slice(0, 8);
+
+  countEl.textContent = data.invoices.length + ' invoices';
+
+  body.innerHTML = top.map(inv => {
+    const overdue = inv.DueDate && new Date(inv.DueDate) < now;
+    const days    = inv.DueDate ? Math.floor((now - new Date(inv.DueDate)) / 86400000) : null;
+    const contact = inv.Contact?.Name || inv.CustomerRef?.name || 'Unknown';
+    const amt     = inv.AmountDue || inv.Balance || 0;
+    return `<div class="inv-item">
+      <div>
+        <div class="inv-contact">${escHtml(contact)}</div>
+        <div class="inv-days ${overdue?'overdue':'ok'}">${overdue ? `${days}d overdue` : (days !== null && days < 0 ? `Due in ${Math.abs(days)}d` : 'Outstanding')}</div>
+      </div>
+      <div class="inv-right">
+        <div class="inv-amt" style="color:${overdue?'var(--red)':'var(--tx)'}">$${fmt(amt)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLeaksFromAnalysis(text) {
+  const body = document.getElementById('leaks-body');
+  const countEl = document.getElementById('leaks-count');
+
+  // Extract leaks from analysis text (look for dollar amounts in "Where You're Losing" section)
+  const leaks = [];
+  const lines = text.split('\n');
+  let inLeaks = false;
+  lines.forEach(line => {
+    if (line.includes("Where You're Losing") || line.includes('Losing Money')) inLeaks = true;
+    if (inLeaks && line.includes('##') && !line.includes('Losing')) inLeaks = false;
+    if (inLeaks) {
+      const match = line.match(/[\$\$][\d,\.]+[KkMm]?/);
+      if (match && line.trim().length > 5) {
+        leaks.push({ text: line.replace(/^[•\-\*\d\.]+\s*/, '').trim(), amt: match[0] });
+      }
+    }
+  });
+
+  if (leaks.length === 0) {
+    body.innerHTML = '<div class="empty" style="padding:14px">See AI Analysis tab for detected leaks</div>';
+    countEl.textContent = 'See AI tab';
+    return;
+  }
+
+  const colors = ['var(--red)', 'var(--red)', 'var(--amber)', 'var(--amber)', 'var(--blue)'];
+  countEl.textContent = leaks.length + ' detected';
+
+  body.innerHTML = leaks.slice(0,4).map((l,i) => `
+    <div class="leak-item" style="border-left-color:${colors[i]||'var(--amber)'}">
+      <div>
+        <div class="leak-name">${escHtml(l.text.slice(0,60))}</div>
+      </div>
+      <div class="leak-amt" style="color:${colors[i]||'var(--amber)'}">${escHtml(l.amt)}</div>
+    </div>`).join('');
+}
+
+function showKPILoading() {
+  ['kpi-rev','kpi-profit','kpi-cash','kpi-overdue'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px"></div>';
+  });
+}
+
+function showKPIError() {
+  ['kpi-rev','kpi-profit','kpi-cash','kpi-overdue'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = 'Error';
+  });
+}
+
+// ── DEMO DATA ──────────────────────────────────────────────────────────
+function loadDemoData() {
+  document.getElementById('demo-banner').style.display = 'flex';
+  document.getElementById('run-btn').style.display = 'none';
+
+  setKPI('kpi-rev', '$1.84M', 'Demo data', null);
+  setKPI('kpi-profit', '$94.2K', 'Net margin: 5.1%', 'warn');
+  setKPI('kpi-cash', '$38.4K', '⚠ Low cash position', 'down');
+  setKPI('kpi-overdue', '$184K', '9 invoices overdue', 'down');
+  setFlowScore(42);
+
+  document.getElementById('leaks-body').innerHTML = `
+    <div class="leak-item" style="border-left-color:var(--red)">
+      <div><div class="leak-name">Labour cost blowout</div><div class="leak-desc">52.3% of revenue vs 38–42% benchmark</div></div>
+      <div class="leak-amt" style="color:var(--red)">$112K</div>
+    </div>
+    <div class="leak-item" style="border-left-color:var(--red)">
+      <div><div class="leak-name">Overdue invoices</div><div class="leak-desc">$184K sitting uncollected — 9 clients</div></div>
+      <div class="leak-amt" style="color:var(--red)">$184K</div>
+    </div>
+    <div class="leak-item" style="border-left-color:var(--amber)">
+      <div><div class="leak-name">No price increase in 18 months</div><div class="leak-desc">Input costs up 12%, prices unchanged</div></div>
+      <div class="leak-amt" style="color:var(--amber)">$42K</div>
+    </div>`;
+  document.getElementById('leaks-count').textContent = '3 detected';
+
+  document.getElementById('inv-body').innerHTML = `
+    <div class="inv-item"><div><div class="inv-contact">Westfield Developments</div><div class="inv-days overdue">74d overdue</div></div><div class="inv-right"><div class="inv-amt" style="color:var(--red)">$84K</div></div></div>
+    <div class="inv-item"><div><div class="inv-contact">Smith & Co Builders</div><div class="inv-days overdue">32d overdue</div></div><div class="inv-right"><div class="inv-amt" style="color:var(--red)">$47K</div></div></div>
+    <div class="inv-item"><div><div class="inv-contact">Metro Retail Group</div><div class="inv-days overdue">18d overdue</div></div><div class="inv-right"><div class="inv-amt" style="color:var(--amber)">$31K</div></div></div>
+    <div class="inv-item"><div><div class="inv-contact">Lakeside Hospitality</div><div class="inv-days ok">Due in 5d</div></div><div class="inv-right"><div class="inv-amt">$22K</div></div></div>`;
+  document.getElementById('inv-count').textContent = '9 invoices';
+}
+
+// ── HISTORY ────────────────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    const r = await fetch('/api/analyses', { credentials:'include' });
+    if (!r.ok) return;
+    const d = await r.json();
+    const analyses = d.analyses || [];
+    document.getElementById('hist-count').textContent = analyses.length;
+
+    const body = document.getElementById('hist-body');
+    if (!analyses.length) {
+      body.innerHTML = '<div class="empty">No analyses yet. Run your first analysis from the Dashboard.</div>';
+      return;
+    }
+    body.innerHTML = analyses.map(a => `
+      <div class="hist-item" onclick="showHistDetail(${JSON.stringify(escHtml(a.result||'')).replace(/\n/g,'\\n')},${a.flow_score||'null'},${JSON.stringify(escHtml(a.question||'Full Analysis'))})">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="hist-q">${escHtml(a.question||'Full Analysis')}</div>
+          ${a.flow_score ? `<div class="hist-score">Score: ${a.flow_score}/100</div>` : ''}
+        </div>
+        <div class="hist-date">${new Date(a.created_at*1000).toLocaleString('en-AU',{dateStyle:'medium',timeStyle:'short'})}</div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+function showHistDetail(text, score, question) {
+  const body = document.getElementById('hist-body');
+  body.innerHTML = `
+    <div class="hist-back" onclick="loadHistory()">← Back to history</div>
+    <div style="padding:4px 18px 4px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:13px;font-weight:700">${question}</div>
+      ${score ? `<div class="hist-score" style="font-size:13px">FlowScore ${score}/100</div>` : ''}
+    </div>
+    <div class="hist-detail">${formatMarkdown(text)}</div>`;
+}
+
+// ── TABS / PAGES ────────────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('[id^="tab-"]').forEach(p => p.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+tab);
+  if (tabEl) tabEl.classList.add('active');
+
+  // Show/hide topbar buttons and page tabs
+  document.getElementById('page-tabs').style.display = tab === 'dashboard' ? 'flex' : 'none';
+  document.getElementById('run-btn').style.display = (tab === 'dashboard' && state.connection) ? 'flex' : 'none';
+
+  document.getElementById('topbar-title').textContent =
+    tab === 'dashboard' ? 'Dashboard' :
+    tab === 'history'   ? 'Analysis History' : 'Dashboard';
+
+  if (tab === 'history') loadHistory();
+}
+
+function switchPage(page, el) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.remove('active'));
+  const pageEl = document.getElementById('page-'+page);
+  if (pageEl) pageEl.classList.add('active');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type='info') {
+  let el = document.getElementById('toast');
+  if (!el) { el = document.createElement('div'); el.id = 'toast'; document.body.appendChild(el); }
+  el.textContent = msg;
+  el.className = 'toast ' + type;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+</script>
+</body>
+</html>
