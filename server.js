@@ -101,7 +101,7 @@ const CONFIG = {
     authUrl:      'https://login.xero.com/identity/connect/authorize',
     tokenUrl:     'https://identity.xero.com/connect/token',
     apiBase:      'https://api.xero.com/api.xro/2.0',
-    scopes:       'openid profile email accounting.invoices.read accounting.reports.read accounting.contacts accounting.settings offline_access',
+    scopes:       'openid profile email accounting.invoices.read accounting.reports.profitandloss.read accounting.reports.balancesheet.read accounting.contacts accounting.settings offline_access',
   },
   myob: {
     clientId:     process.env.MYOB_CLIENT_ID     || '',
@@ -232,8 +232,7 @@ app.get('/callback/xero', async (req, res) => {
     );
     const { access_token, refresh_token, expires_in } = t.data;
     const tenants = await axios.get('https://api.xero.com/connections', { headers:{ Authorization:'Bearer '+access_token } });
-    // Pick the first NON-demo tenant, or fall back to first available
-    const tenant = tenants.data.find(t => !t.tenantName?.toLowerCase().includes('demo')) || tenants.data[0];
+    const tenant = tenants.data.find(t => t.tenantName?.toLowerCase().includes('demo')) || tenants.data[tenants.data.length-1] || tenants.data[0];
     const ex = await query('SELECT id FROM connections WHERE user_id=$1 AND provider=$2', [stateRow.user_id,'xero']);
     if (ex.rows[0]) {
       await query('UPDATE connections SET tenant_id=$1,tenant_name=$2,access_token=$3,refresh_token=$4,expires_at=$5 WHERE id=$6',
@@ -366,35 +365,17 @@ async function fetchXeroData(conn) {
   const headers = { Authorization:'Bearer '+token, 'Xero-tenant-id':conn.tenant_id, Accept:'application/json' };
   const toDate   = new Date().toISOString().split('T')[0];
   const fromDate = new Date(Date.now()-365*86400000).toISOString().split('T')[0];
-
-  console.log('Fetching Xero data for tenant:', conn.tenant_id, conn.tenant_name);
-
-  const [pl, bs, inv, bills, accounts, bankTx] = await Promise.allSettled([
-    axios.get(CONFIG.xero.apiBase+'/Reports/ProfitAndLoss', { headers, params:{ fromDate, toDate, standardLayout: true } }),
-    axios.get(CONFIG.xero.apiBase+'/Reports/BalanceSheet',  { headers, params:{ date:toDate, standardLayout: true } }),
-    axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ Statuses:'AUTHORISED,SUBMITTED', Type:'ACCREC', order:'DueDate ASC', pageSize:100 } }),
-    axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ Statuses:'AUTHORISED,SUBMITTED', Type:'ACCPAY', order:'DueDate ASC', pageSize:100 } }),
-    axios.get(CONFIG.xero.apiBase+'/Accounts', { headers, params:{ where:'Type=="BANK"' } }),
-    axios.get(CONFIG.xero.apiBase+'/BankTransactions', { headers, params:{ where:'Status=="AUTHORISED"', pageSize:100 } }),
+  const [pl,bs,inv,bills] = await Promise.allSettled([
+    axios.get(CONFIG.xero.apiBase+'/Reports/ProfitAndLoss', { headers, params:{ fromDate, toDate } }),
+    axios.get(CONFIG.xero.apiBase+'/Reports/BalanceSheet',  { headers, params:{ date:toDate } }),
+    axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ where:'Status=="AUTHORISED"&&Type=="ACCREC"', order:'DueDate ASC', pageSize:100 } }),
+    axios.get(CONFIG.xero.apiBase+'/Invoices', { headers, params:{ where:'Status=="AUTHORISED"&&Type=="ACCPAY"', order:'DueDate ASC', pageSize:100 } }),
   ]);
-
-  // Log what came back for debugging
-  console.log('P&L:', pl.status, pl.status==='rejected' ? pl.reason?.response?.data || pl.reason?.message : 'OK');
-  console.log('BS:', bs.status, bs.status==='rejected' ? bs.reason?.response?.data || bs.reason?.message : 'OK');
-  console.log('Invoices:', inv.status, inv.status==='rejected' ? inv.reason?.response?.data || inv.reason?.message : (inv.value?.data?.Invoices?.length || 0) + ' found');
-  console.log('Bills:', bills.status, bills.status==='rejected' ? bills.reason?.response?.data || bills.reason?.message : (bills.value?.data?.Invoices?.length || 0) + ' found');
-  console.log('Accounts:', accounts.status, accounts.status==='rejected' ? accounts.reason?.message : 'OK');
-  console.log('BankTx:', bankTx.status, bankTx.status==='rejected' ? bankTx.reason?.message : 'OK');
-
   return {
-    profitLoss:       pl.status==='fulfilled'       ? pl.value.data       : null,
-    balanceSheet:     bs.status==='fulfilled'       ? bs.value.data       : null,
-    invoices:         inv.status==='fulfilled'      ? (inv.value.data?.Invoices||[])      : [],
-    bills:            bills.status==='fulfilled'    ? (bills.value.data?.Invoices||[])    : [],
-    accounts:         accounts.status==='fulfilled' ? (accounts.value.data?.Accounts||[]) : [],
-    bankTransactions: bankTx.status==='fulfilled'   ? (bankTx.value.data?.BankTransactions||[]) : [],
-    fetchedAt:        new Date().toISOString(),
-    tenantName:       conn.tenant_name,
+    profitLoss:   pl.status==='fulfilled'    ? pl.value.data    : null,
+    balanceSheet: bs.status==='fulfilled'    ? bs.value.data    : null,
+    invoices:     inv.status==='fulfilled'   ? (inv.value.data?.Invoices||[])   : [],
+    bills:        bills.status==='fulfilled' ? (bills.value.data?.Invoices||[]) : [],
   };
 }
 
