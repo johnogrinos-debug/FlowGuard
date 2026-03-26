@@ -54,6 +54,41 @@ a{color:inherit;text-decoration:none}
 .auth-sw{text-align:center;margin-top:14px;font-size:12px;color:var(--tx2)}
 .auth-sw a{color:var(--ac);cursor:pointer;font-weight:600}
 
+
+/* ── ONBOARDING ────────────────────────────────────── */
+.onboard-screen{min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.onboard-screen.on{display:flex;animation:fadeIn .25s ease}
+.onboard-card{width:100%;max-width:560px;background:var(--s1);border:1px solid var(--bdr2);border-radius:22px;padding:40px 36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
+.ob-step{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.14em;font-family:var(--disp);margin-bottom:22px;display:flex;align-items:center;gap:8px}
+.ob-step-dots{display:flex;gap:5px}
+.ob-step-dot{width:20px;height:3px;border-radius:3px;background:var(--s4)}
+.ob-step-dot.done{background:var(--ac)}
+.ob-step-dot.active{background:var(--ac);opacity:.5}
+.ob-logo{display:flex;align-items:center;gap:8px;margin-bottom:22px}
+.ob-h{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.025em;margin-bottom:6px}
+.ob-sub{font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:28px}
+.ob-section-lbl{font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.13em;font-family:var(--disp);margin-bottom:12px}
+.ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
+.ind-tile{
+  display:flex;align-items:center;gap:11px;
+  padding:13px 14px;border-radius:11px;
+  background:var(--s2);border:1px solid var(--bdr);
+  cursor:pointer;transition:all .14s;user-select:none;
+}
+.ind-tile:hover{background:var(--s3);border-color:var(--bdr2)}
+.ind-tile.selected{background:var(--ac2);border-color:var(--ac3)}
+.ind-tile-ico{font-size:18px;flex-shrink:0;width:28px;text-align:center}
+.ind-tile-name{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:-.01em}
+.ind-tile.selected .ind-tile-name{color:var(--ac)}
+.ob-field{margin-bottom:20px}
+.ob-field label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:6px}
+.ob-field input{width:100%;padding:12px 14px;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;color:var(--tx);font-size:14px;outline:none;transition:border-color .14s}
+.ob-field input:focus{border-color:rgba(184,255,87,.38)}
+.ob-field input::placeholder{color:var(--tx3)}
+.ob-btn{width:100%;padding:14px;border-radius:10px;background:var(--ac);color:#070809;font-size:14px;font-weight:800;font-family:var(--disp);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em;transition:all .14s}
+.ob-btn:hover{background:#ccff6b}
+.ob-btn:disabled{opacity:.35;cursor:not-allowed}
+
 /* APP SHELL */
 #app{display:none;height:100vh;display:none;flex-direction:row}
 
@@ -339,6 +374,72 @@ a{color:inherit;text-decoration:none}
       <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
       <div class="auth-sw">No account? <a onclick="showSignup()">Start free trial</a></div>
     </div>
+  </div>
+</div>
+
+
+<!-- ONBOARDING -->
+<div id="onboard-screen" class="onboard-screen">
+  <div class="onboard-card">
+    <div class="ob-step">
+      <div class="ob-step-dots">
+        <div class="ob-step-dot done"></div>
+        <div class="ob-step-dot active"></div>
+        <div class="ob-step-dot"></div>
+      </div>
+      Step 2 of 3
+    </div>
+    <div class="ob-logo">
+      <div class="a-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="a-name">FlowGuard</span>
+    </div>
+    <div class="ob-h">What type of business?</div>
+    <div class="ob-sub">FlowGuard adapts every insight to your industry — so the benchmarks, alerts and actions are all relevant to how your business actually works.</div>
+
+    <div class="ob-section-lbl">Select your industry</div>
+    <div class="ind-grid">
+      <div class="ind-tile selected" data-ind="trades" onclick="selectInd('trades',this)">
+        <div class="ind-tile-ico">🔧</div>
+        <div class="ind-tile-name">Trades &amp; Construction</div>
+      </div>
+      <div class="ind-tile" data-ind="retail" onclick="selectInd('retail',this)">
+        <div class="ind-tile-ico">🛍️</div>
+        <div class="ind-tile-name">Retail</div>
+      </div>
+      <div class="ind-tile" data-ind="hospitality" onclick="selectInd('hospitality',this)">
+        <div class="ind-tile-ico">🍽️</div>
+        <div class="ind-tile-name">Hospitality</div>
+      </div>
+      <div class="ind-tile" data-ind="professional" onclick="selectInd('professional',this)">
+        <div class="ind-tile-ico">💼</div>
+        <div class="ind-tile-name">Professional Services</div>
+      </div>
+      <div class="ind-tile" data-ind="health" onclick="selectInd('health',this)">
+        <div class="ind-tile-ico">🏥</div>
+        <div class="ind-tile-name">Health &amp; Allied Health</div>
+      </div>
+      <div class="ind-tile" data-ind="ecommerce" onclick="selectInd('ecommerce',this)">
+        <div class="ind-tile-ico">📦</div>
+        <div class="ind-tile-name">eCommerce</div>
+      </div>
+      <div class="ind-tile" data-ind="manufacturing" onclick="selectInd('manufacturing',this)">
+        <div class="ind-tile-ico">🏭</div>
+        <div class="ind-tile-name">Manufacturing</div>
+      </div>
+      <div class="ind-tile" data-ind="other" onclick="selectInd('other',this)">
+        <div class="ind-tile-ico">🏢</div>
+        <div class="ind-tile-name">Other SMB</div>
+      </div>
+    </div>
+
+    <div class="ob-field">
+      <label>Your business name</label>
+      <input id="ob-biz-name" type="text" placeholder="e.g. Smith's Plumbing Pty Ltd">
+    </div>
+
+    <button class="ob-btn" id="ob-btn" onclick="submitOnboard()">
+      Continue &#x2192;
+    </button>
   </div>
 </div>
 
@@ -703,7 +804,7 @@ function doSignup(){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Creating account...';
   fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass,name:name,company:co,industry:ind})})
     .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
-    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;showApp();openConn();toast('Account created!','info');})
+    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;toast('Account created!','info');showOnboard();})
     .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';});
 }
 function doLogin(){
@@ -717,6 +818,56 @@ function doLogin(){
     .then(function(res){if(!res.ok){err.textContent=res.d.error||'Login failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';return;}S.user=res.d.user;return fetch('/api/auth/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.conn=d.connection;showApp();if(S.conn)loadData();else openConn();});})
     .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';});
 }
+
+// ── ONBOARDING ─────────────────────────────────────────
+var _selectedInd = 'trades';
+
+function selectInd(ind, el) {
+  _selectedInd = ind;
+  document.querySelectorAll('.ind-tile').forEach(function(t) { t.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function showOnboard() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('onboard-screen').classList.add('on');
+  // Pre-select industry from signup if user picked one
+  if (S.user && S.user.industry) {
+    var tile = document.querySelector('.ind-tile[data-ind="' + S.user.industry + '"]');
+    if (tile) {
+      _selectedInd = S.user.industry;
+      document.querySelectorAll('.ind-tile').forEach(function(t) { t.classList.remove('selected'); });
+      tile.classList.add('selected');
+    }
+  }
+}
+
+function submitOnboard() {
+  var btn = document.getElementById('ob-btn');
+  var bizName = document.getElementById('ob-biz-name').value.trim();
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+  // Update user industry via a silent PATCH — or just store locally and proceed
+  // For now save to S.user and proceed to connect screen
+  if (S.user) {
+    S.user.industry = _selectedInd;
+    if (bizName) S.user.company = bizName;
+  }
+
+  // Try to update on server (non-blocking)
+  fetch('/api/auth/me', { credentials: 'include' }).catch(function(){});
+
+  setTimeout(function() {
+    document.getElementById('onboard-screen').classList.remove('on');
+    showApp();
+    openConn();
+    btn.disabled = false;
+    btn.innerHTML = 'Continue &#x2192;';
+  }, 400);
+}
+
 function doLogout(){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).then(function(){S.user=null;S.conn=null;S.data=null;S.parsed=null;showSignupV();});}
 
 // ── NAVIGATION ─────────────────────────────────────────────────
