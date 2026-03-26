@@ -56,38 +56,41 @@ a{color:inherit;text-decoration:none}
 
 
 /* ── ONBOARDING ────────────────────────────────────── */
-.onboard-screen{min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
-.onboard-screen.on{display:flex;animation:fadeIn .25s ease}
-.onboard-card{width:100%;max-width:560px;background:var(--s1);border:1px solid var(--bdr2);border-radius:22px;padding:40px 36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
-.ob-step{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.14em;font-family:var(--disp);margin-bottom:22px;display:flex;align-items:center;gap:8px}
-.ob-step-dots{display:flex;gap:5px}
-.ob-step-dot{width:20px;height:3px;border-radius:3px;background:var(--s4)}
-.ob-step-dot.done{background:var(--ac)}
-.ob-step-dot.active{background:var(--ac);opacity:.5}
-.ob-logo{display:flex;align-items:center;gap:8px;margin-bottom:22px}
-.ob-h{font-family:var(--disp);font-size:26px;font-weight:800;letter-spacing:-.025em;margin-bottom:6px}
-.ob-sub{font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:28px}
-.ob-section-lbl{font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.13em;font-family:var(--disp);margin-bottom:12px}
-.ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
-.ind-tile{
-  display:flex;align-items:center;gap:11px;
-  padding:13px 14px;border-radius:11px;
-  background:var(--s2);border:1px solid var(--bdr);
-  cursor:pointer;transition:all .14s;user-select:none;
-}
-.ind-tile:hover{background:var(--s3);border-color:var(--bdr2)}
-.ind-tile.selected{background:var(--ac2);border-color:var(--ac3)}
-.ind-tile-ico{font-size:18px;flex-shrink:0;width:28px;text-align:center}
-.ind-tile-name{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:-.01em}
+.onboard-screen{min-height:100vh;display:none;background:var(--bg);overflow-y:auto}
+.onboard-screen.on{display:block;animation:fadeIn .25s ease}
+.onboard-wrap{min-height:100vh;display:grid;grid-template-columns:420px 1fr}
+.ob-left{background:var(--s1);border-right:1px solid var(--bdr);padding:52px 48px;display:flex;flex-direction:column;justify-content:center;position:sticky;top:0;height:100vh}
+.ob-left-inner{max-width:320px}
+.ob-logo-lg{display:flex;align-items:center;gap:10px;margin-bottom:52px}
+.ob-left-headline{font-family:var(--disp);font-size:38px;font-weight:800;line-height:1.1;letter-spacing:-.03em;margin-bottom:16px}
+.ob-left-sub{font-size:14px;color:var(--tx2);line-height:1.75;margin-bottom:36px}
+.ob-left-points{display:flex;flex-direction:column;gap:12px}
+.ob-point{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2)}
+.ob-point-dot{width:6px;height:6px;border-radius:50%;background:var(--ac);flex-shrink:0}
+.ob-right{padding:52px 56px;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto}
+.ob-right-inner{width:100%;max-width:520px;padding-top:12px}
+.ob-progress{margin-bottom:36px}
+.ob-progress-bar{height:3px;background:var(--s3);border-radius:3px;margin-bottom:8px;overflow:hidden}
+.ob-progress-fill{height:100%;background:var(--ac);border-radius:3px;transition:width .4s ease}
+.ob-progress-label{font-size:11px;color:var(--tx3);font-family:var(--disp);font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.ob-rh{font-family:var(--disp);font-size:28px;font-weight:800;letter-spacing:-.025em;margin-bottom:7px}
+.ob-rsub{font-size:14px;color:var(--tx2);line-height:1.65;margin-bottom:28px}
+.ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:24px}
+.ind-tile{display:flex;align-items:center;gap:12px;padding:14px 15px;border-radius:12px;background:var(--s2);border:1px solid var(--bdr);cursor:pointer;transition:all .14s;user-select:none}
+.ind-tile:hover{background:var(--s3);border-color:var(--bdr2);transform:translateY(-1px)}
+.ind-tile.selected{background:var(--ac2);border-color:var(--ac3);transform:translateY(-1px)}
+.ind-tile-ico{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+.ind-tile-name{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:-.01em;line-height:1.3}
 .ind-tile.selected .ind-tile-name{color:var(--ac)}
 .ob-field{margin-bottom:20px}
-.ob-field label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:6px}
-.ob-field input{width:100%;padding:12px 14px;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;color:var(--tx);font-size:14px;outline:none;transition:border-color .14s}
+.ob-field label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:7px}
+.ob-field input{width:100%;padding:13px 15px;background:var(--s2);border:1px solid var(--bdr2);border-radius:10px;color:var(--tx);font-size:14px;outline:none;transition:border-color .14s}
 .ob-field input:focus{border-color:rgba(184,255,87,.38)}
 .ob-field input::placeholder{color:var(--tx3)}
-.ob-btn{width:100%;padding:14px;border-radius:10px;background:var(--ac);color:#070809;font-size:14px;font-weight:800;font-family:var(--disp);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em;transition:all .14s}
-.ob-btn:hover{background:#ccff6b}
-.ob-btn:disabled{opacity:.35;cursor:not-allowed}
+.ob-btn{width:100%;padding:15px;border-radius:11px;background:var(--ac);color:#070809;font-size:14px;font-weight:800;font-family:var(--disp);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em;transition:all .14s;border:none;cursor:pointer}
+.ob-btn:hover{background:#ccff6b;transform:translateY(-1px)}
+.ob-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+@media(max-width:860px){.onboard-wrap{grid-template-columns:1fr}.ob-left{display:none}.ob-right{padding:36px 24px}}
 
 /* APP SHELL */
 #app{display:none;height:100vh;display:none;flex-direction:row}
@@ -343,27 +346,14 @@ a{color:inherit;text-decoration:none}
       <span class="a-name">FlowGuard</span>
     </div>
     <div id="v-su">
-      <div class="auth-h">Find your profit leaks</div>
+      <div class="auth-h">Create your account</div>
       <div class="auth-sub">14-day free trial. No credit card required.</div>
       <div class="err" id="su-err"></div>
-      <div class="fld"><label>Name</label><input id="su-name" type="text" placeholder="Jamie Smith" autocomplete="name"></div>
-      <div class="fld-row">
-        <div class="fld"><label>Email</label><input id="su-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
-        <div class="fld"><label>Password</label><input id="su-pass" type="password" placeholder="8+ characters" autocomplete="new-password"></div>
-      </div>
-      <div class="fld-row">
-        <div class="fld"><label>Company</label><input id="su-co" type="text" placeholder="Acme Pty Ltd"></div>
-        <div class="fld"><label>Industry</label>
-          <select id="su-ind">
-            <option value="trades">Trades</option><option value="retail">Retail</option>
-            <option value="hospitality">Hospitality</option><option value="professional">Professional Services</option>
-            <option value="health">Health</option><option value="ecommerce">eCommerce</option>
-            <option value="manufacturing">Manufacturing</option><option value="other">Other</option>
-          </select>
-        </div>
-      </div>
-      <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
-      <div class="auth-sw">Have an account? <a onclick="showLogin()">Log in</a></div>
+      <div class="fld"><label>Full name</label><input id="su-name" type="text" placeholder="Jamie Smith" autocomplete="name"></div>
+      <div class="fld"><label>Email address</label><input id="su-email" type="email" placeholder="you@yourbusiness.com" autocomplete="email"></div>
+      <div class="fld"><label>Password</label><input id="su-pass" type="password" placeholder="8+ characters" autocomplete="new-password"></div>
+      <button class="auth-btn" id="su-btn" onclick="doSignup()">Create account &#x2192;</button>
+      <div class="auth-sw">Already have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
     <div id="v-li" style="display:none">
       <div class="auth-h">Welcome back</div>
@@ -380,66 +370,85 @@ a{color:inherit;text-decoration:none}
 
 <!-- ONBOARDING -->
 <div id="onboard-screen" class="onboard-screen">
-  <div class="onboard-card">
-    <div class="ob-step">
-      <div class="ob-step-dots">
-        <div class="ob-step-dot done"></div>
-        <div class="ob-step-dot active"></div>
-        <div class="ob-step-dot"></div>
-      </div>
-      Step 2 of 3
-    </div>
-    <div class="ob-logo">
-      <div class="a-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="a-name">FlowGuard</span>
-    </div>
-    <div class="ob-h">What type of business?</div>
-    <div class="ob-sub">FlowGuard adapts every insight to your industry — so the benchmarks, alerts and actions are all relevant to how your business actually works.</div>
+  <div class="onboard-wrap">
 
-    <div class="ob-section-lbl">Select your industry</div>
-    <div class="ind-grid">
-      <div class="ind-tile selected" data-ind="trades" onclick="selectInd('trades',this)">
-        <div class="ind-tile-ico">🔧</div>
-        <div class="ind-tile-name">Trades &amp; Construction</div>
-      </div>
-      <div class="ind-tile" data-ind="retail" onclick="selectInd('retail',this)">
-        <div class="ind-tile-ico">🛍️</div>
-        <div class="ind-tile-name">Retail</div>
-      </div>
-      <div class="ind-tile" data-ind="hospitality" onclick="selectInd('hospitality',this)">
-        <div class="ind-tile-ico">🍽️</div>
-        <div class="ind-tile-name">Hospitality</div>
-      </div>
-      <div class="ind-tile" data-ind="professional" onclick="selectInd('professional',this)">
-        <div class="ind-tile-ico">💼</div>
-        <div class="ind-tile-name">Professional Services</div>
-      </div>
-      <div class="ind-tile" data-ind="health" onclick="selectInd('health',this)">
-        <div class="ind-tile-ico">🏥</div>
-        <div class="ind-tile-name">Health &amp; Allied Health</div>
-      </div>
-      <div class="ind-tile" data-ind="ecommerce" onclick="selectInd('ecommerce',this)">
-        <div class="ind-tile-ico">📦</div>
-        <div class="ind-tile-name">eCommerce</div>
-      </div>
-      <div class="ind-tile" data-ind="manufacturing" onclick="selectInd('manufacturing',this)">
-        <div class="ind-tile-ico">🏭</div>
-        <div class="ind-tile-name">Manufacturing</div>
-      </div>
-      <div class="ind-tile" data-ind="other" onclick="selectInd('other',this)">
-        <div class="ind-tile-ico">🏢</div>
-        <div class="ind-tile-name">Other SMB</div>
+    <!-- LEFT PANEL — brand -->
+    <div class="ob-left">
+      <div class="ob-left-inner">
+        <div class="ob-logo-lg">
+          <div class="a-mark" style="width:38px;height:38px;border-radius:10px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <span style="font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.02em">FlowGuard</span>
+        </div>
+        <div class="ob-left-headline">Built for the<br>way you work.</div>
+        <div class="ob-left-sub">Every insight, benchmark and alert is calibrated to your industry — so you only see what's relevant to your business.</div>
+        <div class="ob-left-points">
+          <div class="ob-point"><span class="ob-point-dot"></span>Industry-specific profit benchmarks</div>
+          <div class="ob-point"><span class="ob-point-dot"></span>Tailored cash runway targets</div>
+          <div class="ob-point"><span class="ob-point-dot"></span>Alerts built for your sector</div>
+        </div>
       </div>
     </div>
 
-    <div class="ob-field">
-      <label>Your business name</label>
-      <input id="ob-biz-name" type="text" placeholder="e.g. Smith's Plumbing Pty Ltd">
+    <!-- RIGHT PANEL — form -->
+    <div class="ob-right">
+      <div class="ob-right-inner">
+        <div class="ob-progress">
+          <div class="ob-progress-bar"><div class="ob-progress-fill" style="width:66%"></div></div>
+          <div class="ob-progress-label">Step 2 of 3 — Your business</div>
+        </div>
+
+        <div class="ob-rh">What type of business?</div>
+        <div class="ob-rsub">Pick your industry so FlowGuard can give you the right benchmarks and insights.</div>
+
+        <div class="ind-grid">
+          <div class="ind-tile selected" data-ind="trades" onclick="selectInd('trades',this)">
+            <div class="ind-tile-ico">🔧</div>
+            <div class="ind-tile-name">Trades &amp; Construction</div>
+          </div>
+          <div class="ind-tile" data-ind="retail" onclick="selectInd('retail',this)">
+            <div class="ind-tile-ico">🛍️</div>
+            <div class="ind-tile-name">Retail</div>
+          </div>
+          <div class="ind-tile" data-ind="hospitality" onclick="selectInd('hospitality',this)">
+            <div class="ind-tile-ico">🍽️</div>
+            <div class="ind-tile-name">Hospitality</div>
+          </div>
+          <div class="ind-tile" data-ind="professional" onclick="selectInd('professional',this)">
+            <div class="ind-tile-ico">💼</div>
+            <div class="ind-tile-name">Professional Services</div>
+          </div>
+          <div class="ind-tile" data-ind="health" onclick="selectInd('health',this)">
+            <div class="ind-tile-ico">🏥</div>
+            <div class="ind-tile-name">Health &amp; Allied Health</div>
+          </div>
+          <div class="ind-tile" data-ind="ecommerce" onclick="selectInd('ecommerce',this)">
+            <div class="ind-tile-ico">📦</div>
+            <div class="ind-tile-name">eCommerce</div>
+          </div>
+          <div class="ind-tile" data-ind="manufacturing" onclick="selectInd('manufacturing',this)">
+            <div class="ind-tile-ico">🏭</div>
+            <div class="ind-tile-name">Manufacturing</div>
+          </div>
+          <div class="ind-tile" data-ind="other" onclick="selectInd('other',this)">
+            <div class="ind-tile-ico">🏢</div>
+            <div class="ind-tile-name">Other SMB</div>
+          </div>
+        </div>
+
+        <div class="ob-field">
+          <label>Business name <span style="color:var(--tx3);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+          <input id="ob-biz-name" type="text" placeholder="e.g. Smith's Plumbing Pty Ltd" autocomplete="organization">
+        </div>
+
+        <button class="ob-btn" id="ob-btn" onclick="submitOnboard()">
+          Continue to connect accounts &#x2192;
+        </button>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--tx3)">
+          You can change this any time in settings
+        </div>
+      </div>
     </div>
 
-    <button class="ob-btn" id="ob-btn" onclick="submitOnboard()">
-      Continue &#x2192;
-    </button>
   </div>
 </div>
 
@@ -797,12 +806,13 @@ function showSignup(){$('v-li').style.display='none';$('v-su').style.display='';
 function doSignup(){
   var btn=$('su-btn'),err=$('su-err');
   var email=$('su-email').value.trim(),pass=$('su-pass').value;
-  var name=$('su-name').value.trim(),co=$('su-co').value.trim(),ind=$('su-ind').value;
+  var name=$('su-name').value.trim();
   err.classList.remove('on');
+  if(!name){err.textContent='Please enter your name.';err.classList.add('on');return;}
   if(!email||!pass){err.textContent='Email and password are required.';err.classList.add('on');return;}
   if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.classList.add('on');return;}
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Creating account...';
-  fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass,name:name,company:co,industry:ind})})
+  fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass,name:name,company:'',industry:'other'})})
     .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
     .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;toast('Account created!','info');showOnboard();})
     .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';});
