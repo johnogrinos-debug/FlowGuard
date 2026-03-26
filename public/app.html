@@ -4,262 +4,308 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlowGuard</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0a0b;
-  --surface: #111113;
-  --surface2: #18181b;
-  --surface3: #1f1f24;
-  --border: rgba(255,255,255,.06);
-  --border2: rgba(255,255,255,.1);
-  --tx: #f4f4f5;
-  --tx2: #71717a;
-  --tx3: #3f3f46;
-  --ac: #adff2f;
-  --ac2: rgba(173,255,47,.1);
-  --ac3: rgba(173,255,47,.18);
-  --red: #f87171;
-  --red2: rgba(248,113,113,.08);
-  --red3: rgba(248,113,113,.16);
-  --amber: #fbbf24;
-  --amb2: rgba(251,191,36,.08);
-  --green: #4ade80;
-  --grn2: rgba(74,222,128,.08);
-  --blue: #60a5fa;
-  --blu2: rgba(96,165,250,.08);
-  --serif: "Instrument Serif", Georgia, serif;
-  --sans: "Geist", sans-serif;
-  --mono: "Geist Mono", monospace;
+:root{
+  --bg:#070809;--s1:#0d0e10;--s2:#141518;--s3:#1a1c1f;--s4:#212427;
+  --bdr:rgba(255,255,255,.055);--bdr2:rgba(255,255,255,.09);--bdr3:rgba(255,255,255,.14);
+  --ac:#b8ff57;--ac2:rgba(184,255,87,.09);--ac3:rgba(184,255,87,.2);
+  --red:#ff5555;--red2:rgba(255,85,85,.08);--red3:rgba(255,85,85,.18);
+  --amb:#f59e0b;--amb2:rgba(245,158,11,.08);--amb3:rgba(245,158,11,.18);
+  --grn:#4ade80;--grn2:rgba(74,222,128,.08);--grn3:rgba(74,222,128,.18);
+  --blue:#60a5fa;--blu2:rgba(96,165,250,.08);
+  --tx:#f0f0ee;--tx2:#626568;--tx3:#323537;
+  --sans:"DM Sans",sans-serif;--disp:"Syne",sans-serif;--mono:"DM Mono",monospace;
+  --r:12px;--r2:16px;
 }
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; background: var(--bg); color: var(--tx); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
-button { cursor: pointer; font-family: inherit; border: none; background: none; transition: all .15s; }
-input, select { font-family: inherit; }
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:inherit;border:none;background:none;transition:all .14s}
+input,select{font-family:inherit}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:3px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-@keyframes slideRight { from { width: 0; } to { width: var(--w); } }
+/* AUTH */
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.auth-card{width:100%;max-width:420px;background:var(--s1);border:1px solid var(--bdr2);border-radius:20px;padding:36px;box-shadow:0 40px 80px rgba(0,0,0,.6);animation:fadeUp .3s ease}
+.auth-back{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tx3);margin-bottom:20px;cursor:pointer;transition:color .12s}
+.auth-back:hover{color:var(--tx2)}
+.auth-logo{display:flex;align-items:center;gap:8px;margin-bottom:26px}
+.a-mark{width:28px;height:28px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center}
+.a-name{font-family:var(--disp);font-size:15px;font-weight:800;letter-spacing:-.01em}
+.auth-h{font-family:var(--disp);font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:5px}
+.auth-sub{font-size:13px;color:var(--tx2);margin-bottom:24px;line-height:1.6}
+.err{background:var(--red2);border:1px solid var(--red3);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:13px;display:none;line-height:1.5}
+.err.on{display:block}
+.fld{margin-bottom:11px}
+.fld label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:5px}
+.fld input,.fld select{width:100%;padding:11px 13px;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;color:var(--tx);font-size:13px;outline:none;transition:border-color .14s}
+.fld input:focus,.fld select:focus{border-color:rgba(184,255,87,.38)}
+.fld select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' stroke='%23626568' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auth-btn{width:100%;padding:13px;border-radius:10px;background:var(--ac);color:#070809;font-size:14px;font-weight:800;font-family:var(--disp);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em}
+.auth-btn:hover{background:#ccff6b}
+.auth-btn:disabled{opacity:.4;cursor:not-allowed}
+.auth-sw{text-align:center;margin-top:14px;font-size:12px;color:var(--tx2)}
+.auth-sw a{color:var(--ac);cursor:pointer;font-weight:600}
 
-/* ── AUTH ────────────────────────────────────────────────────────── */
-.auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
-.auth-wrap::before { content: ""; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(173,255,47,.04) 0%, transparent 65%); pointer-events: none; }
-.auth-card { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; padding: 32px; box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 32px 64px rgba(0,0,0,.5); animation: fadeUp .3s ease; }
-.auth-back { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--tx3); margin-bottom: 20px; cursor: pointer; transition: color .14s; }
-.auth-back:hover { color: var(--tx2); }
-.auth-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
-.logo-gem { width: 28px; height: 28px; border-radius: 7px; background: var(--ac); display: flex; align-items: center; justify-content: center; }
-.logo-name { font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
-.auth-h { font-family: var(--serif); font-size: 26px; font-style: italic; margin-bottom: 4px; letter-spacing: -.01em; }
-.auth-sub { font-size: 12px; color: var(--tx2); margin-bottom: 22px; line-height: 1.6; }
-.err { background: var(--red2); border: 1px solid var(--red3); border-radius: 8px; padding: 10px 13px; font-size: 12px; color: var(--red); margin-bottom: 13px; display: none; line-height: 1.5; }
-.err.on { display: block; }
-.fld { margin-bottom: 11px; }
-.fld label { display: block; font-size: 10px; font-weight: 600; color: var(--tx3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
-.fld input, .fld select { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--tx); font-size: 13px; outline: none; transition: border-color .14s; }
-.fld input:focus, .fld select:focus { border-color: rgba(173,255,47,.35); }
-.fld select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' stroke='%2352525b' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 11px center; }
-.fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.submit-btn { width: 100%; padding: 12px; border-radius: 9px; background: var(--ac); color: #0a0a0b; font-size: 13px; font-weight: 700; font-family: var(--sans); margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: -.01em; }
-.submit-btn:hover { background: #c8ff4a; }
-.submit-btn:disabled { opacity: .4; cursor: not-allowed; }
-.auth-sw { text-align: center; margin-top: 14px; font-size: 12px; color: var(--tx2); }
-.auth-sw a { color: var(--ac); cursor: pointer; font-weight: 600; }
+/* APP SHELL */
+#app{display:none;height:100vh;display:none;flex-direction:row}
 
-/* ── APP SHELL ───────────────────────────────────────────────────── */
-#app { display: none; min-height: 100vh; }
-.topbar { border-bottom: 1px solid var(--border); padding: 0 24px; height: 52px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,11,.9); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 20; }
-.tb-logo { display: flex; align-items: center; gap: 8px; }
-.tb-logo-gem { width: 24px; height: 24px; border-radius: 6px; background: var(--ac); display: flex; align-items: center; justify-content: center; }
-.tb-logo-name { font-family: var(--sans); font-size: 14px; font-weight: 700; letter-spacing: -.02em; }
-.tb-right { display: flex; align-items: center; gap: 8px; }
-.tb-conn { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border2); font-size: 12px; font-weight: 500; color: var(--tx2); cursor: pointer; transition: all .14s; }
-.tb-conn:hover { border-color: var(--ac3); color: var(--ac); }
-.tb-live { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 3s infinite; }
-.tb-live.off { background: var(--tx3); animation: none; }
-.tb-av { width: 26px; height: 26px; border-radius: 7px; background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; letter-spacing: .02em; }
-.tb-out { color: var(--tx3); font-size: 13px; padding: 4px; border-radius: 5px; }
-.tb-out:hover { color: var(--red); background: var(--red2); }
+/* SIDEBAR */
+.sb{width:220px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--bdr);display:flex;flex-direction:column;height:100vh;position:sticky;top:0}
+.sb-top{padding:16px 14px 13px;border-bottom:1px solid var(--bdr)}
+.sb-logo{display:flex;align-items:center;gap:8px}
+.sb-mark{width:26px;height:26px;border-radius:7px;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-name{font-family:var(--disp);font-size:14px;font-weight:800;letter-spacing:-.01em}
+.sb-conn-box{margin:10px 10px 0;padding:10px 12px;background:var(--s2);border:1px solid var(--bdr);border-radius:10px}
+.sb-conn-lbl{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:6px}
+.sb-conn-val{font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px}
+.sb-live{width:5px;height:5px;border-radius:50%;background:var(--grn);flex-shrink:0;animation:blink 3s infinite}
+.sb-live.off{background:var(--tx3);animation:none}
+.sb-conn-btn{margin-top:8px;width:100%;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;color:var(--tx2);background:transparent;border:1px solid var(--bdr2);transition:all .12s}
+.sb-conn-btn:hover{border-color:var(--bdr3);color:var(--tx)}
+.sb-nav{flex:1;padding:8px 8px;overflow-y:auto}
+.sb-section{font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.13em;padding:12px 8px 5px;font-family:var(--disp)}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13px;font-weight:500;color:var(--tx2);cursor:pointer;transition:all .1s;margin-bottom:2px;user-select:none}
+.sb-item:hover{background:var(--s3);color:var(--tx)}
+.sb-item.active{background:var(--ac2);color:var(--ac)}
+.sb-item-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-item-badge{margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--red2);color:var(--red);border:1px solid var(--red3)}
+.sb-foot{border-top:1px solid var(--bdr);padding:12px 10px}
+.sb-user{display:flex;align-items:center;gap:9px}
+.sb-av{width:28px;height:28px;border-radius:8px;background:var(--ac2);border:1px solid var(--ac3);color:var(--ac);font-family:var(--disp);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-user-name{font-size:12px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-plan{font-size:10px;color:var(--tx2)}
+.sb-logout{color:var(--tx3);font-size:13px;padding:4px;border-radius:5px}
+.sb-logout:hover{color:var(--red);background:var(--red2)}
 
-/* ── LAYOUT ──────────────────────────────────────────────────────── */
-.page-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px 80px; }
-.demo-strip { display: none; align-items: center; justify-content: space-between; padding: 9px 16px; background: rgba(173,255,47,.04); border: 1px solid rgba(173,255,47,.1); border-radius: 10px; margin-bottom: 20px; font-size: 12px; color: rgba(173,255,47,.5); }
-.demo-strip.on { display: flex; }
-.demo-strip-btn { font-size: 11px; font-weight: 700; color: var(--ac); padding: 4px 11px; border-radius: 6px; background: var(--ac2); border: 1px solid var(--ac3); cursor: pointer; }
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0}
+.topbar{height:52px;flex-shrink:0;padding:0 24px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:rgba(7,8,9,.88);backdrop-filter:blur(14px);position:sticky;top:0;z-index:10}
+.topbar-title{font-family:var(--disp);font-size:15px;font-weight:700;letter-spacing:-.01em}
+.topbar-r{display:flex;align-items:center;gap:10px}
+.trial-pill{padding:4px 11px;border-radius:20px;background:var(--amb2);border:1px solid var(--amb3);font-size:10px;font-weight:700;color:var(--amb);font-family:var(--disp)}
+.demo-bar{padding:8px 24px;background:rgba(184,255,87,.04);border-bottom:1px solid rgba(184,255,87,.08);display:none;align-items:center;justify-content:space-between;flex-shrink:0}
+.demo-bar.on{display:flex}
+.demo-bar-t{font-size:12px;color:rgba(184,255,87,.5);display:flex;align-items:center;gap:6px}
+.demo-bar-btn{font-size:11px;font-weight:700;color:var(--ac);padding:4px 12px;border-radius:7px;background:var(--ac2);border:1px solid var(--ac3);cursor:pointer}
+.scroll-area{flex:1;padding:24px 24px 60px}
 
-/* ── STATUS BAR ──────────────────────────────────────────────────── */
-.status-bar { margin-bottom: 24px; padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; gap: 14px; border: 1px solid; animation: fadeUp .2s ease; }
-.status-bar.good { background: rgba(74,222,128,.04); border-color: rgba(74,222,128,.14); }
-.status-bar.warn { background: rgba(251,191,36,.04); border-color: rgba(251,191,36,.14); }
-.status-bar.bad { background: rgba(248,113,113,.04); border-color: rgba(248,113,113,.14); }
-.status-bar.neutral { background: var(--surface); border-color: var(--border); }
-.sb-ico { font-size: 20px; flex-shrink: 0; }
-.sb-text { font-size: 15px; font-weight: 600; flex: 1; letter-spacing: -.01em; }
-.sb-text.good { color: var(--green); }
-.sb-text.warn { color: var(--amber); }
-.sb-text.bad { color: var(--red); }
-.sb-text.neutral { color: var(--tx2); }
-.sb-run { display: flex; align-items: center; gap: 7px; padding: 8px 18px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; letter-spacing: -.01em; flex-shrink: 0; }
-.sb-run:hover { background: #c8ff4a; }
-.sb-run:disabled { opacity: .4; cursor: not-allowed; }
+/* PAGES */
+.page{display:none;animation:fadeUp .2s ease}
+.page.active{display:block}
 
-/* ── GRID ────────────────────────────────────────────────────────── */
-.grid-main { display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start; }
-.grid-left { display: flex; flex-direction: column; gap: 14px; }
-.grid-right { display: flex; flex-direction: column; gap: 14px; }
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;transition:border-color .12s}
+.card:hover{border-color:var(--bdr2)}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:-.01em}
+.chip{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--disp);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+.ch-red{background:var(--red2);color:var(--red);border:1px solid var(--red3)}
+.ch-amb{background:var(--amb2);color:var(--amb);border:1px solid var(--amb3)}
+.ch-grn{background:var(--grn2);color:var(--grn);border:1px solid var(--grn3)}
+.ch-ac{background:var(--ac2);color:var(--ac);border:1px solid var(--ac3)}
+.ch-muted{background:var(--s3);color:var(--tx2);border:1px solid var(--bdr)}
+.ch-blue{background:var(--blu2);color:var(--blue);border:1px solid rgba(96,165,250,.18)}
 
-/* ── CARDS ───────────────────────────────────────────────────────── */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .14s; }
-.card:hover { border-color: var(--border2); }
-.card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); }
-.card-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-.bd-red { background: var(--red2); color: var(--red); border: 1px solid var(--red3); }
-.bd-amb { background: var(--amb2); color: var(--amber); border: 1px solid rgba(251,191,36,.16); }
-.bd-grn { background: var(--grn2); color: var(--green); border: 1px solid rgba(74,222,128,.16); }
-.bd-muted { background: var(--surface2); color: var(--tx2); border: 1px solid var(--border); }
-.bd-ac { background: var(--ac2); color: var(--ac); border: 1px solid var(--ac3); }
+/* STATUS BANNER */
+.status-banner{padding:14px 18px;border-radius:var(--r2);margin-bottom:16px;display:flex;align-items:center;gap:12px;border:1px solid;font-size:14px;font-weight:600;letter-spacing:-.01em}
+.status-banner.good{background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.15);color:var(--grn)}
+.status-banner.bad{background:rgba(255,85,85,.04);border-color:rgba(255,85,85,.15);color:var(--red)}
+.status-banner.warn{background:rgba(245,158,11,.04);border-color:rgba(245,158,11,.15);color:var(--amb)}
+.status-banner.neutral{background:var(--s1);border-color:var(--bdr);color:var(--tx2)}
+.status-banner .sb-ico{font-size:18px;flex-shrink:0}
+.status-banner .sb-msg{flex:1}
+.analyse-btn{display:flex;align-items:center;gap:7px;padding:9px 20px;border-radius:10px;background:var(--ac);color:#070809;font-size:13px;font-weight:800;font-family:var(--disp);flex-shrink:0;letter-spacing:-.01em}
+.analyse-btn:hover{background:#ccff6b}
+.analyse-btn:disabled{opacity:.4;cursor:not-allowed}
 
-/* ── ONE THING ───────────────────────────────────────────────────── */
-.one-thing { padding: 20px 20px 0; }
-.ot-target { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
-.ot-num { width: 32px; height: 32px; border-radius: 8px; background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 700; }
-.ot-body { flex: 1; }
-.ot-action { font-family: var(--serif); font-size: 19px; font-style: italic; line-height: 1.3; margin-bottom: 8px; letter-spacing: -.01em; color: var(--tx); }
-.ot-why { font-size: 12px; color: var(--tx2); line-height: 1.7; margin-bottom: 10px; }
-.ot-impact { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 8px; background: var(--ac2); border: 1px solid var(--ac3); }
-.ot-impact-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--ac); }
-.ot-impact-lbl { font-size: 11px; color: var(--tx2); }
-.ot-script { margin: 0 -20px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface2); }
-.ot-script-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); margin-bottom: 7px; }
-.ot-script-text { font-size: 12px; color: var(--tx2); line-height: 1.75; font-style: italic; border-left: 2px solid var(--ac3); padding-left: 12px; }
+/* OVERVIEW GRID */
+.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.ov-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.kpi-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 18px}
+.kpi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:var(--tx2);margin-bottom:8px;font-family:var(--disp)}
+.kpi-bar{width:22px;height:2px;border-radius:2px;margin-bottom:10px}
+.kpi-val{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1;margin-bottom:5px}
+.kpi-sub{font-size:11px;color:var(--tx2)}
+.kpi-sub.bad{color:var(--red)}
+.kpi-sub.warn{color:var(--amb)}
+.kpi-sub.good{color:var(--grn)}
 
-/* ── LEAKS ───────────────────────────────────────────────────────── */
-.leaks-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
-.leak-row { display: flex; align-items: flex-start; gap: 13px; padding: 13px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid; transition: background .12s; cursor: pointer; }
-.leak-row:hover { background: var(--surface3); }
-.leak-text { flex: 1; min-width: 0; }
-.leak-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; letter-spacing: -.01em; }
-.leak-desc { font-size: 11px; color: var(--tx2); line-height: 1.55; }
-.leak-right { text-align: right; flex-shrink: 0; }
-.leak-amt { font-family: var(--mono); font-size: 16px; font-weight: 500; }
-.leak-mo { font-size: 9px; color: var(--tx3); margin-top: 2px; }
-.fix-pill { margin-top: 5px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: .04em; cursor: pointer; }
-.fix-pill.red { background: var(--red2); color: var(--red); border: 1px solid var(--red3); }
-.fix-pill.red:hover { background: rgba(248,113,113,.15); }
-.fix-pill.amb { background: var(--amb2); color: var(--amber); border: 1px solid rgba(251,191,36,.16); }
-.fix-pill.amb:hover { background: rgba(251,191,36,.15); }
+/* ONE THING PAGE */
+.ot-hero{padding:28px 24px 24px;background:linear-gradient(135deg,rgba(184,255,87,.05) 0%,transparent 60%);border-bottom:1px solid var(--bdr)}
+.ot-tag{font-size:10px;font-weight:700;color:var(--ac);text-transform:uppercase;letter-spacing:.14em;font-family:var(--disp);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.ot-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);animation:blink 2s infinite}
+.ot-headline{font-family:var(--disp);font-size:22px;font-weight:800;line-height:1.2;margin-bottom:12px;letter-spacing:-.02em;max-width:640px}
+.ot-why{font-size:13px;color:var(--tx2);line-height:1.75;max-width:580px;margin-bottom:18px}
+.ot-impact-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ot-impact-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:9px;background:var(--ac2);border:1px solid var(--ac3)}
+.ot-impact-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--ac)}
+.ot-impact-lbl{font-size:11px;color:var(--tx2)}
+.ot-script-box{padding:20px 24px;background:var(--s2);border-top:1px solid var(--bdr)}
+.ot-script-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);font-family:var(--disp);margin-bottom:8px}
+.ot-script{font-size:13px;color:var(--tx2);line-height:1.8;border-left:2px solid var(--ac3);padding-left:14px;font-style:italic}
+.ot-action-bar{padding:16px 24px;border-top:1px solid var(--bdr);display:flex;gap:10px;background:var(--s1)}
 
-/* ── RUNWAY CARD ─────────────────────────────────────────────────── */
-.runway-body { padding: 18px 18px 16px; }
-.runway-weeks { font-family: var(--mono); font-size: 42px; font-weight: 400; line-height: 1; margin-bottom: 4px; }
-.runway-label { font-size: 12px; color: var(--tx2); margin-bottom: 16px; }
-.runway-bar-track { height: 6px; background: var(--surface3); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
-.runway-bar-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(.34,1.2,.64,1); }
-.runway-markers { display: flex; justify-content: space-between; font-size: 9px; color: var(--tx3); font-family: var(--mono); margin-bottom: 14px; }
-.runway-status { font-size: 12px; color: var(--tx2); line-height: 1.65; }
-.runway-status b { font-weight: 600; }
+/* LEAKS PAGE */
+.leak-item{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-left:3px solid transparent;transition:background .1s;cursor:pointer}
+.leak-item:hover{background:var(--s2)}
+.leak-item:last-child{border-bottom:none}
+.leak-rank{font-size:9px;font-weight:700;font-family:var(--disp);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.leak-name{font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
+.leak-desc{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:10px;max-width:440px}
+.leak-action{font-size:12px;color:var(--tx2);line-height:1.6;padding:9px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--bdr);max-width:440px}
+.leak-action b{color:var(--tx);font-weight:600}
+.leak-right{text-align:right;flex-shrink:0}
+.leak-amt{font-family:var(--mono);font-size:26px;font-weight:500;line-height:1}
+.leak-period{font-size:10px;color:var(--tx2);margin-top:2px}
+.fix-btn-lg{margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:11px;font-weight:700;font-family:var(--disp);cursor:pointer;white-space:nowrap}
+.fix-red{background:var(--red2);color:var(--red);border:1px solid var(--red3)}
+.fix-red:hover{background:rgba(255,85,85,.14)}
+.fix-amb{background:var(--amb2);color:var(--amb);border:1px solid var(--amb3)}
+.fix-amb:hover{background:rgba(245,158,11,.14)}
+.leaks-total{padding:14px 20px;background:var(--s2);border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.leaks-total-lbl{font-size:12px;color:var(--tx2)}
+.leaks-total-val{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--red)}
 
-/* ── OWNER PAY ───────────────────────────────────────────────────── */
-.pay-body { padding: 18px; }
-.pay-amount { font-family: var(--mono); font-size: 38px; font-weight: 400; line-height: 1; margin-bottom: 4px; color: var(--ac); }
-.pay-label { font-size: 12px; color: var(--tx2); margin-bottom: 16px; }
-.pay-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
-.pay-row-label { font-size: 11px; color: var(--tx2); }
-.pay-row-val { font-family: var(--mono); font-size: 12px; font-weight: 500; }
-.pay-warning { margin-top: 12px; padding: 10px 13px; background: var(--red2); border: 1px solid var(--red3); border-radius: 8px; font-size: 11px; color: var(--red); line-height: 1.6; display: none; }
-.pay-warning.on { display: block; }
+/* RUNWAY PAGE */
+.runway-hero{padding:32px 24px;text-align:center;border-bottom:1px solid var(--bdr)}
+.runway-weeks{font-family:var(--mono);font-size:80px;font-weight:400;line-height:1;margin-bottom:6px}
+.runway-sub{font-size:14px;color:var(--tx2);margin-bottom:24px}
+.runway-track{height:8px;background:var(--s3);border-radius:8px;overflow:hidden;margin:0 auto 10px;max-width:420px}
+.runway-fill{height:100%;border-radius:8px;transition:width 1.4s cubic-bezier(.34,1.2,.64,1)}
+.runway-marks{display:flex;justify-content:space-between;font-size:9px;color:var(--tx3);font-family:var(--mono);max-width:420px;margin:0 auto}
+.runway-verdict{margin-top:20px;font-family:var(--disp);font-size:18px;font-weight:700}
+.runway-msg{margin-top:6px;font-size:13px;color:var(--tx2);line-height:1.7;max-width:420px;margin-left:auto;margin-right:auto}
+.runway-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px 24px;background:var(--s2);border-top:1px solid var(--bdr)}
+.rm-item{background:var(--s1);border:1px solid var(--bdr);border-radius:10px;padding:14px;text-align:center}
+.rm-val{font-family:var(--mono);font-size:20px;font-weight:500;margin-bottom:4px}
+.rm-lbl{font-size:10px;color:var(--tx2);font-family:var(--disp);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 
-/* ── ALERTS ──────────────────────────────────────────────────────── */
-.alerts-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; }
-.alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border-radius: 9px; }
-.alert-item.urgent { background: rgba(248,113,113,.05); border: 1px solid rgba(248,113,113,.12); }
-.alert-item.warn { background: rgba(251,191,36,.04); border: 1px solid rgba(251,191,36,.12); }
-.ai-ico { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-.ai-text { font-size: 12px; line-height: 1.6; color: var(--tx2); }
-.ai-text b { color: var(--tx); font-weight: 600; }
+/* OWNER PAY PAGE */
+.pay-hero{padding:32px 24px;text-align:center;border-bottom:1px solid var(--bdr)}
+.pay-amount{font-family:var(--mono);font-size:72px;font-weight:500;line-height:1;margin-bottom:6px}
+.pay-label{font-size:14px;color:var(--tx2);margin-bottom:24px}
+.pay-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px 24px;background:var(--s2);border-top:1px solid var(--bdr)}
+.pb-item{background:var(--s1);border:1px solid var(--bdr);border-radius:10px;padding:14px;text-align:center}
+.pb-val{font-family:var(--mono);font-size:18px;font-weight:500;margin-bottom:4px}
+.pb-lbl{font-size:10px;color:var(--tx2);font-family:var(--disp);font-weight:600;text-transform:uppercase;letter-spacing:.08em;line-height:1.4}
+.pay-warn-box{margin:16px 20px;padding:12px 16px;background:var(--red2);border:1px solid var(--red3);border-radius:10px;font-size:12px;color:var(--red);line-height:1.6;display:none}
+.pay-warn-box.on{display:block}
 
-/* ── EMPTY ───────────────────────────────────────────────────────── */
-.empty-state { text-align: center; padding: 40px 20px; }
-.es-ico { font-size: 28px; margin-bottom: 12px; }
-.es-title { font-family: var(--serif); font-size: 17px; font-style: italic; margin-bottom: 6px; }
-.es-sub { font-size: 12px; color: var(--tx2); line-height: 1.65; max-width: 260px; margin: 0 auto; }
+/* WHAT IF PAGE */
+.whatif-scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:18px 20px;border-bottom:1px solid var(--bdr)}
+.wi-scenario{background:var(--s2);border:1px solid var(--bdr);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .12s}
+.wi-scenario:hover,.wi-scenario.active{border-color:rgba(184,255,87,.28);background:rgba(184,255,87,.025)}
+.wi-ico{font-size:22px;margin-bottom:10px}
+.wi-title{font-family:var(--disp);font-size:13px;font-weight:700;margin-bottom:5px}
+.wi-desc{font-size:11px;color:var(--tx2);line-height:1.55;margin-bottom:12px}
+.wi-inp-wrap{display:flex;align-items:center;gap:7px}
+.wi-inp{flex:1;background:var(--s3);border:1px solid var(--bdr2);border-radius:7px;padding:8px 10px;color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;transition:border-color .12s}
+.wi-inp:focus{border-color:rgba(184,255,87,.3)}
+.wi-unit{font-size:11px;color:var(--tx2);white-space:nowrap}
+.whatif-result{padding:20px;display:none}
+.whatif-result.on{display:block;animation:fadeUp .2s ease}
+.wr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.wr-item{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:14px}
+.wr-lbl{font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:7px}
+.wr-val{font-family:var(--mono);font-size:20px;font-weight:500;margin-bottom:3px}
+.wr-delta{font-size:11px}
+.wr-delta.up{color:var(--grn)}
+.wr-delta.dn{color:var(--red)}
+.wr-summary{font-size:12px;color:var(--tx2);line-height:1.75;padding:14px 16px;background:var(--s2);border-radius:10px;border:1px solid var(--bdr)}
 
-/* ── ASK AI ──────────────────────────────────────────────────────── */
-.ask-wrap { padding: 12px 14px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 8px; }
-.ask-inp { flex: 1; background: var(--surface3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 13px; color: var(--tx); font-size: 12px; outline: none; transition: border-color .14s; }
-.ask-inp:focus { border-color: rgba(173,255,47,.3); }
-.ask-inp::placeholder { color: var(--tx3); }
-.ask-go { padding: 9px 16px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-.ask-go:hover { background: #c8ff4a; }
-.ask-go:disabled { opacity: .4; cursor: not-allowed; }
-.ask-ans { padding: 14px 18px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.8; color: var(--tx2); display: none; }
-.ask-ans.on { display: block; animation: fadeUp .2s ease; }
-.ask-ans b { color: var(--tx); }
+/* ALERTS PAGE */
+.alert-row{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-bottom:1px solid var(--bdr);transition:background .1s}
+.alert-row:hover{background:var(--s2)}
+.alert-row:last-child{border-bottom:none}
+.alert-row.urgent{border-left:3px solid var(--red)}
+.alert-row.warn{border-left:3px solid var(--amb)}
+.ar-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.ar-text{font-size:13px;color:var(--tx2);line-height:1.6;flex:1}
+.ar-text b{color:var(--tx);font-weight:600}
+.ar-time{font-size:10px;color:var(--tx3);flex-shrink:0}
 
-/* ── FIX MODAL ───────────────────────────────────────────────────── */
-.modal-bg { position: fixed; inset: 0; z-index: 80; background: rgba(10,10,11,.92); backdrop-filter: blur(12px); display: none; align-items: flex-end; justify-content: center; padding: 16px; }
-.modal-bg.on { display: flex; animation: fadeIn .18s ease; }
-.modal-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; width: 100%; max-width: 580px; max-height: 88vh; overflow-y: auto; animation: fadeUp .22s ease; }
-.modal-pill { width: 32px; height: 3px; background: var(--surface3); border-radius: 3px; margin: 12px auto 0; }
-.modal-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-.modal-title { font-family: var(--serif); font-size: 18px; font-style: italic; margin-bottom: 2px; }
-.modal-sub { font-size: 11px; color: var(--tx2); }
-.modal-close { color: var(--tx2); font-size: 18px; line-height: 1; padding: 2px; }
-.modal-close:hover { color: var(--tx); }
-.modal-body { padding: 18px 20px; }
-.modal-sec-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--tx3); margin-bottom: 8px; }
-.modal-draft { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 12px; line-height: 1.85; color: var(--tx2); white-space: pre-wrap; margin-bottom: 14px; }
-.modal-draft b { color: var(--tx); }
-.modal-btns { display: flex; gap: 8px; }
-.modal-copy { display: flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; background: var(--ac); color: #0a0a0b; font-size: 12px; font-weight: 700; }
-.modal-copy:hover { background: #c8ff4a; }
-.modal-done { padding: 9px 14px; border-radius: 8px; background: var(--surface2); color: var(--tx2); font-size: 12px; font-weight: 600; border: 1px solid var(--border); }
-.modal-done:hover { color: var(--tx); }
-.modal-loading { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--tx2); padding: 20px 0; }
+/* ASK AI */
+.ask-bar{padding:14px 18px;border-top:1px solid var(--bdr);display:flex;gap:9px;background:var(--s2)}
+.ask-inp{flex:1;background:var(--s3);border:1px solid var(--bdr2);border-radius:10px;padding:11px 15px;color:var(--tx);font-size:13px;outline:none;transition:border-color .12s}
+.ask-inp:focus{border-color:rgba(184,255,87,.3)}
+.ask-inp::placeholder{color:var(--tx3)}
+.ask-go{padding:11px 20px;border-radius:10px;background:var(--ac);color:#070809;font-size:13px;font-weight:700;font-family:var(--disp);flex-shrink:0}
+.ask-go:hover{background:#ccff6b}
+.ask-go:disabled{opacity:.4;cursor:not-allowed}
+.ask-answer{padding:16px 20px;border-top:1px solid var(--bdr);font-size:13px;line-height:1.8;color:var(--tx2);display:none}
+.ask-answer.on{display:block;animation:fadeUp .2s ease}
+.ask-answer b{color:var(--tx)}
 
-/* ── CONNECT ─────────────────────────────────────────────────────── */
-.conn-overlay { position: fixed; inset: 0; z-index: 70; background: rgba(10,10,11,.97); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; padding: 20px; }
-.conn-overlay.on { display: flex; animation: fadeIn .18s ease; }
-.conn-box { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 38px 34px; width: 100%; max-width: 440px; animation: fadeUp .25s ease; }
-.conn-h { font-family: var(--serif); font-size: 24px; font-style: italic; margin-bottom: 6px; }
-.conn-sub { font-size: 13px; color: var(--tx2); margin-bottom: 26px; line-height: 1.65; }
-.conn-opt { display: flex; align-items: center; gap: 14px; padding: 13px 15px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; text-decoration: none; color: var(--tx); margin-bottom: 8px; transition: all .14s; }
-.conn-opt:hover { border-color: rgba(173,255,47,.25); transform: translateX(3px); }
-.conn-ico { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 15px; font-weight: 800; color: #fff; flex-shrink: 0; }
-.conn-opt-name { font-size: 13px; font-weight: 600; margin-bottom: 1px; letter-spacing: -.01em; }
-.conn-opt-desc { font-size: 11px; color: var(--tx2); }
-.conn-arr { margin-left: auto; color: var(--tx3); font-size: 14px; transition: transform .14s; }
-.conn-opt:hover .conn-arr { transform: translateX(3px); color: var(--tx2); }
-.conn-trust { font-size: 11px; color: var(--tx3); text-align: center; margin-top: 16px; }
-.conn-skip { text-align: center; margin-top: 8px; }
-.conn-skip a { font-size: 12px; color: var(--tx2); cursor: pointer; }
-.conn-skip a:hover { color: var(--tx); }
+/* FIX MODAL */
+.modal-bg{position:fixed;inset:0;z-index:80;background:rgba(7,8,9,.92);backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal-bg.on{display:flex;animation:fadeIn .18s ease}
+.modal-box{background:var(--s1);border:1px solid var(--bdr2);border-radius:20px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;animation:fadeUp .22s ease}
+.modal-pill{width:32px;height:3px;background:var(--s4);border-radius:3px;margin:12px auto 0}
+.modal-head{padding:18px 22px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-title{font-family:var(--disp);font-size:16px;font-weight:800;margin-bottom:2px}
+.modal-sub{font-size:12px;color:var(--tx2)}
+.modal-close{color:var(--tx2);font-size:18px;line-height:1;padding:2px}
+.modal-close:hover{color:var(--tx)}
+.modal-body{padding:18px 22px}
+.m-sec-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);font-family:var(--disp);margin-bottom:8px}
+.m-draft{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.85;color:var(--tx2);white-space:pre-wrap;margin-bottom:14px}
+.m-draft b{color:var(--tx)}
+.m-btns{display:flex;gap:9px;flex-wrap:wrap}
+.m-copy{display:flex;align-items:center;gap:6px;padding:10px 20px;border-radius:9px;background:var(--ac);color:#070809;font-size:12px;font-weight:700;font-family:var(--disp)}
+.m-copy:hover{background:#ccff6b}
+.m-done{padding:10px 16px;border-radius:9px;background:var(--s3);color:var(--tx2);font-size:12px;font-weight:600;border:1px solid var(--bdr2)}
+.m-done:hover{color:var(--tx)}
+.m-loading{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tx2);padding:20px 0}
 
-/* ── UTILS ───────────────────────────────────────────────────────── */
-.spinner { width: 14px; height: 14px; border: 2px solid var(--border2); border-top-color: var(--ac); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; flex-shrink: 0; }
-.toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 9px; font-size: 12px; font-weight: 700; z-index: 999; pointer-events: none; white-space: nowrap; display: none; }
-.toast.ok { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); color: var(--green); }
-.toast.err { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.2); color: var(--red); }
-.toast.info { background: var(--ac2); border: 1px solid var(--ac3); color: var(--ac); }
+/* CONNECT OVERLAY */
+.conn-ov{position:fixed;inset:0;z-index:70;background:rgba(7,8,9,.97);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.conn-ov.on{display:flex;animation:fadeIn .18s ease}
+.conn-box{background:var(--s1);border:1px solid var(--bdr2);border-radius:22px;padding:40px 36px;width:100%;max-width:440px;animation:fadeUp .25s ease}
+.conn-h{font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:7px}
+.conn-sub{font-size:13px;color:var(--tx2);margin-bottom:28px;line-height:1.65}
+.conn-opt{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--bdr2);background:var(--s2);cursor:pointer;text-decoration:none;color:var(--tx);margin-bottom:9px;transition:all .12s}
+.conn-opt:hover{border-color:rgba(184,255,87,.28);transform:translateX(3px)}
+.conn-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:15px;font-weight:900;color:#fff;flex-shrink:0}
+.conn-opt-name{font-family:var(--disp);font-size:13px;font-weight:700;margin-bottom:1px}
+.conn-opt-desc{font-size:11px;color:var(--tx2)}
+.conn-arr{margin-left:auto;color:var(--tx3);font-size:14px;transition:transform .12s}
+.conn-opt:hover .conn-arr{transform:translateX(3px);color:var(--tx2)}
+.conn-trust{font-size:11px;color:var(--tx3);text-align:center;margin-top:16px}
+.conn-skip{text-align:center;margin-top:8px}
+.conn-skip a{font-size:12px;color:var(--tx2);cursor:pointer}
+.conn-skip a:hover{color:var(--tx)}
 
-@media (max-width: 860px) { .grid-main { grid-template-columns: 1fr; } .grid-right { display: grid; grid-template-columns: 1fr 1fr; } }
-@media (max-width: 540px) { .grid-right { grid-template-columns: 1fr; } .fld-row { grid-template-columns: 1fr; } }
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px}
+.empty-ico{font-size:28px;margin-bottom:12px}
+.empty-title{font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:6px}
+.empty-sub{font-size:12px;color:var(--tx2);line-height:1.7;max-width:280px;margin:0 auto}
+
+/* UTILS */
+.spinner{width:14px;height:14px;border:2px solid var(--bdr2);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:9px;font-size:12px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;display:none;font-family:var(--disp)}
+.toast.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);color:var(--grn)}
+.toast.err{background:rgba(255,85,85,.1);border:1px solid rgba(255,85,85,.2);color:var(--red)}
+.toast.info{background:var(--ac2);border:1px solid var(--ac3);color:var(--ac)}
 </style>
 </head>
 <body>
 
-<!-- ═══ AUTH ═══ -->
-<div id="auth-screen" class="auth-wrap">
+<!-- AUTH -->
+<div id="auth-screen" class="auth-screen">
   <div class="auth-card">
-    <a class="auth-back" href="/">&#8592; Back</a>
+    <a class="auth-back" href="/">&#8592; Back to homepage</a>
     <div class="auth-logo">
-      <div class="logo-gem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="logo-name">FlowGuard</span>
+      <div class="a-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="a-name">FlowGuard</span>
     </div>
     <div id="v-su">
       <div class="auth-h">Find your profit leaks</div>
@@ -281,7 +327,7 @@ input, select { font-family: inherit; }
           </select>
         </div>
       </div>
-      <button class="submit-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
+      <button class="auth-btn" id="su-btn" onclick="doSignup()">Start free trial &#x2192;</button>
       <div class="auth-sw">Have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
     <div id="v-li" style="display:none">
@@ -290,138 +336,229 @@ input, select { font-family: inherit; }
       <div class="err" id="li-err"></div>
       <div class="fld"><label>Email</label><input id="li-email" type="email" placeholder="you@biz.com" autocomplete="email"></div>
       <div class="fld"><label>Password</label><input id="li-pass" type="password" placeholder="Password" autocomplete="current-password"></div>
-      <button class="submit-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
+      <button class="auth-btn" id="li-btn" onclick="doLogin()">Log in &#x2192;</button>
       <div class="auth-sw">No account? <a onclick="showSignup()">Start free trial</a></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ APP ═══ -->
-<div id="app">
-  <div class="topbar">
-    <div class="tb-logo">
-      <div class="tb-logo-gem"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="tb-logo-name">FlowGuard</span>
-    </div>
-    <div class="tb-right">
-      <div class="tb-conn" onclick="openConn()">
-        <div class="tb-live off" id="tb-live"></div>
-        <span id="tb-conn-label">Connect software</span>
+<!-- APP -->
+<div id="app" style="display:none;height:100vh;flex-direction:row">
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <div class="sb-mark"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <span class="sb-name">FlowGuard</span>
       </div>
-      <div class="tb-av" id="tb-av">?</div>
-      <button class="tb-out" onclick="doLogout()" title="Log out">&#x23CF;</button>
     </div>
-  </div>
-
-  <div class="page-wrap">
-    <div class="demo-strip" id="demo-strip">
-      <span>&#x26A1; Demo data &#x2014; connect Xero, MYOB or QuickBooks to see your real numbers</span>
-      <div class="demo-strip-btn" onclick="openConn()">Connect &#x2192;</div>
+    <div class="sb-conn-box">
+      <div class="sb-conn-lbl">Connected to</div>
+      <div id="sb-conn-val" class="sb-conn-val" style="color:var(--tx2)">Not connected</div>
+      <button class="sb-conn-btn" onclick="openConn()">Connect accounting software</button>
     </div>
-
-    <!-- STATUS BAR -->
-    <div class="status-bar neutral" id="status-bar">
-      <span class="sb-ico">&#x1F4CA;</span>
-      <span class="sb-text neutral" id="status-text">Connect your accounting software to get started</span>
-      <button class="sb-run" id="run-btn" onclick="runAnalysis()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Analyse Now
-      </button>
+    <nav class="sb-nav">
+      <div class="sb-section">Overview</div>
+      <div class="sb-item active" data-page="dashboard" onclick="goPage('dashboard',this)"><span class="sb-item-ico">&#x25A6;</span>Dashboard</div>
+      <div class="sb-section">AI CFO Tools</div>
+      <div class="sb-item" data-page="onething" onclick="goPage('onething',this)"><span class="sb-item-ico">&#x1F3AF;</span>The One Thing</div>
+      <div class="sb-item" data-page="leaks" onclick="goPage('leaks',this)"><span class="sb-item-ico">&#x1F4B8;</span>Profit Leaks<span class="sb-item-badge" id="leaks-nav-badge" style="display:none">3</span></div>
+      <div class="sb-item" data-page="runway" onclick="goPage('runway',this)"><span class="sb-item-ico">&#x1F534;</span>Cash Runway</div>
+      <div class="sb-item" data-page="ownerpay" onclick="goPage('ownerpay',this)"><span class="sb-item-ico">&#x1F4B5;</span>Owner Pay</div>
+      <div class="sb-item" data-page="whatif" onclick="goPage('whatif',this)"><span class="sb-item-ico">&#x1F52E;</span>What If</div>
+      <div class="sb-section">Support</div>
+      <div class="sb-item" data-page="alerts" onclick="goPage('alerts',this)"><span class="sb-item-ico">&#x1F6A8;</span>Smart Alerts<span class="sb-item-badge" id="alerts-nav-badge" style="display:none">0</span></div>
+      <div class="sb-item" data-page="ask" onclick="goPage('ask',this)"><span class="sb-item-ico">&#x1F916;</span>Ask AI CFO</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-av" id="sb-av">?</div>
+        <div><div class="sb-user-name" id="sb-user-name">Loading...</div><div class="sb-user-plan" id="sb-user-plan">&#x2014;</div></div>
+        <button class="sb-logout" onclick="doLogout()" title="Log out">&#x23CF;</button>
+      </div>
     </div>
+  </aside>
 
-    <!-- TWO-COL GRID -->
-    <div class="grid-main">
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-r">
+        <div class="trial-pill" id="trial-pill" style="display:none">14-day trial</div>
+      </div>
+    </header>
+    <div class="demo-bar" id="demo-bar">
+      <span class="demo-bar-t"><span>&#x26A1;</span> Demo mode &#x2014; connect your accounting software to see real numbers</span>
+      <div class="demo-bar-btn" onclick="openConn()">Connect now &#x2192;</div>
+    </div>
+    <div class="scroll-area">
 
-      <!-- LEFT COLUMN -->
-      <div class="grid-left">
-
-        <!-- THE ONE THING -->
-        <div class="card" id="one-thing-card">
-          <div class="card-head">
-            <div class="card-label">&#x1F3AF; The One Thing</div>
-            <div class="card-badge bd-ac" id="ot-badge">Priority action</div>
+      <!-- DASHBOARD PAGE -->
+      <div id="page-dashboard" class="page active">
+        <div class="status-banner neutral" id="status-banner">
+          <span class="sb-ico">&#x1F4CA;</span>
+          <span class="sb-msg" id="status-msg">Connect your accounting software to get started</span>
+          <button class="analyse-btn" id="run-btn" onclick="runAnalysis()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Analyse Now
+          </button>
+        </div>
+        <div class="ov-kpis" id="ov-kpis">
+          <div class="kpi-card"><div class="kpi-lbl">Revenue (YTD)</div><div class="kpi-bar" style="background:var(--blue)"></div><div class="kpi-val" id="kv-rev">&#x2014;</div><div class="kpi-sub" id="ks-rev">Awaiting data</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Net Profit</div><div class="kpi-bar" style="background:var(--grn)"></div><div class="kpi-val" id="kv-profit">&#x2014;</div><div class="kpi-sub" id="ks-profit">From P&amp;L</div></div>
+          <div class="kpi-card"><div class="kpi-lbl">Cash Position</div><div class="kpi-bar" style="background:var(--amb)"></div><div class="kpi-val" id="kv-cash">&#x2014;</div><div class="kpi-sub" id="ks-cash">Balance sheet</div></div>
+        </div>
+        <div class="ov-grid">
+          <div class="card">
+            <div class="card-head"><div class="card-title">&#x1F3AF; The One Thing Today</div><div class="chip ch-ac">Top priority</div></div>
+            <div id="dash-ot" style="padding:16px 18px">
+              <div class="empty"><div class="empty-sub">Run an analysis to get your #1 action for today</div></div>
+            </div>
           </div>
-          <div class="one-thing" id="ot-body">
-            <div class="empty-state">
-              <div class="es-ico">&#x1F3AF;</div>
-              <div class="es-title">Your #1 action today</div>
-              <div class="es-sub">Run an analysis to get the single highest-impact thing you can do right now.</div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">&#x1F4B8; Money Being Missed</div><div class="chip ch-muted" id="dash-leaks-chip">&#x2014;</div></div>
+            <div id="dash-leaks" style="padding:16px 18px">
+              <div class="empty"><div class="empty-sub">Run an analysis to detect profit leaks</div></div>
             </div>
           </div>
         </div>
-
-        <!-- MONEY BEING MISSED / LEAKS -->
-        <div class="card">
-          <div class="card-head">
-            <div class="card-label">&#x1F4B8; Money Being Missed</div>
-            <div class="card-badge bd-muted" id="leaks-badge">&#x2014;</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">&#x1F534; Cash Runway</div><div class="chip ch-muted" id="dash-runway-chip">&#x2014;</div></div>
+            <div id="dash-runway" style="padding:16px 18px"><div class="empty"><div class="empty-sub">Run an analysis to see your runway</div></div></div>
           </div>
-          <div class="leaks-body" id="leaks-body">
-            <div class="empty-state">
-              <div class="es-ico">&#x1F4B8;</div>
-              <div class="es-title">No leaks detected yet</div>
-              <div class="es-sub">Connect your accounting software and run an analysis.</div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">&#x1F4B5; Safe Owner Pay</div><div class="chip ch-muted">This month</div></div>
+            <div id="dash-pay" style="padding:16px 18px"><div class="empty"><div class="empty-sub">Run an analysis to calculate your safe draw</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THE ONE THING PAGE -->
+      <div id="page-onething" class="page">
+        <div class="card">
+          <div id="ot-content">
+            <div class="empty" style="padding:48px 20px">
+              <div class="empty-ico">&#x1F3AF;</div>
+              <div class="empty-title">Your #1 action</div>
+              <div class="empty-sub">Go to Dashboard and click Analyse Now to get your single highest-impact action for today.</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- ASK AI -->
+      <!-- PROFIT LEAKS PAGE -->
+      <div id="page-leaks" class="page">
         <div class="card">
-          <div class="card-head"><div class="card-label">&#x1F916; Ask your AI CFO</div></div>
-          <div class="ask-wrap">
-            <input class="ask-inp" id="ask-inp" type="text" placeholder='"Which client is killing my margins?" or "Can I afford to hire?"'>
+          <div class="card-head"><div class="card-title">&#x1F4B8; Money Being Missed</div><div class="chip ch-muted" id="leaks-page-chip">&#x2014;</div></div>
+          <div id="leaks-page-body">
+            <div class="empty" style="padding:48px 20px">
+              <div class="empty-ico">&#x1F50D;</div>
+              <div class="empty-title">No analysis yet</div>
+              <div class="empty-sub">Go to Dashboard and click Analyse Now to detect your profit leaks.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASH RUNWAY PAGE -->
+      <div id="page-runway" class="page">
+        <div class="card">
+          <div class="card-head"><div class="card-title">&#x1F534; Cash Runway</div><div class="chip ch-muted" id="runway-chip">&#x2014;</div></div>
+          <div id="runway-page-body">
+            <div class="empty" style="padding:48px 20px">
+              <div class="empty-ico">&#x23F3;</div>
+              <div class="empty-title">Runway not calculated</div>
+              <div class="empty-sub">Go to Dashboard and run an analysis to see how long your cash will last.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OWNER PAY PAGE -->
+      <div id="page-ownerpay" class="page">
+        <div class="card">
+          <div class="card-head"><div class="card-title">&#x1F4B5; Owner Pay Calculator</div><div class="chip ch-muted">Safe draw this month</div></div>
+          <div id="ownerpay-page-body">
+            <div class="empty" style="padding:48px 20px">
+              <div class="empty-ico">&#x1F4B5;</div>
+              <div class="empty-title">Not calculated yet</div>
+              <div class="empty-sub">Go to Dashboard and run an analysis to calculate your safe owner draw.</div>
+            </div>
+          </div>
+          <div class="pay-warn-box" id="pay-warn-box"></div>
+        </div>
+      </div>
+
+      <!-- WHAT IF PAGE -->
+      <div id="page-whatif" class="page">
+        <div class="card">
+          <div class="card-head"><div class="card-title">&#x1F52E; What If Simulator</div><div class="chip ch-blue">Instant projections</div></div>
+          <div class="whatif-scenarios">
+            <div class="wi-scenario active" onclick="selectWI('price',this)">
+              <div class="wi-ico">&#x1F4B0;</div>
+              <div class="wi-title">Raise Prices</div>
+              <div class="wi-desc">What if you increased prices by a percentage?</div>
+              <div class="wi-inp-wrap"><input type="number" class="wi-inp" id="wi-price" value="5" min="1" max="50" oninput="calcWhatIf()"><span class="wi-unit">% increase</span></div>
+            </div>
+            <div class="wi-scenario" onclick="selectWI('staff',this)">
+              <div class="wi-ico">&#x1F464;</div>
+              <div class="wi-title">Hire Staff</div>
+              <div class="wi-desc">What if you hired one full-time employee?</div>
+              <div class="wi-inp-wrap"><input type="number" class="wi-inp" id="wi-staff" value="60000" min="30000" max="200000" step="5000" oninput="calcWhatIf()"><span class="wi-unit">salary $</span></div>
+            </div>
+            <div class="wi-scenario" onclick="selectWI('invoices',this)">
+              <div class="wi-ico">&#x1F4EC;</div>
+              <div class="wi-title">Chase Invoices</div>
+              <div class="wi-desc">What if you collected all overdue invoices?</div>
+              <div class="wi-inp-wrap"><input type="number" class="wi-inp" id="wi-collect" value="80" min="10" max="100" oninput="calcWhatIf()"><span class="wi-unit">% collected</span></div>
+            </div>
+          </div>
+          <div class="whatif-result" id="wi-result">
+            <div class="wr-grid" id="wr-grid"></div>
+            <div class="wr-summary" id="wr-summary"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTS PAGE -->
+      <div id="page-alerts" class="page">
+        <div class="card">
+          <div class="card-head"><div class="card-title">&#x1F6A8; Smart Alerts</div><div class="chip ch-muted" id="alerts-page-chip">&#x2014;</div></div>
+          <div id="alerts-page-body">
+            <div class="empty" style="padding:48px 20px">
+              <div class="empty-ico">&#x1F6A8;</div>
+              <div class="empty-title">No alerts</div>
+              <div class="empty-sub">Run an analysis on the Dashboard to generate smart alerts based on your real numbers.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASK AI PAGE -->
+      <div id="page-ask" class="page">
+        <div class="card">
+          <div class="card-head"><div class="card-title">&#x1F916; Ask Your AI CFO</div><div class="chip ch-ac">Powered by Claude</div></div>
+          <div style="padding:18px 20px 0">
+            <p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:16px">Ask anything about your business finances. Your AI CFO has read your P&L, invoices, cash position and industry benchmarks.</p>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+              <div style="font-size:11px;color:var(--tx3);font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.1em">Try asking</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px" id="ask-suggestions"></div>
+            </div>
+          </div>
+          <div class="ask-bar">
+            <input class="ask-inp" id="ask-inp" type="text" placeholder="Which client is killing my margins? Can I afford to hire someone?">
             <button class="ask-go" id="ask-go" onclick="askAI()">Ask &#x2192;</button>
           </div>
-          <div class="ask-ans" id="ask-ans"></div>
+          <div class="ask-answer" id="ask-ans"></div>
         </div>
-
       </div>
 
-      <!-- RIGHT COLUMN -->
-      <div class="grid-right">
+    </div><!-- end scroll-area -->
+  </div><!-- end main -->
+</div><!-- end app -->
 
-        <!-- CASH RUNWAY -->
-        <div class="card">
-          <div class="card-head">
-            <div class="card-label">&#x1F534; Cash Runway</div>
-            <div class="card-badge bd-muted" id="runway-badge">&#x2014;</div>
-          </div>
-          <div class="runway-body" id="runway-body">
-            <div class="empty-state" style="padding:24px 16px">
-              <div class="es-sub">Run an analysis to see your runway</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- OWNER PAY -->
-        <div class="card">
-          <div class="card-head">
-            <div class="card-label">&#x1F4B5; Owner Pay</div>
-            <div class="card-badge bd-muted">Safe this month</div>
-          </div>
-          <div class="pay-body" id="pay-body">
-            <div class="empty-state" style="padding:24px 16px">
-              <div class="es-sub">Run an analysis to calculate your safe draw</div>
-            </div>
-          </div>
-          <div class="pay-warning" id="pay-warn"></div>
-        </div>
-
-        <!-- SMART ALERTS -->
-        <div class="card" id="alerts-card" style="display:none">
-          <div class="card-head">
-            <div class="card-label">&#x1F6A8; Smart Alerts</div>
-            <div class="card-badge bd-red" id="alerts-badge">0</div>
-          </div>
-          <div class="alerts-body" id="alerts-body"></div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ FIX MODAL ═══ -->
+<!-- FIX MODAL -->
 <div class="modal-bg" id="fix-modal">
   <div class="modal-box">
     <div class="modal-pill"></div>
@@ -433,34 +570,29 @@ input, select { font-family: inherit; }
   </div>
 </div>
 
-<!-- ═══ CONNECT ═══ -->
-<div class="conn-overlay" id="conn-overlay">
+<!-- CONNECT OVERLAY -->
+<div class="conn-ov" id="conn-ov">
   <div class="conn-box">
     <div class="auth-logo" style="margin-bottom:18px">
-      <div class="logo-gem"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <span class="logo-name">FlowGuard</span>
+      <div class="a-mark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#070809" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <span class="a-name">FlowGuard</span>
     </div>
     <div class="conn-h">Connect your accounts</div>
-    <div class="conn-sub">Read-only access. We never modify your data or make any changes.</div>
+    <div class="conn-sub">Read-only access. We never modify your data.</div>
     <a class="conn-opt" href="/auth/xero"><div class="conn-ico" style="background:#13b5ea">X</div><div><div class="conn-opt-name">Xero</div><div class="conn-opt-desc">Australia&#x27;s most popular platform</div></div><div class="conn-arr">&#x2192;</div></a>
     <a class="conn-opt" href="/auth/myob"><div class="conn-ico" style="background:#6c47ff">M</div><div><div class="conn-opt-name">MYOB</div><div class="conn-opt-desc">AccountRight &amp; Essentials</div></div><div class="conn-arr">&#x2192;</div></a>
     <a class="conn-opt" href="/auth/quickbooks"><div class="conn-ico" style="background:#2ca01c">Q</div><div><div class="conn-opt-name">QuickBooks</div><div class="conn-opt-desc">Intuit QuickBooks Online</div></div><div class="conn-arr">&#x2192;</div></a>
-    <div class="conn-trust">&#x1F512; Read-only &middot; Encrypted &middot; Never sold</div>
+    <div class="conn-trust">&#x1F512; Read-only &#xB7; Encrypted &#xB7; Never sold</div>
     <div class="conn-skip"><a onclick="skipConn()">Skip &#x2014; use demo data</a></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-var S = { user:null, conn:null, data:null, parsed:null, loading:false };
-var BENCH = { trades:{net:[8,14],labour:[38,42],debtor:[30,45]}, retail:{net:[5,10],labour:[12,18],debtor:[14,30]}, hospitality:{net:[6,9],labour:[30,35],debtor:[7,21]}, professional:{net:[15,25],labour:[45,55],debtor:[30,45]}, health:{net:[12,20],labour:[50,60],debtor:[14,30]}, ecommerce:{net:[8,15],labour:[10,18],debtor:[1,7]}, manufacturing:{net:[8,15],labour:[25,35],debtor:[30,60]}, other:{net:[8,15],labour:[30,45],debtor:[30,45]} };
-var FIX_TPL = {
-  invoices: "MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [#Number] for $[Amount], which was due on [Date].\n\nCould you please confirm when payment will be processed? We would appreciate settlement by [3 days from now].\n\nHappy to resolve any issues immediately.\n\nThanks,\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Call (don't email) your largest overdue client. Calls recover 3x more than emails.\nDay 3: Send written follow-up with invoice attached to anyone who didn't answer.\nDay 7: For anything still unpaid, issue a formal overdue notice and offer a payment plan.",
-  roster:   "MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI need a review of our labour cost breakdown for the last 3 months:\n1. Labour as % of revenue by week\n2. Cost by role and shift\n3. Recurring overtime or penalty rates\n\nPlease have this ready by [3 days from now].\n\nYOUR 3 STEPS\n\nDay 1: Pull the labour report. Find your 3 most expensive shifts vs revenue generated.\nDay 3: Compare output against cost. Identify the obvious mismatches.\nDay 7: Restructure roster around your 3 highest-revenue periods.",
-  pricing:  "PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [Date 30 days from now], our pricing will increase by [X]% to reflect rising costs.\n\nYour new rate will be [New Amount].\n\nWe value your business and are committed to the same high standard of service.\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Identify your 20% lowest-margin clients. Raise their prices first.\nDay 3: Send notice to all clients with 30 days lead time. Most won't leave.\nDay 7: For anyone who pushes back hard — if they're already low-margin, let them go.",
-  overheads:"OVERHEAD REVIEW\n\nFor every recurring cost over $200/month, ask:\n1. Does this directly generate revenue?\n2. What happens if we cancel it tomorrow?\n3. Can we get the same result cheaper?\n\nYOUR 3 STEPS\n\nDay 1: Get your full overhead list from your bookkeeper.\nDay 3: Mark each line: Keep / Cancel / Negotiate.\nDay 7: Cancel everything in the Cancel column immediately."
-};
+var S={user:null,conn:null,data:null,parsed:null,loading:false,score:null};
+var BENCH={trades:{net:[8,14],labour:[38,42],debtor:[30,45]},retail:{net:[5,10],labour:[12,18],debtor:[14,30]},hospitality:{net:[6,9],labour:[30,35],debtor:[7,21]},professional:{net:[15,25],labour:[45,55],debtor:[30,45]},health:{net:[12,20],labour:[50,60],debtor:[14,30]},ecommerce:{net:[8,15],labour:[10,18],debtor:[1,7]},manufacturing:{net:[8,15],labour:[25,35],debtor:[30,60]},other:{net:[8,15],labour:[30,45],debtor:[30,45]}};
+var PAGE_TITLES={dashboard:'Dashboard',onething:'The One Thing',leaks:'Profit Leaks',runway:'Cash Runway',ownerpay:'Owner Pay',whatif:'What If Simulator',alerts:'Smart Alerts',ask:'Ask AI CFO'};
+var FIX={invoices:"MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [#] for $[Amount], due on [Date].\n\nPlease confirm when payment will be processed. We'd appreciate settlement by [3 days from now].\n\nHappy to resolve any issues immediately.\n\nThanks, [Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Call (not email) your largest overdue client. Calls recover 3x more than emails.\nDay 3: Written follow-up with invoice attached to anyone who didn't pick up.\nDay 7: Formal overdue notice + payment plan offer for anything still unpaid.",roster:"MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI need a labour cost review for the last 3 months:\n1. Labour % of revenue by week\n2. Cost by role and shift\n3. Recurring overtime/penalty rates\n\nNeed this by [3 days from now].\n\nYOUR 3 STEPS\n\nDay 1: Pull the report. Find 3 most expensive shifts vs revenue.\nDay 3: Compare output vs cost. Find the mismatches.\nDay 7: Restructure roster around your highest-revenue periods.",pricing:"PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [30 days from now], our pricing increases by [X]% to reflect rising costs.\n\nYour new rate: [New Amount].\n\nWe value your business and maintain the same high standard.\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Identify your 20% lowest-margin clients. Raise theirs first.\nDay 3: Send notice to all clients with 30 days lead time. Most won't leave.\nDay 7: Anyone who pushes back hard and is already low-margin — let them go.",overheads:"OVERHEAD REVIEW\n\nFor every cost over $200/month:\n1. Does this directly generate revenue?\n2. What happens if we cancel it?\n3. Can we get the same thing cheaper?\n\nYOUR 3 STEPS\n\nDay 1: Get full overhead list from your bookkeeper.\nDay 3: Mark each: Keep / Cancel / Negotiate.\nDay 7: Cancel the Cancel column immediately."};
 function $(id){return document.getElementById(id);}
 function cap(s){return s?s[0].toUpperCase()+s.slice(1):s;}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -469,6 +601,7 @@ function mdl(t){if(!t)return'';return t.replace(/&/g,'&amp;').replace(/</g,'&lt;
 var _tt;
 function toast(m,t){var e=$('toast');e.textContent=m;e.className='toast '+(t||'info');e.style.display='block';clearTimeout(_tt);_tt=setTimeout(function(){e.style.display='none';},4000);}
 
+// ── BOOT ──────────────────────────────────────────────────────
 window.addEventListener('load',function(){
   var p=new URLSearchParams(location.search);
   var connected=p.get('connected'),error=p.get('error');
@@ -479,9 +612,35 @@ window.addEventListener('load',function(){
     .then(function(r){if(r.ok)return r.json();throw new Error('no');})
     .then(function(d){S.user=d.user;S.conn=d.connection;showApp();if(connected)toast('Connected to '+cap(connected)+' \u2713','ok');if(error)toast('Connection failed','err');if(S.conn)loadData();else openConn();})
     .catch(function(){if(goLogin)showLoginV();else showSignupV();});
+  buildAskSuggestions();
 });
 
-function showApp(){$('auth-screen').style.display='none';$('app').style.display='block';if(S.user)$('tb-av').textContent=(S.user.name||S.user.email)[0].toUpperCase();if(S.conn){$('tb-live').className='tb-live';$('tb-conn-label').textContent=S.conn.tenant_name||cap(S.conn.provider);$('demo-strip').classList.remove('on');}else{$('demo-strip').classList.add('on');}}
+function buildAskSuggestions(){
+  var qs=["Which client is killing my margins?","Can I afford to hire someone?","Why is my cash so low?","Should I raise my prices?","What's my biggest risk right now?"];
+  var wrap=$('ask-suggestions');if(!wrap)return;
+  wrap.innerHTML=qs.map(function(q){return'<button onclick="setSuggest(\''+q.replace(/'/g,"\\'")+'\')" style="padding:6px 13px;border-radius:20px;background:var(--s2);border:1px solid var(--bdr2);font-size:11px;color:var(--tx2);cursor:pointer;transition:all .12s" onmouseover="this.style.borderColor=\'var(--ac3)\';this.style.color=\'var(--ac)\'" onmouseout="this.style.borderColor=\'var(--bdr2)\';this.style.color=\'var(--tx2)\'">'+esc(q)+'</button>';}).join('');
+}
+function setSuggest(q){$('ask-inp').value=q;$('ask-inp').focus();}
+
+// ── AUTH ───────────────────────────────────────────────────────
+function showApp(){
+  $('auth-screen').style.display='none';
+  var appEl=$('app');appEl.style.display='flex';
+  if(S.user){
+    $('sb-av').textContent=(S.user.name||S.user.email)[0].toUpperCase();
+    $('sb-user-name').textContent=S.user.name||S.user.email;
+    $('sb-user-plan').textContent=S.user.plan==='trial'?'14-day trial':S.user.plan==='paid'?'Pro':S.user.plan;
+    if(S.user.plan==='trial')$('trial-pill').style.display='flex';
+  }
+  if(S.conn){
+    $('sb-live').className='sb-live';
+    $('sb-conn-val').innerHTML='<span class="sb-live"></span>'+esc(S.conn.tenant_name||cap(S.conn.provider));
+    $('sb-conn-val').style.color='var(--tx)';
+    $('demo-bar').classList.remove('on');
+  }else{
+    $('demo-bar').classList.add('on');
+  }
+}
 function showSignupV(){$('auth-screen').style.display='flex';$('app').style.display='none';$('v-su').style.display='';$('v-li').style.display='none';}
 function showLoginV(){$('auth-screen').style.display='flex';$('app').style.display='none';$('v-li').style.display='';$('v-su').style.display='none';}
 function showLogin(){$('v-su').style.display='none';$('v-li').style.display='';$('li-err').classList.remove('on');}
@@ -497,10 +656,9 @@ function doSignup(){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Creating account...';
   fetch('/api/auth/signup',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pass,name:name,company:co,industry:ind})})
     .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
-    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;showApp();openConn();toast('Account created! Welcome to FlowGuard','info');})
+    .then(function(res){if(!res.ok){err.textContent=res.d.error||'Signup failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';return;}S.user=res.d.user;S.conn=null;showApp();openConn();toast('Account created!','info');})
     .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Start free trial \u2192';});
 }
-
 function doLogin(){
   var btn=$('li-btn'),err=$('li-err');
   var email=$('li-email').value.trim(),pass=$('li-pass').value;
@@ -512,18 +670,30 @@ function doLogin(){
     .then(function(res){if(!res.ok){err.textContent=res.d.error||'Login failed.';err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';return;}S.user=res.d.user;return fetch('/api/auth/me',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.conn=d.connection;showApp();if(S.conn)loadData();else openConn();});})
     .catch(function(e){err.textContent='Network error: '+e.message;err.classList.add('on');btn.disabled=false;btn.innerHTML='Log in \u2192';});
 }
-
 function doLogout(){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).then(function(){S.user=null;S.conn=null;S.data=null;S.parsed=null;showSignupV();});}
-function openConn(){$('conn-overlay').classList.add('on');}
-function closeConn(){$('conn-overlay').classList.remove('on');}
+
+// ── NAVIGATION ─────────────────────────────────────────────────
+function goPage(page,el){
+  document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var pg=$('page-'+page);if(pg)pg.classList.add('active');
+  $('topbar-title').textContent=PAGE_TITLES[page]||'FlowGuard';
+  if(page==='whatif'&&S.parsed)calcWhatIf();
+}
+
+// ── CONNECT ────────────────────────────────────────────────────
+function openConn(){$('conn-ov').classList.add('on');}
+function closeConn(){$('conn-ov').classList.remove('on');}
 function skipConn(){closeConn();loadDemo();}
 
+// ── DATA ───────────────────────────────────────────────────────
 function loadData(){
   setStatus('neutral','&#x1F4CA;','Reading your accounts...');
   fetch('/api/data',{credentials:'include'})
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){if(!d)return;S.data=d.data;S.parsed=parseF(d.data,d.provider);paintAll();})
-    .catch(function(){setStatus('neutral','&#x26A0;','Could not load financial data');});
+    .catch(function(){setStatus('neutral','&#x26A0;','Could not load data');});
 }
 
 function runAnalysis(){
@@ -533,13 +703,13 @@ function runAnalysis(){
     S.loading=true;var btn=$('run-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Scanning...';
     fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data})})
       .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
-      .then(function(res){S.loading=false;btn.disabled=false;btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyse Now';if(!res.ok){toast(res.d.error||'Analysis failed','err');return;}parseAIResponse(res.d.analysis);toast('Analysis complete','ok');})
-      .catch(function(){S.loading=false;btn.disabled=false;btn.innerHTML='Analyse Now';toast('Analysis failed','err');});
+      .then(function(res){S.loading=false;btn.disabled=false;btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analyse Now';if(!res.ok){toast(res.d.error||'Failed','err');return;}paintAll();toast('Analysis complete','ok');})
+      .catch(function(){S.loading=false;btn.disabled=false;btn.innerHTML='Analyse Now';toast('Failed','err');});
   };
-  if(!S.data){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go();}).catch(function(){toast('Could not load data','err');});}
-  else go();
+  if(!S.data){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go();}).catch(function(){toast('Could not load data','err');});}else go();
 }
 
+// ── PARSE ──────────────────────────────────────────────────────
 function parseF(data,provider){
   var o={rev:0,profit:0,cash:0,ovdAmt:0,ovdCount:0,bills:0,netMargin:0,labourPct:0,debtorDays:0,provider:provider||'unknown'};
   if(!data)return o;
@@ -559,175 +729,193 @@ function parseF(data,provider){
   return o;
 }
 
+// ── PAINT ALL ──────────────────────────────────────────────────
 function paintAll(){
   var p=S.parsed;if(!p||p.rev===0)return;
   var b=BENCH[(S.user&&S.user.industry)||'other']||BENCH.other;
-  paintStatus(p,b);
-  paintOneThing(p,b);
-  paintLeaks(p,b);
-  paintRunway(p);
-  paintOwnerPay(p);
-  paintAlerts(p,b);
+  paintStatus(p,b);paintKPIs(p);
+  var leaks=buildLeaks(p,b);
+  window._leaks=leaks;
+  paintOneThing(p,b,leaks);
+  paintLeaksAll(leaks,p);
+  paintRunwayAll(p);
+  paintOwnerPayAll(p);
+  paintAlertsAll(p,b);
+  if(S.parsed)calcWhatIf();
 }
 
-function setStatus(type,ico,text){
-  var bar=$('status-bar'),txt=$('status-text');
-  bar.className='status-bar '+type;
+function setStatus(type,ico,msg){
+  var bar=$('status-banner');
+  bar.className='status-banner '+type;
   bar.querySelector('.sb-ico').innerHTML=ico;
-  txt.textContent=text;txt.className='sb-text '+type;
+  $('status-msg').textContent=msg;
 }
 
 function paintStatus(p,b){
-  if(p.profit>0&&p.netMargin>=b.net[0]){setStatus('good','&#x1F44D;','You\'re on track \u2014 margin at '+p.netMargin.toFixed(1)+'% and cash is healthy. Keep it up.');}
-  else if(p.ovdAmt>p.cash){setStatus('bad','&#x26A0;&#xFE0F;','You\'re falling behind \u2014 $'+fmt(p.ovdAmt)+' overdue exceeds your cash balance. Fix this now.');}
-  else if(p.netMargin<b.net[0]&&p.netMargin>0){setStatus('warn','&#x1F4C9;','Margin below benchmark \u2014 '+p.netMargin.toFixed(1)+'% vs '+b.net[0]+'% minimum. Action needed.');}
-  else{setStatus('neutral','&#x1F4CA;','Analysis complete \u2014 '+( p.rev>0?'$'+fmt(p.rev)+' revenue detected':'check details below')+'.');}
+  if(p.profit>0&&p.netMargin>=b.net[0])setStatus('good','&#x1F44D;',"You're on track \u2014 margin at "+p.netMargin.toFixed(1)+"% and cash is healthy.");
+  else if(p.ovdAmt>p.cash)setStatus('bad','&#x26A0;&#xFE0F;',"Falling behind \u2014 $"+fmt(p.ovdAmt)+" overdue exceeds your cash. Fix this now.");
+  else if(p.netMargin>0&&p.netMargin<b.net[0])setStatus('warn','&#x1F4C9;',"Margin below benchmark \u2014 "+p.netMargin.toFixed(1)+"% vs "+b.net[0]+"% minimum. Action needed.");
+  else setStatus('neutral','&#x1F4CA;',"Analysis complete \u2014 $"+fmt(p.rev)+" revenue detected.");
 }
 
-function paintOneThing(p,b){
-  var body=$('ot-body');
-  var action,why,impact,impactLabel,script;
-  if(p.ovdAmt>5000&&p.ovdCount>0){
-    action='Follow up your overdue invoices \u2014 $'+fmt(p.ovdAmt)+' is owed to you right now';
-    why='You have '+p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' who haven\'t paid. Every day this sits unpaid is a free loan to them at your expense. This is the fastest way to improve your cash this week.';
-    impact='$'+fmt(p.ovdAmt);impactLabel='fastest cash this week';
-    script='Hi [Name], just following up on invoice #[X] for $[Amount] from [Date]. Can you confirm when payment will come through? Happy to resolve any issues.';
-  } else if(p.cash>0&&p.rev>0&&(p.cash/(p.rev/52))<4){
-    action='Urgently review your cash position \u2014 runway is critically low';
-    why='With $'+fmt(p.cash)+' in the bank and weekly costs of ~$'+fmt(Math.round((p.rev/52)*(1-p.netMargin/100)))+', one slow week puts you in crisis. Accelerate collections or cut costs today.';
-    impact=Math.round(p.cash/(p.rev/52)*10)/10+' weeks';impactLabel='runway remaining';
-    script='';
-  } else if(p.labourPct>0&&p.labourPct>(b.labour[1]+5)){
-    var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev);
-    action='Review your labour roster \u2014 you\'re overpaying by $'+fmt(Math.round(ex/12))+'/month';
-    why='Labour is running at '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% industry benchmark. Pull your cost by shift this week and find where the excess is hiding.';
-    impact='$'+fmt(Math.round(ex/12));impactLabel='per month being wasted';
-    script='';
-  } else {
-    action='Run the full AI analysis to get your personalised action plan';
-    why='FlowGuard will scan your P&L, invoices and costs to find the single highest-impact action for your business.';
-    impact='';impactLabel='';script='';
-  }
-  var html='<div class="ot-target"><div class="ot-num">1</div><div class="ot-body">';
-  html+='<div class="ot-action">'+esc(action)+'</div>';
-  html+='<div class="ot-why">'+esc(why)+'</div>';
-  if(impact)html+='<div class="ot-impact"><div class="ot-impact-val">'+esc(impact)+'</div><div class="ot-impact-lbl">'+esc(impactLabel)+'</div></div>';
-  html+='</div></div>';
-  if(script)html+='<div class="ot-script"><div class="ot-script-lbl">Script to use</div><div class="ot-script-text">'+esc(script)+'</div></div>';
-  body.innerHTML=html;
+function paintKPIs(p){
+  $('kv-rev').textContent=p.rev?'$'+fmt(p.rev):'\u2014';$('ks-rev').textContent=p.rev?'Revenue loaded':'Awaiting data';
+  $('kv-profit').textContent=p.profit?'$'+fmt(p.profit):'\u2014';$('ks-profit').textContent=p.netMargin?'Margin: '+p.netMargin.toFixed(1)+'%':'From P&L';$('ks-profit').className='kpi-sub'+(p.netMargin<0?' bad':'');
+  $('kv-cash').textContent=p.cash?'$'+fmt(p.cash):'\u2014';$('ks-cash').textContent=p.cash<20000&&p.cash>0?'\u26A0 Low cash':'Balance sheet';$('ks-cash').className='kpi-sub'+(p.cash<20000&&p.cash>0?' warn':'');
 }
 
-function paintLeaks(p,b){
-  var body=$('leaks-body'),badge=$('leaks-badge');
+function buildLeaks(p,b){
   var leaks=[];
-  var total=0;
-  if(p.labourPct>b.labour[1]){var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev/12);if(ex>0){total+=ex;leaks.push({name:'Labour cost blowout',desc:'Running '+p.labourPct.toFixed(1)+'% of revenue vs '+b.labour[1]+'% benchmark',monthly:ex,color:'red',fix:'roster'});}}
-  if(p.ovdAmt>1000){total+=p.ovdAmt;leaks.push({name:'Unpaid invoices',desc:p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' overdue \u2014 money owed to you now',monthly:p.ovdAmt,color:'red',fix:'invoices',isOnce:true});}
-  if(p.netMargin>0&&p.netMargin<b.net[0]){var gap=Math.round(((b.net[0]-p.netMargin)/100)*p.rev/12);if(gap>0){total+=gap;leaks.push({name:'Underpricing vs benchmark',desc:'Margin '+p.netMargin.toFixed(1)+'% \u2014 industry minimum is '+b.net[0]+'%. Prices haven\'t kept up with costs.',monthly:gap,color:'amb',fix:'pricing'});}}
-  if(!leaks.length){badge.textContent='\u2014';badge.className='card-badge bd-muted';body.innerHTML='<div class="empty-state"><div class="es-ico">&#x2705;</div><div class="es-title">No leaks found</div><div class="es-sub">Your numbers look healthy. Run a full AI analysis for a deeper scan.</div></div>';return;}
-  badge.textContent='$'+fmt(total)+' found';badge.className='card-badge bd-red';
-  var html='';
+  if(p.labourPct>b.labour[1]){var ex=Math.round(((p.labourPct-b.labour[1])/100)*p.rev/12);if(ex>0)leaks.push({name:'Labour cost blowout',desc:'Running at '+p.labourPct.toFixed(1)+'% of revenue \u2014 benchmark is '+b.labour[1]+'%. Your biggest profit drain.',monthly:ex,color:'red',action:'<b>This week:</b> Pull your labour cost by shift. Find your 3 most expensive shifts vs revenue generated. Restructure those first.',fix:'roster'});}
+  if(p.ovdAmt>1000)leaks.push({name:'Overdue invoices unpaid',desc:p.ovdCount+' client'+(p.ovdCount>1?'s':'')+' owe you $'+fmt(p.ovdAmt)+' \u2014 sitting uncollected.',monthly:p.ovdAmt,color:'red',action:'<b>Today:</b> Call (not email) your largest overdue client first. A 2-minute call recovers 3\u00D7 more than an email.',fix:'invoices',isTotal:true});
+  if(p.netMargin>0&&p.netMargin<b.net[0]){var gap=Math.round(((b.net[0]-p.netMargin)/100)*p.rev/12);if(gap>0)leaks.push({name:'Prices below industry minimum',desc:'Net margin '+p.netMargin.toFixed(1)+'% \u2014 industry minimum is '+b.net[0]+'%. Costs have risen but prices haven\'t.',monthly:gap,color:'amb',action:'<b>This month:</b> A 5% price increase adds $'+fmt(Math.round(p.rev*0.05/12))+'/month to profit with zero extra work.',fix:'pricing'});}
+  return leaks;
+}
+
+function paintOneThing(p,b,leaks){
+  var ot=leaks[0];
+  if(!ot){$('ot-content').innerHTML='<div class="empty" style="padding:48px 20px"><div class="empty-ico">&#x2705;</div><div class="empty-title">Looking good</div><div class="empty-sub">No major issues detected. Run a deeper AI analysis to check for hidden leaks.</div></div>';$('dash-ot').innerHTML='<p style="font-size:12px;color:var(--tx2)">No major issues detected.</p>';return;}
+  var script='';
+  if(ot.fix==='invoices')script='Hi [Name], following up on invoice #[X] for $[Amount] from [Date]. Can you confirm when payment will come through? Happy to resolve any issues.';
+  var heroHtml='<div class="ot-hero">';
+  heroHtml+='<div class="ot-tag"><div class="ot-dot"></div>Today\'s #1 action</div>';
+  heroHtml+='<div class="ot-headline">'+esc(ot.name)+'</div>';
+  heroHtml+='<div class="ot-why">'+esc(ot.desc)+'</div>';
+  heroHtml+='<div class="ot-impact-row"><div class="ot-impact-pill"><div class="ot-impact-val">$'+fmt(ot.monthly)+'</div><div class="ot-impact-lbl">'+(ot.isTotal?'to collect':'per month leaking')+'</div></div></div>';
+  heroHtml+='</div>';
+  if(script)heroHtml+='<div class="ot-script-box"><div class="ot-script-lbl">Script to use right now</div><div class="ot-script">'+esc(script)+'</div></div>';
+  heroHtml+='<div class="ot-action-bar"><button class="fix-btn-lg fix-red" onclick="openFix(0)">&#x26A1; Fix This For Me</button></div>';
+  $('ot-content').innerHTML=heroHtml;
+  $('dash-ot').innerHTML='<div style="font-family:var(--disp);font-size:14px;font-weight:700;margin-bottom:6px;color:var(--ac)">'+esc(ot.name)+'</div><div style="font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:10px">'+esc(ot.desc)+'</div><button class="fix-btn-lg fix-red" onclick="openFix(0)">&#x26A1; Fix This For Me</button>';
+}
+
+function paintLeaksAll(leaks,p){
+  var total=leaks.reduce(function(s,l){return s+l.monthly;},0);
+  var chipTxt=leaks.length?'$'+fmt(total)+' found':'\u2714 None found';
+  var chipCls=leaks.length?'ch-red':'ch-grn';
+  $('leaks-page-chip').textContent=chipTxt;$('leaks-page-chip').className='chip '+chipCls;
+  $('dash-leaks-chip').textContent=chipTxt;$('dash-leaks-chip').className='chip '+chipCls;
+  if(leaks.length){$('leaks-nav-badge').style.display='';$('leaks-nav-badge').textContent=leaks.length;}
+  if(!leaks.length){var empty='<div class="empty" style="padding:48px 20px"><div class="empty-ico">&#x2705;</div><div class="empty-title">No leaks found</div><div class="empty-sub">Your numbers look healthy. Run a full AI analysis for a deeper scan.</div></div>';$('leaks-page-body').innerHTML=empty;$('dash-leaks').innerHTML='<p style="font-size:12px;color:var(--grn)">No major leaks detected.</p>';return;}
+  var labels=['#1','#2','#3'],html='';
   leaks.forEach(function(l,i){
-    var rc=l.color==='red'?'var(--red)':'var(--amber)';
-    var lbls=['#1','#2','#3'];
-    html+='<div class="leak-row" style="border-left-color:'+rc+'">';
+    var rc=l.color==='red'?'var(--red)':'var(--amb)';
+    var bCls=l.color==='red'?'fix-red':'fix-amb';
+    html+='<div class="leak-item" style="border-left-color:'+rc+'">';
     html+='<div class="leak-text">';
-    html+='<div class="leak-name" style="color:'+rc+'">'+lbls[i]+' \u2014 '+esc(l.name)+'</div>';
+    html+='<div class="leak-rank" style="color:'+rc+'">'+labels[i]+' Leak</div>';
+    html+='<div class="leak-name">'+esc(l.name)+'</div>';
     html+='<div class="leak-desc">'+esc(l.desc)+'</div>';
-    html+='<button class="fix-pill '+l.color+'" onclick="openFix('+i+')">&#x26A1; Fix This For Me</button>';
+    html+='<div class="leak-action">'+l.action+'</div>';
+    html+='<button class="fix-btn-lg '+bCls+'" onclick="openFix('+i+')">&#x26A1; Fix This For Me</button>';
     html+='</div>';
-    html+='<div class="leak-right"><div class="leak-amt" style="color:'+rc+'">$'+fmt(l.monthly)+'</div>';
-    html+='<div class="leak-mo">'+(l.isOnce?'total':'per mo')+'</div></div>';
+    html+='<div class="leak-right"><div class="leak-amt" style="color:'+rc+'">$'+fmt(l.monthly)+'</div><div class="leak-period">'+(l.isTotal?'total owed':'per month')+'</div></div>';
     html+='</div>';
   });
-  body.innerHTML=html;
-  window._leaks=leaks;
+  html+='<div class="leaks-total"><div class="leaks-total-lbl">Total money being missed</div><div class="leaks-total-val">$'+fmt(total)+'</div></div>';
+  $('leaks-page-body').innerHTML=html;
+  var dashHtml='';leaks.slice(0,2).forEach(function(l,i){var rc=l.color==='red'?'var(--red)':'var(--amb)';dashHtml+='<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--bdr)"><div style="font-size:12px;font-weight:600;color:'+rc+'">'+esc(l.name)+'</div><div style="font-family:var(--mono);font-size:13px;color:'+rc+'">$'+fmt(l.monthly)+'</div></div>';});
+  $('dash-leaks').innerHTML=dashHtml||'<p style="font-size:12px;color:var(--tx2)">No major leaks detected.</p>';
 }
 
-function paintRunway(p){
-  var body=$('runway-body'),badge=$('runway-badge');
-  if(!p||p.rev===0){return;}
+function paintRunwayAll(p){
+  if(!p||p.rev===0)return;
   var wBurn=(p.rev/52)*(1-(p.netMargin/100));
   var weeks=p.cash>0?Math.round(p.cash/Math.max(wBurn,1)):0;
   var pct=Math.min(100,Math.round((weeks/16)*100));
-  var color,label,status,statusClass;
-  if(weeks>=12){color='var(--green)';label='&#x1F7E2; Safe';status='You have a solid cash buffer. Keep building it above 12 weeks.';statusClass='good';}
-  else if(weeks>=6){color='var(--amber)';label='&#x1F7E1; Watch';status='Adequate but not comfortable. Build your buffer to 12+ weeks.';statusClass='warn';}
-  else if(weeks>=3){color='var(--red)';label='&#x1F7E0; Risk';status='One slow month could cause serious problems. Act now.';statusClass='bad';}
-  else{color='var(--red)';label='&#x1F534; Critical';status='Cash is dropping faster than it\'s coming in. Emergency action needed.';statusClass='bad';}
-  badge.innerHTML=label;badge.className='card-badge '+(weeks>=12?'bd-grn':weeks>=6?'bd-amb':'bd-red');
-  var html='<div class="runway-weeks" style="color:'+color+'">'+weeks+'w</div>';
-  html+='<div class="runway-label">cash runway at current burn rate</div>';
-  html+='<div class="runway-bar-track"><div class="runway-bar-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
-  html+='<div class="runway-markers"><span>0</span><span>4w</span><span>8w</span><span>12w+</span></div>';
-  html+='<div class="runway-status '+statusClass+'">'+status+'</div>';
-  body.innerHTML=html;
+  var color,label,verdict,msg;
+  if(weeks>=12){color='var(--grn)';label='&#x1F7E2; Safe';verdict='You\'re in good shape.';msg='With '+weeks+' weeks of runway you can handle a slow month without crisis. Keep building this buffer.';}
+  else if(weeks>=6){color='var(--ac)';label='&#x1F7E1; Watch';verdict='Adequate but not comfortable.';msg=weeks+' weeks is below the 12-week recommended buffer. Start building your reserve.';}
+  else if(weeks>=3){color='var(--amb)';label='&#x1F7E0; Risk';verdict='One slow month is a problem.';msg='Only '+weeks+' weeks of runway. An unexpected bill or slow period could cause serious problems.';}
+  else{color='var(--red)';label='&#x1F534; Critical';verdict='Cash is dropping fast.';msg=weeks+' weeks \u2014 emergency action needed. Collect overdue invoices and cut non-essential costs immediately.';}
+  $('runway-chip').innerHTML=label;$('runway-chip').className='chip '+(weeks>=12?'ch-grn':weeks>=6?'ch-ac':weeks>=3?'ch-amb':'ch-red');
+  var html='<div class="runway-hero">';
+  html+='<div class="runway-weeks" style="color:'+color+'">'+weeks+'w</div>';
+  html+='<div class="runway-sub">cash runway at current burn rate</div>';
+  html+='<div class="runway-track"><div class="runway-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
+  html+='<div class="runway-marks"><span>0</span><span>4w</span><span>8w</span><span>12w+</span></div>';
+  html+='<div class="runway-verdict" style="color:'+color+'">'+verdict+'</div>';
+  html+='<div class="runway-msg">'+msg+'</div></div>';
+  html+='<div class="runway-metrics">';
+  html+='<div class="rm-item"><div class="rm-val" style="color:'+(weeks<4?'var(--red)':'var(--tx)')+'">'+weeks+'w</div><div class="rm-lbl">Runway</div></div>';
+  html+='<div class="rm-item"><div class="rm-val" style="color:var(--blue)">$'+fmt(Math.round(wBurn))+'</div><div class="rm-lbl">Weekly burn</div></div>';
+  html+='<div class="rm-item"><div class="rm-val" style="color:'+(p.ovdAmt>0?'var(--amb)':'var(--grn)')+'">$'+fmt(p.ovdAmt)+'</div><div class="rm-lbl">Uncollected</div></div>';
+  html+='</div>';
+  $('runway-page-body').innerHTML=html;
+  $('dash-runway-chip').innerHTML=label;$('dash-runway-chip').className='chip '+(weeks>=12?'ch-grn':weeks>=6?'ch-ac':weeks>=3?'ch-amb':'ch-red');
+  $('dash-runway').innerHTML='<div style="font-family:var(--mono);font-size:36px;font-weight:500;color:'+color+';margin-bottom:4px">'+weeks+'w</div><div style="font-size:12px;color:var(--tx2)">'+msg+'</div>';
 }
 
-function paintOwnerPay(p){
-  var body=$('pay-body'),warn=$('pay-warn');
+function paintOwnerPayAll(p){
   if(!p||p.rev===0)return;
   var wBurn=(p.rev/52)*(1-(p.netMargin/100));
-  var buffer=wBurn*6;
-  var safe=Math.max(0,p.cash-buffer-p.bills);
-  var risky=Math.max(0,p.cash-wBurn*3-p.bills);
+  var buf=wBurn*6,safe=Math.max(0,p.cash-buf-p.bills);
   var color=safe>0?'var(--ac)':'var(--red)';
-  var html='<div class="pay-amount" style="color:'+color+'">$'+fmt(Math.round(safe))+'</div>';
-  html+='<div class="pay-label">safe draw this month</div>';
-  html+='<div class="pay-row"><div class="pay-row-label">Current cash</div><div class="pay-row-val">$'+fmt(Math.round(p.cash))+'</div></div>';
-  html+='<div class="pay-row"><div class="pay-row-label">6-week reserve</div><div class="pay-row-val" style="color:var(--red)">-$'+fmt(Math.round(buffer))+'</div></div>';
-  html+='<div class="pay-row"><div class="pay-row-label">Unpaid bills</div><div class="pay-row-val" style="color:var(--amber)">-$'+fmt(Math.round(p.bills))+'</div></div>';
-  if(risky>safe)html+='<div class="pay-row"><div class="pay-row-label">Risky max</div><div class="pay-row-val" style="color:var(--amber)">$'+fmt(Math.round(risky))+'</div></div>';
-  body.innerHTML=html;
-  if(safe<3000){warn.textContent=safe<=0?'Safe draw is zero. Collect overdue invoices before paying yourself.':'Safe draw is very low. Chase invoices first to increase available cash.';warn.classList.add('on');}
-  else warn.classList.remove('on');
+  var html='<div class="pay-hero">';
+  html+='<div class="pay-amount" style="color:'+color+'">$'+fmt(Math.round(safe))+'</div>';
+  html+='<div class="pay-label">maximum safe draw this month</div></div>';
+  html+='<div class="pay-breakdown">';
+  html+='<div class="pb-item"><div class="pb-val">$'+fmt(Math.round(p.cash))+'</div><div class="pb-lbl">Current cash</div></div>';
+  html+='<div class="pb-item"><div class="pb-val" style="color:var(--red)">-$'+fmt(Math.round(buf))+'</div><div class="pb-lbl">6-week reserve</div></div>';
+  html+='<div class="pb-item"><div class="pb-val" style="color:var(--amb)">-$'+fmt(Math.round(p.bills))+'</div><div class="pb-lbl">Unpaid bills</div></div>';
+  html+='</div>';
+  $('ownerpay-page-body').innerHTML=html;
+  var warn=$('pay-warn-box');
+  if(safe<3000){warn.textContent=safe<=0?'Safe draw is zero. Collect overdue invoices before paying yourself.':'Safe draw is very low. Chase invoices first to increase your available cash.';warn.classList.add('on');}else warn.classList.remove('on');
+  $('dash-pay').innerHTML='<div style="font-family:var(--mono);font-size:36px;font-weight:500;color:'+color+';margin-bottom:4px">$'+fmt(Math.round(safe))+'</div><div style="font-size:12px;color:var(--tx2)">safe to pay yourself this month</div>';
 }
 
-function paintAlerts(p,b){
+function paintAlertsAll(p,b){
   var alerts=[];
-  if(p.labourPct>b.labour[1]*1.15)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>Labour at '+p.labourPct.toFixed(0)+'% of revenue</b> \u2014 '+(p.labourPct-b.labour[1]).toFixed(0)+'% above benchmark. Review your roster this week.'});
-  if(p.ovdAmt>p.cash*0.5&&p.ovdAmt>5000)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>$'+fmt(p.ovdAmt)+' overdue exceeds your cash buffer.</b> Chase these invoices before paying any bills.'});
-  if(p.netMargin>0&&p.netMargin<b.net[0])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Margin at '+p.netMargin.toFixed(1)+'%</b> \u2014 below the '+b.net[0]+'% industry minimum. A price increase is overdue.'});
-  if(p.debtorDays>b.debtor[1])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Clients averaging '+Math.round(p.debtorDays)+' days to pay</b> \u2014 benchmark is '+b.debtor[1]+' days. Tighten payment terms.'});
-  if(!alerts.length)return;
-  $('alerts-card').style.display='';$('alerts-badge').textContent=alerts.length;
-  $('alerts-badge').className='card-badge '+(alerts.some(function(a){return a.type==='urgent';})? 'bd-red':'bd-amb');
-  var html='';alerts.forEach(function(a){html+='<div class="alert-item '+a.type+'"><span class="ai-ico">'+a.ico+'</span><div class="ai-text">'+a.text+'</div></div>';});
-  $('alerts-body').innerHTML=html;
+  if(p.labourPct>b.labour[1]*1.15)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>Labour at '+p.labourPct.toFixed(0)+'% of revenue</b> \u2014 '+(p.labourPct-b.labour[1]).toFixed(0)+'% above benchmark. Review your roster this week.',time:'Now'});
+  if(p.ovdAmt>p.cash*0.5&&p.ovdAmt>5000)alerts.push({type:'urgent',ico:'&#x1F534;',text:'<b>$'+fmt(p.ovdAmt)+' overdue exceeds your cash balance.</b> Chase these invoices before paying any bills.',time:'Now'});
+  if(p.netMargin>0&&p.netMargin<b.net[0])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Margin at '+p.netMargin.toFixed(1)+'%</b> \u2014 below the '+b.net[0]+'% industry minimum. A price increase is overdue.',time:'This week'});
+  if(p.debtorDays>b.debtor[1])alerts.push({type:'warn',ico:'&#x1F7E1;',text:'<b>Clients averaging '+Math.round(p.debtorDays)+' days to pay</b> \u2014 benchmark is '+b.debtor[1]+' days. Tighten payment terms.',time:'This week'});
+  if(!alerts.length){$('alerts-page-body').innerHTML='<div class="empty" style="padding:48px 20px"><div class="empty-ico">&#x2705;</div><div class="empty-title">All clear</div><div class="empty-sub">No urgent alerts right now. We\'ll notify you when something needs attention.</div></div>';return;}
+  $('alerts-nav-badge').style.display='';$('alerts-nav-badge').textContent=alerts.length;
+  $('alerts-page-chip').textContent=alerts.length+' active';$('alerts-page-chip').className='chip '+(alerts.some(function(a){return a.type==='urgent';})? 'ch-red':'ch-amb');
+  var html='';alerts.forEach(function(a){html+='<div class="alert-row '+a.type+'"><span class="ar-ico">'+a.ico+'</span><div class="ar-text">'+a.text+'</div><div class="ar-time">'+esc(a.time)+'</div></div>';});
+  $('alerts-page-body').innerHTML=html;
 }
 
-function parseAIResponse(text){
-  var p=S.parsed;if(!p)return;
-  var b=BENCH[(S.user&&S.user.industry)||'other']||BENCH.other;
-  paintAll();
-  // Try to parse additional leaks from AI text and merge
-  var lines=text.split('\n'),aiLeaks=[],defs=[{rx:/subscri|saas/i,name:'Wasted subscriptions',fix:'overheads',color:'red'},{rx:/supplier|vendor/i,name:'Supplier overpricing',fix:'overheads',color:'amb'}];
-  lines.forEach(function(line){var am=line.match(/\$[\d,]+[kKmM]?/);if(!am||line.trim().length<12)return;var n=parseFloat(am[0].replace(/[$,]/g,''));if(/[kK]/.test(am[0]))n*=1000;if(/[mM]/.test(am[0]))n*=1000000;if(n<200)return;for(var j=0;j<defs.length;j++){if(defs[j].rx.test(line)&&!aiLeaks.find(function(x){return x.name===defs[j].name;})){aiLeaks.push({name:defs[j].name,desc:line.replace(/^[*\-\d.\s]+/,'').trim().slice(0,100),monthly:Math.round(n>p.rev/2?n/12:n),color:defs[j].color,fix:defs[j].fix});break;}}});
-  if(aiLeaks.length){var existing=window._leaks||[];var merged=existing.concat(aiLeaks.filter(function(al){return!existing.find(function(e){return e.name===al.name;});}));window._leaks=merged;if(merged.length>existing.length)paintLeaks(p,b);}
+// ── WHAT IF ────────────────────────────────────────────────────
+var _wi='price';
+function selectWI(s,el){_wi=s;document.querySelectorAll('.wi-scenario').forEach(function(e){e.classList.remove('active');});el.classList.add('active');calcWhatIf();}
+function calcWhatIf(){
+  var p=S.parsed,res=$('wi-result'),grid=$('wr-grid'),sum=$('wr-summary');
+  if(!p||p.rev===0){res.classList.remove('on');return;}res.classList.add('on');
+  var nRev=p.rev,nProfit=p.profit,nCash=p.cash,nScore=50,txt='';
+  if(_wi==='price'){var pct=parseFloat($('wi-price').value)||5,inc=(pct/100)*p.rev;nRev=p.rev+inc;nProfit=p.profit+inc;var nm=nRev>0?(nProfit/nRev)*100:0;txt='A '+pct+'% price increase adds $'+fmt(Math.round(inc))+' directly to your bottom line. Net margin rises from '+p.netMargin.toFixed(1)+'% to '+nm.toFixed(1)+'%.';}
+  else if(_wi==='staff'){var sal=parseFloat($('wi-staff').value)||60000,oc=sal*1.12;nProfit=p.profit-oc;nCash=p.cash-oc/12;txt='Adding a staff member at $'+fmt(sal)+' (plus $'+fmt(Math.round(oc-sal))+' in super/oncosts) reduces profit by $'+fmt(Math.round(oc))+'/year. Make sure they generate at least $'+fmt(Math.round(oc*1.5))+' in additional revenue.';}
+  else{var col=parseFloat($('wi-collect').value)||80,got=Math.round((col/100)*p.ovdAmt);nCash=p.cash+got;var wBurn=(p.rev/52)*(1-(p.netMargin/100)),nr=wBurn>0?Math.round(nCash/wBurn):0;txt='Collecting '+col+'% of overdue invoices brings in $'+fmt(got)+' immediately. Cash runway increases from '+Math.round(p.cash/Math.max(wBurn,1))+' to '+nr+' weeks.';}
+  grid.innerHTML='<div class="wr-item"><div class="wr-lbl">Revenue</div><div class="wr-val">$'+fmt(Math.round(nRev))+'</div><div class="wr-delta '+(nRev>p.rev?'up':'dn')+'">'+(nRev>p.rev?'&#x25B2;':'\u25BC')+' $'+fmt(Math.abs(Math.round(nRev-p.rev)))+'</div></div><div class="wr-item"><div class="wr-lbl">Profit</div><div class="wr-val">$'+fmt(Math.round(nProfit))+'</div><div class="wr-delta '+(nProfit>p.profit?'up':'dn')+'">'+(nProfit>p.profit?'&#x25B2;':'\u25BC')+' $'+fmt(Math.abs(Math.round(nProfit-p.profit)))+'</div></div><div class="wr-item"><div class="wr-lbl">Cash</div><div class="wr-val">$'+fmt(Math.round(nCash))+'</div><div class="wr-delta '+(nCash>p.cash?'up':'dn')+'">'+(nCash>p.cash?'&#x25B2;':'\u25BC')+' $'+fmt(Math.abs(Math.round(nCash-p.cash)))+'</div></div><div class="wr-item"><div class="wr-lbl">Net Margin</div><div class="wr-val">'+(nRev>0?((nProfit/nRev)*100).toFixed(1)+'%':'&#x2014;')+'</div><div class="wr-delta up">&nbsp;</div></div>';
+  sum.textContent=txt;
 }
 
+// ── FIX MODAL ──────────────────────────────────────────────────
 function openFix(i){
   var leaks=window._leaks;if(!leaks||!leaks[i])return;
   var leak=leaks[i];
   $('modal-title').textContent='Fix This For Me';$('modal-sub').textContent=leak.name;
-  $('modal-body').innerHTML='<div class="modal-loading"><span class="spinner"></span> Generating your action plan...</div>';
+  $('modal-body').innerHTML='<div class="m-loading"><span class="spinner"></span> Generating your action plan...</div>';
   $('fix-modal').classList.add('on');document.body.style.overflow='hidden';
   var p=S.parsed||{};
-  var prompt='Profit leak: "'+leak.name+'" costing $'+leak.monthly+'/month. Revenue $'+fmt(p.rev||0)+'/year, Cash $'+fmt(p.cash||0)+', '+( p.ovdCount||0)+' overdue invoices $'+fmt(p.ovdAmt||0)+'. Write 2 sections with ## headings: 1) Ready-to-send message template with [Placeholders]. 2) Day 1, Day 3, Day 7 action steps. Brutally practical, no fluff.';
+  var prompt='Profit leak: "'+leak.name+'" costing $'+leak.monthly+'/month. Revenue $'+fmt(p.rev||0)+'/year, Cash $'+fmt(p.cash||0)+', '+(p.ovdCount||0)+' overdue invoices $'+fmt(p.ovdAmt||0)+'. Write 2 sections with ## headings: 1) Ready-to-send message template with [Placeholders]. 2) Day 1, Day 3, Day 7 action steps. Brutally practical.';
   fetch('/api/analyse',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({financialData:S.data||{},question:prompt})})
     .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
-    .then(function(res){renderModal(leak,(res.ok&&res.d.analysis)?res.d.analysis:(FIX_TPL[leak.fix]||FIX_TPL.overheads));})
-    .catch(function(){renderModal(leak,FIX_TPL[leak.fix]||FIX_TPL.overheads);});
+    .then(function(res){renderModal((res.ok&&res.d.analysis)?res.d.analysis:(FIX[leak.fix]||FIX.overheads));})
+    .catch(function(){renderModal(FIX[leak.fix]||FIX.overheads);});
 }
-function renderModal(leak,text){
+function renderModal(text){
   window._fixText=text;var sections=text.split('\n## '),html='';
-  sections.forEach(function(s){var lines=s.split('\n');var h=lines[0].replace(/^## /,'').trim();var body=lines.slice(1).join('\n').trim();html+='<div style="margin-bottom:16px"><div class="modal-sec-lbl">'+esc(h)+'</div><div class="modal-draft">'+mdl(body)+'</div></div>';});
-  html+='<div class="modal-btns"><button class="modal-copy" onclick="copyFix()">&#x1F4CB; Copy</button><button class="modal-done" onclick="closeModal()">Done</button></div>';
+  sections.forEach(function(s){var lines=s.split('\n');var h=lines[0].replace(/^## /,'').trim();var body=lines.slice(1).join('\n').trim();html+='<div style="margin-bottom:16px"><div class="m-sec-lbl">'+esc(h)+'</div><div class="m-draft">'+mdl(body)+'</div></div>';});
+  html+='<div class="m-btns"><button class="m-copy" onclick="copyFix()">&#x1F4CB; Copy</button><button class="m-done" onclick="closeModal()">Done</button></div>';
   $('modal-body').innerHTML=html;
 }
-function copyFix(){if(navigator.clipboard)navigator.clipboard.writeText(window._fixText||'').then(function(){toast('Copied','ok');}).catch(function(){toast('Select text and copy manually','err');});else toast('Select text above and copy manually','info');}
+function copyFix(){if(navigator.clipboard)navigator.clipboard.writeText(window._fixText||'').then(function(){toast('Copied','ok');}).catch(function(){toast('Select text and copy manually','err');});else toast('Select the text above and copy manually','info');}
 function closeModal(){$('fix-modal').classList.remove('on');document.body.style.overflow='';}
 
+// ── ASK AI ─────────────────────────────────────────────────────
 function askAI(){
   var inp=$('ask-inp'),q=inp.value.trim();if(!q)return;
   if(!S.conn&&!S.data){toast('Connect your accounting software first','err');openConn();return;}
@@ -740,23 +928,20 @@ function askAI(){
       .catch(function(){toast('Could not get answer','err');})
       .finally(function(){btn.disabled=false;btn.textContent='Ask \u2192';inp.disabled=false;inp.focus();});
   };
-  if(!fd&&S.conn){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go(d.data);}).catch(function(){go(null);});}
-  else go(fd);
+  if(!fd&&S.conn){fetch('/api/data',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){S.data=d.data;S.parsed=parseF(d.data,d.provider);go(d.data);}).catch(function(){go(null);});}else go(fd);
 }
 
+// ── DEMO ───────────────────────────────────────────────────────
 function loadDemo(){
-  $('demo-strip').classList.add('on');
+  $('demo-bar').classList.add('on');
   S.parsed={rev:1840000,profit:94200,cash:38400,ovdAmt:184000,ovdCount:9,bills:42000,netMargin:5.1,labourPct:52.3,debtorDays:48,provider:'demo'};
   S.data={invoices:[{Contact:{Name:'Westfield Developments'},AmountDue:84000,DueDate:new Date(Date.now()-74*86400000).toISOString()},{Contact:{Name:'Smith & Co Builders'},AmountDue:47000,DueDate:new Date(Date.now()-32*86400000).toISOString()},{Contact:{Name:'Metro Retail Group'},AmountDue:31000,DueDate:new Date(Date.now()-18*86400000).toISOString()}],bills:[{AmountDue:42000}]};
   paintAll();
-  window._leaks=[{name:'Labour cost blowout',desc:'Running 52.3% of revenue \u2014 trades benchmark is 38\u201342%',monthly:9333,color:'red',fix:'roster'},{name:'Unpaid invoices',desc:'9 clients overdue \u2014 $184K owed to you right now',monthly:184000,color:'red',fix:'invoices',isOnce:true},{name:'Underpricing vs benchmark',desc:'Net margin 5.1% \u2014 trades minimum is 8%. Prices haven\'t kept up.',monthly:4282,color:'amb',fix:'pricing'}];
-  $('leaks-badge').textContent='$198K found';$('leaks-badge').className='card-badge bd-red';
-  var html='';window._leaks.forEach(function(l,i){var rc=l.color==='red'?'var(--red)':'var(--amber)';var lbls=['#1','#2','#3'];html+='<div class="leak-row" style="border-left-color:'+rc+'"><div class="leak-text"><div class="leak-name" style="color:'+rc+'">'+lbls[i]+' \u2014 '+esc(l.name)+'</div><div class="leak-desc">'+esc(l.desc)+'</div><button class="fix-pill '+l.color+'" onclick="openFix('+i+')">&#x26A1; Fix This For Me</button></div><div class="leak-right"><div class="leak-amt" style="color:'+rc+'">$'+fmt(l.monthly)+'</div><div class="leak-mo">'+(l.isOnce?'total':'per mo')+'</div></div></div>';});
-  $('leaks-body').innerHTML=html;
 }
 
+// ── KEYBOARD ───────────────────────────────────────────────────
 document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){closeModal();$('conn-overlay').classList.remove('on');}
+  if(e.key==='Escape'){closeModal();$('conn-ov').classList.remove('on');}
   if(e.key==='Enter'){var a=document.activeElement;if(a===$('ask-inp')){askAI();return;}if(a&&a.closest){if(a.closest('#v-su')){doSignup();return;}if(a.closest('#v-li')){doLogin();return;}}}
 });
 </script>
