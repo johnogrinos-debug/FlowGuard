@@ -608,11 +608,58 @@ window.addEventListener('load',function(){
   history.replaceState({},'','/app');
   var goLogin=sessionStorage.getItem('fg_show')==='login';
   sessionStorage.removeItem('fg_show');
-  fetch('/api/auth/me',{credentials:'include'})
-    .then(function(r){if(r.ok)return r.json();throw new Error('no');})
-    .then(function(d){S.user=d.user;S.conn=d.connection;showApp();if(connected)toast('Connected to '+cap(connected)+' \u2713','ok');if(error)toast('Connection failed','err');if(S.conn)loadData();else openConn();})
-    .catch(function(){if(goLogin)showLoginV();else showSignupV();});
   buildAskSuggestions();
+
+  // If we just came back from OAuth, retry auth up to 3 times
+  // before giving up — the cookie may not be set instantly
+  var maxTries=connected?3:1;
+  var attempt=0;
+
+  function tryAuth(){
+    attempt++;
+    fetch('/api/auth/me',{credentials:'include'})
+      .then(function(r){if(r.ok)return r.json();throw new Error('not_authed');})
+      .then(function(d){
+        S.user=d.user;S.conn=d.connection;
+        showApp();
+        if(connected)toast('Connected to '+cap(connected)+' \u2713','ok');
+        if(error)toast('Connection failed \u2014 '+error.replace(/_/g,' '),'err');
+        // If we just connected via OAuth but conn not in response yet, retry once
+        if(connected&&!S.conn&&attempt<3){
+          setTimeout(function(){
+            fetch('/api/auth/me',{credentials:'include'})
+              .then(function(r){return r.ok?r.json():null;})
+              .then(function(d2){if(d2&&d2.connection){S.conn=d2.connection;showApp();loadData();}else{loadData();}})
+              .catch(function(){loadData();});
+          },1200);
+        } else if(S.conn){
+          loadData();
+        } else {
+          openConn();
+        }
+      })
+      .catch(function(){
+        if(attempt<maxTries){
+          // Retry after a short delay — OAuth cookie may need a moment
+          setTimeout(tryAuth, 800);
+        } else {
+          // Only redirect to signup if we didn't just come from OAuth
+          if(connected){
+            // We came from Xero but auth check failed — show app anyway
+            // and ask them to connect again
+            showApp();
+            toast('Session expired \u2014 please log in again','err');
+            setTimeout(function(){showLoginV();},1500);
+          } else if(goLogin){
+            showLoginV();
+          } else {
+            showSignupV();
+          }
+        }
+      });
+  }
+
+  tryAuth();
 });
 
 function buildAskSuggestions(){
