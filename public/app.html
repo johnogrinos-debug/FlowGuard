@@ -1176,9 +1176,9 @@ function renderCostRows() {
   if (!list) return;
   list.innerHTML = _planCosts.map(function(c, i) {
     return '<div class="plan-cost-row">' +
-      '<input class="plan-cost-name" type="text" value="' + esc(c.name) + '" placeholder="Expense name" oninput="updateCost(' + i + ','name',this.value)">' +
-      '<input class="plan-cost-amt" type="number" value="' + c.amount + '" min="0" placeholder="$/mo" oninput="updateCost(' + i + ','amount',this.value)">' +
-      '<select class="plan-cost-type" onchange="updateCost(' + i + ','type',this.value)">' +
+      '<input class="plan-cost-name" type="text" value="' + esc(c.name) + '" placeholder="Expense name" oninput="updateCost(' + i + ',\'name\',this.value)">' +
+      '<input class="plan-cost-amt" type="number" value="' + c.amount + '" min="0" placeholder="$/mo" oninput="updateCost(' + i + ',\'amount\',this.value)">' +
+      '<select class="plan-cost-type" onchange="updateCost(' + i + ',\'type\',this.value)">' +
         '<option value="fixed"' + (c.type==='fixed'?' selected':'') + '>Fixed</option>' +
         '<option value="variable"' + (c.type==='variable'?' selected':'') + '>Variable</option>' +
       '</select>' +
