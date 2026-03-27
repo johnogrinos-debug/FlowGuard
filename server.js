@@ -203,6 +203,8 @@ app.post('/api/auth/login', async (req, res) => {
 app.post('/api/auth/logout', (req, res) => { res.clearCookie('fg_token'); res.json({ ok: true }); });
 
 app.get('/api/auth/me', auth, async (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.set('Pragma', 'no-cache');
   const { password_hash, ...safeUser } = req.user;
   const conn = await query('SELECT provider,tenant_name,created_at FROM connections WHERE user_id=$1 ORDER BY created_at DESC LIMIT 1', [req.user.id]);
   const analyses = await query('SELECT COUNT(*) as count FROM analyses WHERE user_id=$1', [req.user.id]);
