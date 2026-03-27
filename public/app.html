@@ -343,6 +343,76 @@ a{color:inherit;text-decoration:none}
 .empty-title{font-family:var(--disp);font-size:15px;font-weight:700;margin-bottom:6px}
 .empty-sub{font-size:12px;color:var(--tx2);line-height:1.7;max-width:280px;margin:0 auto}
 
+
+/* ── 12-MONTH PLANNER ─────────────────────────────── */
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.plan-section{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden}
+.plan-section-full{grid-column:1/3}
+.plan-head{padding:14px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.plan-head-title{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:-.01em}
+.plan-body{padding:16px 18px}
+.plan-field{margin-bottom:12px}
+.plan-field label{display:block;font-size:9px;font-weight:700;color:var(--tx2);text-transform:uppercase;letter-spacing:.12em;font-family:var(--disp);margin-bottom:5px}
+.plan-field input{width:100%;padding:10px 12px;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;transition:border-color .14s}
+.plan-field input:focus{border-color:rgba(184,255,87,.38)}
+.plan-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-cost-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.plan-cost-name{flex:1;padding:9px 11px;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;color:var(--tx);font-size:12px;outline:none;transition:border-color .14s}
+.plan-cost-name:focus{border-color:rgba(184,255,87,.38)}
+.plan-cost-amt{width:110px;padding:9px 11px;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;color:var(--tx);font-size:12px;font-family:var(--mono);outline:none;transition:border-color .14s;flex-shrink:0}
+.plan-cost-amt:focus{border-color:rgba(184,255,87,.38)}
+.plan-cost-type{padding:9px 10px;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;color:var(--tx2);font-size:11px;outline:none;width:90px;flex-shrink:0;appearance:none;cursor:pointer}
+.plan-cost-del{color:var(--tx3);font-size:16px;padding:4px;border-radius:5px;flex-shrink:0;cursor:pointer;transition:all .12s}
+.plan-cost-del:hover{color:var(--red);background:var(--red2)}
+.plan-add-btn{width:100%;padding:9px;border-radius:8px;background:transparent;border:1px dashed var(--bdr2);color:var(--tx2);font-size:12px;font-weight:500;margin-top:4px;transition:all .14s;cursor:pointer}
+.plan-add-btn:hover{border-color:var(--ac3);color:var(--ac);background:var(--ac2)}
+.plan-run-btn{width:100%;padding:13px;border-radius:10px;background:var(--ac);color:#070809;font-size:14px;font-weight:800;font-family:var(--disp);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.01em;transition:all .14s;cursor:pointer;border:none;margin-top:16px}
+.plan-run-btn:hover{background:#ccff6b}
+
+/* Results table */
+.plan-table-wrap{overflow-x:auto}
+.plan-table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
+.plan-table th{padding:10px 14px;text-align:right;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--disp);border-bottom:1px solid var(--bdr);white-space:nowrap}
+.plan-table th:first-child{text-align:left}
+.plan-table td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--bdr);font-family:var(--mono);font-size:12px;color:var(--tx2);white-space:nowrap}
+.plan-table td:first-child{text-align:left;font-family:var(--disp);font-size:12px;font-weight:600;color:var(--tx)}
+.plan-table tr:last-child td{border-bottom:none}
+.plan-table tr.row-revenue td{color:var(--grn)}
+.plan-table tr.row-costs td{color:var(--red)}
+.plan-table tr.row-profit td{font-weight:700}
+.plan-table tr.row-profit td.pos{color:var(--ac)}
+.plan-table tr.row-profit td.neg{color:var(--red)}
+.plan-table tr.row-cash td{color:var(--blue)}
+.plan-table tr.row-total td{font-weight:700;border-top:1px solid var(--bdr2)}
+.plan-table tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Summary cards */
+.plan-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.plan-sum-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 18px}
+.plan-sum-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:var(--tx2);margin-bottom:8px;font-family:var(--disp)}
+.plan-sum-bar{width:22px;height:2px;border-radius:2px;margin-bottom:10px}
+.plan-sum-val{font-family:var(--mono);font-size:24px;font-weight:500;line-height:1;margin-bottom:4px}
+.plan-sum-sub{font-size:11px;color:var(--tx2)}
+
+/* Chart */
+.plan-chart-wrap{padding:18px;position:relative;height:200px}
+.plan-bar-group{display:flex;align-items:flex-end;gap:3px;height:100%;position:relative}
+.plan-chart-inner{display:flex;align-items:flex-end;gap:6px;height:160px;padding:0 8px}
+.plan-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.plan-bar-rev{border-radius:4px 4px 0 0;background:rgba(74,222,128,.25);border:1px solid rgba(74,222,128,.3);transition:height .6s ease;min-height:2px}
+.plan-bar-cost{border-radius:4px 4px 0 0;background:rgba(255,85,85,.2);border:1px solid rgba(255,85,85,.25);transition:height .6s ease;min-height:2px}
+.plan-bar-lbl{font-size:9px;color:var(--tx3);font-family:var(--disp);font-weight:600}
+.plan-chart-legend{display:flex;gap:16px;padding:0 18px 14px;justify-content:center}
+.plan-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tx2)}
+.plan-legend-dot{width:8px;height:8px;border-radius:2px}
+
+.plan-empty{text-align:center;padding:48px 20px}
+.plan-growth-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.plan-growth-lbl{font-size:12px;color:var(--tx2);flex:1}
+.plan-growth-inp{width:80px;padding:8px 10px;background:var(--s2);border:1px solid var(--bdr2);border-radius:8px;color:var(--tx);font-size:13px;font-family:var(--mono);outline:none;text-align:center;transition:border-color .14s}
+.plan-growth-inp:focus{border-color:rgba(184,255,87,.38)}
+.plan-growth-unit{font-size:11px;color:var(--tx2);width:20px}
+
 /* UTILS */
 .spinner{width:14px;height:14px;border:2px solid var(--bdr2);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:9px;font-size:12px;font-weight:700;z-index:999;pointer-events:none;white-space:nowrap;display:none;font-family:var(--disp)}
@@ -492,6 +562,7 @@ a{color:inherit;text-decoration:none}
       <div class="sb-item" data-page="runway" onclick="goPage('runway',this)"><span class="sb-item-ico">&#x1F534;</span>Cash Runway</div>
       <div class="sb-item" data-page="ownerpay" onclick="goPage('ownerpay',this)"><span class="sb-item-ico">&#x1F4B5;</span>Owner Pay</div>
       <div class="sb-item" data-page="whatif" onclick="goPage('whatif',this)"><span class="sb-item-ico">&#x1F52E;</span>What If</div>
+      <div class="sb-item" data-page="plan" onclick="goPage('plan',this)"><span class="sb-item-ico">&#x1F4C5;</span>12-Month Plan</div>
       <div class="sb-section">Support</div>
       <div class="sb-item" data-page="alerts" onclick="goPage('alerts',this)"><span class="sb-item-ico">&#x1F6A8;</span>Smart Alerts<span class="sb-item-badge" id="alerts-nav-badge" style="display:none">0</span></div>
       <div class="sb-item" data-page="ask" onclick="goPage('ask',this)"><span class="sb-item-ico">&#x1F916;</span>Ask AI CFO</div>
@@ -680,6 +751,161 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
+
+      <!-- 12-MONTH PLAN PAGE -->
+      <div id="page-plan" class="page">
+
+        <!-- INPUTS -->
+        <div class="plan-grid">
+
+          <!-- REVENUE -->
+          <div class="plan-section">
+            <div class="plan-head">
+              <div class="plan-head-title">&#x1F4B0; Revenue</div>
+              <div class="chip ch-grn">Monthly inputs</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-field-row">
+                <div class="plan-field">
+                  <label>Price per customer / job ($)</label>
+                  <input type="number" id="pl-price" value="2500" min="0" oninput="planCalc()">
+                </div>
+                <div class="plan-field">
+                  <label>Customers / jobs per month</label>
+                  <input type="number" id="pl-customers" value="8" min="0" oninput="planCalc()">
+                </div>
+              </div>
+              <div class="plan-field-row">
+                <div class="plan-field">
+                  <label>Starting customers (Month 1)</label>
+                  <input type="number" id="pl-start-cust" value="5" min="0" oninput="planCalc()">
+                </div>
+                <div class="plan-field">
+                  <label>Target customers (Month 12)</label>
+                  <input type="number" id="pl-end-cust" value="20" min="0" oninput="planCalc()">
+                </div>
+              </div>
+              <div class="plan-growth-row">
+                <div class="plan-growth-lbl">Monthly customer growth rate</div>
+                <input type="number" class="plan-growth-inp" id="pl-growth" value="10" min="0" max="100" oninput="planCalc()">
+                <div class="plan-growth-unit">%</div>
+              </div>
+              <div class="plan-growth-row">
+                <div class="plan-growth-lbl">Churn rate (customers lost per month)</div>
+                <input type="number" class="plan-growth-inp" id="pl-churn" value="5" min="0" max="100" oninput="planCalc()">
+                <div class="plan-growth-unit">%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COSTS -->
+          <div class="plan-section">
+            <div class="plan-head">
+              <div class="plan-head-title">&#x1F4CB; Costs &amp; Expenses</div>
+              <div class="chip ch-red">Monthly recurring</div>
+            </div>
+            <div class="plan-body">
+              <div id="plan-costs-list"></div>
+              <button class="plan-add-btn" onclick="addCostRow()">+ Add expense</button>
+            </div>
+          </div>
+
+          <!-- ASSUMPTIONS -->
+          <div class="plan-section">
+            <div class="plan-head">
+              <div class="plan-head-title">&#x2699;&#xFE0F; Assumptions</div>
+              <div class="chip ch-muted">Optional</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-field-row">
+                <div class="plan-field">
+                  <label>Starting cash balance ($)</label>
+                  <input type="number" id="pl-cash" value="10000" min="0" oninput="planCalc()">
+                </div>
+                <div class="plan-field">
+                  <label>Tax rate (%)</label>
+                  <input type="number" id="pl-tax" value="27.5" min="0" max="100" step="0.5" oninput="planCalc()">
+                </div>
+              </div>
+              <div class="plan-field-row">
+                <div class="plan-field">
+                  <label>Owner salary / draw ($/mo)</label>
+                  <input type="number" id="pl-owner" value="5000" min="0" oninput="planCalc()">
+                </div>
+                <div class="plan-field">
+                  <label>Price increase at month</label>
+                  <input type="number" id="pl-price-month" value="7" min="1" max="12" oninput="planCalc()">
+                </div>
+              </div>
+              <div class="plan-growth-row">
+                <div class="plan-growth-lbl">Price increase amount (%)</div>
+                <input type="number" class="plan-growth-inp" id="pl-price-inc" value="10" min="0" max="100" oninput="planCalc()">
+                <div class="plan-growth-unit">%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GOALS -->
+          <div class="plan-section">
+            <div class="plan-head">
+              <div class="plan-head-title">&#x1F3AF; Your Goals</div>
+              <div class="chip ch-ac">Targets</div>
+            </div>
+            <div class="plan-body">
+              <div class="plan-field-row">
+                <div class="plan-field">
+                  <label>Annual revenue target ($)</label>
+                  <input type="number" id="pl-rev-target" value="500000" min="0" oninput="planCalc()">
+                </div>
+                <div class="plan-field">
+                  <label>Annual profit target ($)</label>
+                  <input type="number" id="pl-profit-target" value="80000" min="0" oninput="planCalc()">
+                </div>
+              </div>
+              <div class="plan-field">
+                <label>Business name (for the report)</label>
+                <input type="text" id="pl-biz-name" placeholder="e.g. Smith's Plumbing" style="font-family:var(--sans)" oninput="planCalc()">
+              </div>
+              <div id="plan-goal-status" style="margin-top:12px"></div>
+            </div>
+          </div>
+
+        </div><!-- end plan-grid -->
+
+        <!-- RESULTS -->
+        <div id="plan-results" style="display:none">
+
+          <!-- SUMMARY CARDS -->
+          <div class="plan-summary" id="plan-summary"></div>
+
+          <!-- CHART -->
+          <div class="plan-section" style="margin-bottom:14px">
+            <div class="plan-head"><div class="plan-head-title">&#x1F4CA; Revenue vs Costs — 12 Months</div></div>
+            <div class="plan-chart-inner" id="plan-chart"></div>
+            <div class="plan-chart-legend">
+              <div class="plan-legend-item"><div class="plan-legend-dot" style="background:rgba(74,222,128,.5)"></div>Revenue</div>
+              <div class="plan-legend-item"><div class="plan-legend-dot" style="background:rgba(255,85,85,.4)"></div>Costs</div>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <div class="plan-section" style="margin-bottom:14px">
+            <div class="plan-head"><div class="plan-head-title">&#x1F4CB; Month-by-Month Breakdown</div><div class="chip ch-muted" id="plan-table-chip"></div></div>
+            <div class="plan-table-wrap">
+              <table class="plan-table" id="plan-table"></table>
+            </div>
+          </div>
+
+          <!-- COST BREAKDOWN -->
+          <div class="plan-section">
+            <div class="plan-head"><div class="plan-head-title">&#x1F4B8; Annual Cost Breakdown</div></div>
+            <div id="plan-cost-breakdown" style="padding:14px 18px"></div>
+          </div>
+
+        </div><!-- end plan-results -->
+
+      </div><!-- end page-plan -->
+
     </div><!-- end scroll-area -->
   </div><!-- end main -->
 </div><!-- end app -->
@@ -753,7 +979,7 @@ a{color:inherit;text-decoration:none}
 <script>
 var S={user:null,conn:null,data:null,parsed:null,loading:false,score:null};
 var BENCH={trades:{net:[8,14],labour:[38,42],debtor:[30,45]},retail:{net:[5,10],labour:[12,18],debtor:[14,30]},hospitality:{net:[6,9],labour:[30,35],debtor:[7,21]},professional:{net:[15,25],labour:[45,55],debtor:[30,45]},health:{net:[12,20],labour:[50,60],debtor:[14,30]},ecommerce:{net:[8,15],labour:[10,18],debtor:[1,7]},manufacturing:{net:[8,15],labour:[25,35],debtor:[30,60]},other:{net:[8,15],labour:[30,45],debtor:[30,45]}};
-var PAGE_TITLES={dashboard:'Dashboard',onething:'The One Thing',leaks:'Profit Leaks',runway:'Cash Runway',ownerpay:'Owner Pay',whatif:'What If Simulator',alerts:'Smart Alerts',ask:'Ask AI CFO'};
+var PAGE_TITLES={dashboard:'Dashboard',plan:'12-Month Financial Plan',onething:'The One Thing',leaks:'Profit Leaks',runway:'Cash Runway',ownerpay:'Owner Pay',whatif:'What If Simulator',alerts:'Smart Alerts',ask:'Ask AI CFO'};
 var FIX={invoices:"MESSAGE TO SEND TODAY\n\nHi [Client Name],\n\nFollowing up on invoice [#] for $[Amount], due on [Date].\n\nPlease confirm when payment will be processed. We'd appreciate settlement by [3 days from now].\n\nHappy to resolve any issues immediately.\n\nThanks, [Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Call (not email) your largest overdue client. Calls recover 3x more than emails.\nDay 3: Written follow-up with invoice attached to anyone who didn't pick up.\nDay 7: Formal overdue notice + payment plan offer for anything still unpaid.",roster:"MESSAGE TO YOUR MANAGER\n\nHi [Name],\n\nI need a labour cost review for the last 3 months:\n1. Labour % of revenue by week\n2. Cost by role and shift\n3. Recurring overtime/penalty rates\n\nNeed this by [3 days from now].\n\nYOUR 3 STEPS\n\nDay 1: Pull the report. Find 3 most expensive shifts vs revenue.\nDay 3: Compare output vs cost. Find the mismatches.\nDay 7: Restructure roster around your highest-revenue periods.",pricing:"PRICE INCREASE NOTICE\n\nHi [Client Name],\n\nFrom [30 days from now], our pricing increases by [X]% to reflect rising costs.\n\nYour new rate: [New Amount].\n\nWe value your business and maintain the same high standard.\n\n[Your Name]\n\nYOUR 3 STEPS\n\nDay 1: Identify your 20% lowest-margin clients. Raise theirs first.\nDay 3: Send notice to all clients with 30 days lead time. Most won't leave.\nDay 7: Anyone who pushes back hard and is already low-margin — let them go.",overheads:"OVERHEAD REVIEW\n\nFor every cost over $200/month:\n1. Does this directly generate revenue?\n2. What happens if we cancel it?\n3. Can we get the same thing cheaper?\n\nYOUR 3 STEPS\n\nDay 1: Get full overhead list from your bookkeeper.\nDay 3: Mark each: Keep / Cancel / Negotiate.\nDay 7: Cancel the Cancel column immediately."};
 function $(id){return document.getElementById(id);}
 function cap(s){return s?s[0].toUpperCase()+s.slice(1):s;}
@@ -930,10 +1156,200 @@ function submitOnboard() {
   }, 400);
 }
 
+
+// ── 12-MONTH PLANNER ──────────────────────────────────────
+var _planCosts = [
+  { name:'Rent / Office', amount:2000, type:'fixed' },
+  { name:'Wages / Contractors', amount:8000, type:'fixed' },
+  { name:'Software & Subscriptions', amount:500, type:'fixed' },
+  { name:'Marketing & Ads', amount:1000, type:'variable' },
+  { name:'Materials / COGS', amount:3000, type:'variable' },
+];
+
+function initPlan() {
+  renderCostRows();
+  planCalc();
+}
+
+function renderCostRows() {
+  var list = document.getElementById('plan-costs-list');
+  if (!list) return;
+  list.innerHTML = _planCosts.map(function(c, i) {
+    return '<div class="plan-cost-row">' +
+      '<input class="plan-cost-name" type="text" value="' + esc(c.name) + '" placeholder="Expense name" oninput="updateCost(' + i + ','name',this.value)">' +
+      '<input class="plan-cost-amt" type="number" value="' + c.amount + '" min="0" placeholder="$/mo" oninput="updateCost(' + i + ','amount',this.value)">' +
+      '<select class="plan-cost-type" onchange="updateCost(' + i + ','type',this.value)">' +
+        '<option value="fixed"' + (c.type==='fixed'?' selected':'') + '>Fixed</option>' +
+        '<option value="variable"' + (c.type==='variable'?' selected':'') + '>Variable</option>' +
+      '</select>' +
+      '<button class="plan-cost-del" onclick="deleteCost(' + i + ')">&#x2715;</button>' +
+    '</div>';
+  }).join('');
+}
+
+function addCostRow() {
+  _planCosts.push({ name:'', amount:0, type:'fixed' });
+  renderCostRows();
+  planCalc();
+}
+
+function deleteCost(i) {
+  _planCosts.splice(i, 1);
+  renderCostRows();
+  planCalc();
+}
+
+function updateCost(i, field, val) {
+  _planCosts[i][field] = field === 'amount' ? (parseFloat(val)||0) : val;
+  planCalc();
+}
+
+function planCalc() {
+  var price       = parseFloat(document.getElementById('pl-price')?.value) || 0;
+  var startCust   = parseFloat(document.getElementById('pl-start-cust')?.value) || 0;
+  var endCust     = parseFloat(document.getElementById('pl-end-cust')?.value) || 0;
+  var growth      = parseFloat(document.getElementById('pl-growth')?.value) || 0;
+  var churn       = parseFloat(document.getElementById('pl-churn')?.value) || 0;
+  var cashStart   = parseFloat(document.getElementById('pl-cash')?.value) || 0;
+  var taxRate     = parseFloat(document.getElementById('pl-tax')?.value) || 0;
+  var ownerPay    = parseFloat(document.getElementById('pl-owner')?.value) || 0;
+  var priceMonth  = parseInt(document.getElementById('pl-price-month')?.value) || 12;
+  var priceInc    = parseFloat(document.getElementById('pl-price-inc')?.value) || 0;
+  var revTarget   = parseFloat(document.getElementById('pl-rev-target')?.value) || 0;
+  var profTarget  = parseFloat(document.getElementById('pl-profit-target')?.value) || 0;
+
+  var months = [];
+  var cash = cashStart;
+  var customers = startCust;
+  var currentPrice = price;
+
+  for (var m = 1; m <= 12; m++) {
+    // Price increase
+    if (m === priceMonth && priceInc > 0) currentPrice = price * (1 + priceInc/100);
+
+    // Revenue
+    var revenue = Math.round(customers * currentPrice);
+
+    // Costs
+    var fixedCosts = _planCosts.filter(function(c){ return c.type==='fixed'; }).reduce(function(s,c){ return s+(parseFloat(c.amount)||0); }, 0);
+    var varCosts   = _planCosts.filter(function(c){ return c.type==='variable'; }).reduce(function(s,c){ return s+(parseFloat(c.amount)||0); }, 0);
+    var totalCosts = fixedCosts + varCosts + ownerPay;
+
+    // Profit before tax
+    var grossProfit = revenue - totalCosts;
+    var tax = grossProfit > 0 ? Math.round(grossProfit * (taxRate/100)) : 0;
+    var netProfit = grossProfit - tax;
+
+    // Cash
+    cash += netProfit;
+
+    months.push({
+      month: m,
+      customers: Math.round(customers),
+      price: Math.round(currentPrice),
+      revenue: revenue,
+      fixedCosts: Math.round(fixedCosts),
+      varCosts: Math.round(varCosts),
+      ownerPay: ownerPay,
+      totalCosts: Math.round(totalCosts),
+      grossProfit: Math.round(grossProfit),
+      tax: tax,
+      netProfit: Math.round(netProfit),
+      cash: Math.round(cash),
+    });
+
+    // Grow customers
+    var newCust = customers * (1 + growth/100);
+    var lostCust = newCust * (churn/100);
+    customers = Math.max(0, newCust - lostCust);
+  }
+
+  // Totals
+  var totalRev    = months.reduce(function(s,m){ return s+m.revenue; }, 0);
+  var totalCost   = months.reduce(function(s,m){ return s+m.totalCosts; }, 0);
+  var totalProfit = months.reduce(function(s,m){ return s+m.netProfit; }, 0);
+  var endCash     = months[11].cash;
+  var endCustomers = months[11].customers;
+
+  // Show results
+  document.getElementById('plan-results').style.display = 'block';
+
+  // Summary cards
+  document.getElementById('plan-summary').innerHTML =
+    '<div class="plan-sum-card"><div class="plan-sum-lbl">Annual Revenue</div><div class="plan-sum-bar" style="background:var(--grn)"></div><div class="plan-sum-val" style="color:var(--grn)">$' + fmt(totalRev) + '</div><div class="plan-sum-sub">' + (totalRev >= revTarget && revTarget > 0 ? '&#x2705; Target hit' : revTarget > 0 ? '&#x26A0; $' + fmt(revTarget-totalRev) + ' below target' : 'vs $' + fmt(revTarget) + ' target') + '</div></div>' +
+    '<div class="plan-sum-card"><div class="plan-sum-lbl">Annual Profit</div><div class="plan-sum-bar" style="background:var(--ac)"></div><div class="plan-sum-val" style="color:' + (totalProfit>0?'var(--ac)':'var(--red)') + '">$' + fmt(totalProfit) + '</div><div class="plan-sum-sub">' + (totalProfit >= profTarget && profTarget > 0 ? '&#x2705; Target hit' : profTarget > 0 ? '&#x26A0; $' + fmt(profTarget-totalProfit) + ' below target' : (totalProfit/totalRev*100).toFixed(1) + '% margin') + '</div></div>' +
+    '<div class="plan-sum-card"><div class="plan-sum-lbl">End Cash Balance</div><div class="plan-sum-bar" style="background:var(--blue)"></div><div class="plan-sum-val" style="color:' + (endCash>0?'var(--blue)':'var(--red)') + '">$' + fmt(endCash) + '</div><div class="plan-sum-sub">After ' + months.filter(function(m){return m.netProfit<0;}).length + ' loss months</div></div>' +
+    '<div class="plan-sum-card"><div class="plan-sum-lbl">Customers at Month 12</div><div class="plan-sum-bar" style="background:var(--purple, #a78bfa)"></div><div class="plan-sum-val">' + Math.round(endCustomers) + '</div><div class="plan-sum-sub">Started with ' + Math.round(startCust) + '</div></div>';
+
+  // Goal status
+  var goalHtml = '';
+  if (revTarget > 0 || profTarget > 0) {
+    goalHtml = '<div style="padding:10px 12px;border-radius:8px;background:var(--s2);border:1px solid var(--bdr);font-size:12px;line-height:1.7;color:var(--tx2)">';
+    if (revTarget > 0) goalHtml += '<div>' + (totalRev >= revTarget ? '<span style="color:var(--grn)">&#x2705;</span>' : '<span style="color:var(--amb)">&#x26A0;</span>') + ' Revenue goal: <b style="color:var(--tx)">$' + fmt(totalRev) + '</b> / $' + fmt(revTarget) + '</div>';
+    if (profTarget > 0) goalHtml += '<div>' + (totalProfit >= profTarget ? '<span style="color:var(--grn)">&#x2705;</span>' : '<span style="color:var(--amb)">&#x26A0;</span>') + ' Profit goal: <b style="color:var(--tx)">$' + fmt(totalProfit) + '</b> / $' + fmt(profTarget) + '</div>';
+    goalHtml += '</div>';
+  }
+  if (document.getElementById('plan-goal-status')) document.getElementById('plan-goal-status').innerHTML = goalHtml;
+
+  // Chart
+  var maxRev = Math.max.apply(null, months.map(function(m){ return m.revenue; }));
+  var maxH = 140;
+  var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('plan-chart').innerHTML = months.map(function(m, i) {
+    var rH = maxRev > 0 ? Math.round((m.revenue/maxRev)*maxH) : 2;
+    var cH = maxRev > 0 ? Math.round((m.totalCosts/maxRev)*maxH) : 2;
+    return '<div class="plan-bar-wrap">' +
+      '<div style="display:flex;align-items:flex-end;gap:2px;height:' + maxH + 'px">' +
+        '<div class="plan-bar-rev" style="height:' + rH + 'px;width:14px" title="Revenue $' + fmt(m.revenue) + '"></div>' +
+        '<div class="plan-bar-cost" style="height:' + cH + 'px;width:14px" title="Costs $' + fmt(m.totalCosts) + '"></div>' +
+      '</div>' +
+      '<div class="plan-bar-lbl">' + MO[i] + '</div>' +
+    '</div>';
+  }).join('');
+
+  // Table
+  document.getElementById('plan-table-chip').textContent = '$' + fmt(totalRev) + ' projected revenue';
+  var thead = '<thead><tr><th>Month</th><th>Customers</th><th>Price</th><th>Revenue</th><th>Fixed Costs</th><th>Variable</th><th>Owner Pay</th><th>Tax</th><th>Net Profit</th><th>Cash Balance</th></tr></thead>';
+  var tbody = '<tbody>' + months.map(function(m) {
+    var profCls = m.netProfit >= 0 ? 'pos' : 'neg';
+    var cashCls = m.cash >= 0 ? '' : 'neg';
+    return '<tr>' +
+      '<td>Month ' + m.month + '</td>' +
+      '<td>' + m.customers + '</td>' +
+      '<td>$' + fmt(m.price) + '</td>' +
+      '<td style="color:var(--grn)">$' + fmt(m.revenue) + '</td>' +
+      '<td style="color:var(--red)">$' + fmt(m.fixedCosts) + '</td>' +
+      '<td style="color:var(--red)">$' + fmt(m.varCosts) + '</td>' +
+      '<td style="color:var(--amb)">$' + fmt(m.ownerPay) + '</td>' +
+      '<td style="color:var(--tx3)">$' + fmt(m.tax) + '</td>' +
+      '<td class="' + profCls + '" style="color:' + (m.netProfit>=0?'var(--ac)':'var(--red)') + ';font-weight:600">$' + fmt(m.netProfit) + '</td>' +
+      '<td style="color:' + (m.cash>=0?'var(--blue)':'var(--red)') + '">$' + fmt(m.cash) + '</td>' +
+    '</tr>';
+  }).join('') + '</tbody>';
+  var tfoot = '<tfoot><tr style="background:var(--s2)"><td>TOTAL</td><td>&#x2014;</td><td>&#x2014;</td><td style="color:var(--grn);font-weight:700">$' + fmt(totalRev) + '</td><td style="color:var(--red)">$' + fmt(months.reduce(function(s,m){return s+m.fixedCosts;},0)) + '</td><td style="color:var(--red)">$' + fmt(months.reduce(function(s,m){return s+m.varCosts;},0)) + '</td><td style="color:var(--amb)">$' + fmt(months.reduce(function(s,m){return s+m.ownerPay;},0)) + '</td><td style="color:var(--tx3)">$' + fmt(months.reduce(function(s,m){return s+m.tax;},0)) + '</td><td style="color:' + (totalProfit>=0?'var(--ac)':'var(--red)') + ';font-weight:700">$' + fmt(totalProfit) + '</td><td style="color:var(--blue)">$' + fmt(endCash) + '</td></tr></tfoot>';
+  document.getElementById('plan-table').innerHTML = thead + tbody + tfoot;
+
+  // Cost breakdown
+  var annualOwner = ownerPay * 12;
+  var costItems = _planCosts.concat([{name:'Owner Pay', amount:ownerPay, type:'fixed'}]);
+  var totalAnnualCost = costItems.reduce(function(s,c){return s+(parseFloat(c.amount)||0)*12;},0);
+  document.getElementById('plan-cost-breakdown').innerHTML = costItems.map(function(c) {
+    var annual = (parseFloat(c.amount)||0) * 12;
+    var pct = totalAnnualCost > 0 ? Math.round((annual/totalAnnualCost)*100) : 0;
+    return '<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--bdr)">' +
+      '<div style="flex:1;font-size:13px;font-weight:500">' + esc(c.name||'Unnamed') + '</div>' +
+      '<div style="width:120px;height:4px;background:var(--s3);border-radius:4px;overflow:hidden"><div style="height:100%;background:' + (c.type==='fixed'?'var(--red)':'var(--amb)') + ';width:' + pct + '%"></div></div>' +
+      '<div style="font-family:var(--mono);font-size:12px;color:var(--tx2);width:80px;text-align:right">$' + fmt(annual) + '/yr</div>' +
+      '<div style="font-size:10px;color:var(--tx3);width:30px;text-align:right">' + pct + '%</div>' +
+    '</div>';
+  }).join('') + '<div style="display:flex;justify-content:space-between;padding:12px 0;font-family:var(--disp);font-size:13px;font-weight:700"><span>Total Annual Costs</span><span style="font-family:var(--mono);color:var(--red)">$' + fmt(totalAnnualCost) + '</span></div>';
+}
+
 function doLogout(){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).then(function(){S.user=null;S.conn=null;S.data=null;S.parsed=null;showSignupV();});}
 
 // ── NAVIGATION ─────────────────────────────────────────────────
 function goPage(page,el){
+  if(page==='plan'){setTimeout(function(){if(document.getElementById('plan-costs-list')&&document.getElementById('plan-costs-list').innerHTML==='')initPlan();else planCalc();},50);}
   document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
   if(el)el.classList.add('active');
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
